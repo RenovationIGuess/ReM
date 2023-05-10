@@ -17,24 +17,16 @@
 Sau khi clone project về chạy câu lệnh:
 
 ```sh
-make devinstall
-```
-
-Câu lệnh sẽ tạo 3 file `.env` lần lượt ở thư mục root, trong server và client, có thể custom biến môi trường ở các file này
-
-Tiếp theo cần khởi động dự án bằng cách sử dụng:
-
-```sh
 make devup
 ```
 
-\*trường hợp gặp phải lỗi: `Docker is not running.` hoặc `Cannot connect to the Docker daemon at unix:///home/<you>/.docker/desktop/docker.sock.` chạy câu lệnh sau đây ở thư mục gốc:
+Câu lệnh sẽ tạo file `.env` ở thư mục root bao gồm các biến môi trường về domain và database có thể custom chúng bằng cách chỉnh sửa file này
+
+Cài đặt các dependency:
 
 ```sh
-export DOCKER_HOST=unix:///var/run/docker.sock
+make devinstall
 ```
-
-Nếu thành công `server` sẽ chạy ở chế độ `-d` có thể truy cập theo đường dẫn: `http://project.localhost:3000/api/`
 
 Câu lệnh để migrate database:
 
@@ -48,21 +40,24 @@ Câu lệnh để seed fake data:
 make devfresh
 ```
 
-Có thể truy cập `phpmyadmin` để xem dững liệu trong database theo đường dẫn: `http://phpmyadmin.localhost:3000` với credential mặc định của DB là:
-
-```
-DB_USERNAME=sail
-DB_PASSWORD=password
-```
-
-Để khởi chạy `client` chạy câu lệnh:
+Khởi chạy dự án:
 
 ```sh
 make devrun
 ```
 
-Có thể truy cập ứng dụng theo đường dẫn
-`http://project.localhost:3000`
+`server` sẽ được khởi chạy ở chế độ `--detached` có thể truy cập theo đường dẫn `http://project.localhost:3000/api/`
+<br>
+<br>
+Có thể truy cập giao diện người dùng `client` theo đường dẫn `http://project.localhost:3000`
+<br>
+<br>
+Có thể truy cập `phpmyadmin` để xem dữ liệu trong database theo đường dẫn: `http://phpmyadmin.localhost:3000` với credential mặc định của DB là:
+
+```
+DB_USERNAME=root
+DB_PASSWORD=admin
+```
 
 Tắt ứng dụng:
 
@@ -74,4 +69,18 @@ Xóa tất cả docker images, container:
 
 ```sh
 make devclean
+```
+
+## Lỗi có thể gặp
+
+Lỗi: `Docker is not running.` hoặc `Cannot connect to the Docker daemon at unix:///home/<you>/.docker/desktop/docker.sock.` chạy câu lệnh sau đây ở thư mục gốc:
+
+```sh
+export DOCKER_HOST=unix:///var/run/docker.sock
+```
+
+Lỗi: `The stream or file "/storage/logs/laravel.log" could not be opened` chạy câu lệnh sau đây ở thư mục `server`:
+
+```sh
+sudo chmod -R ugo+rw storage
 ```
