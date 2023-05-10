@@ -1,0 +1,97 @@
+services:
+  traefik:
+    image: traefik:2.9
+    restart: unless-stopped
+    command:
+      - --api.dashboard=true
+      - --entrypoints.http.address=:80
+      - --providers.docker
+      - --providers.docker.network=${COMPOSE_PROJECT_NAME}_client
+      - --providers.docker.watch=true
+      - --providers.docker.exposedbydefault=false
+    ports:
+      - ${PORT:-80}:80
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.traefik.rule=Host(`${TRAEFIK_DOMAIN}`)
+      - traefik.http.routers.traefik.service=api@internal
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  mysql:
+    image: 'mysql/mysql-server:8.0'
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_DATABASE: '${DB_DATABASE}'
+      MYSQL_USER: '${DB_USERNAME}'
+      MYSQL_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+    volumes:
+      - 'sail-mysql:/var/lib/mysql'
+      - './server/vendor/laravel/sail/database/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
+    healthcheck:
+      test:
+        - CMD
+        - mysqladmin
+        - ping
+        - '-p${DB_PASSWORD}'
+      retries: 3
+      timeout: 5s
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: unless-stopped
+    environment:
+      - PMA_HOST=mysql
+      - PMA_PORT=3306
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-phpmyadmin.rule=Host(`${PHPMYADMIN_DOMAIN}`)
+      - traefik.http.services.${COMPOSE_PROJECT_NAME}-phpmyadmin.loadbalancer.server.port=80
+    depends_on:
+      - mysql
+
+  server:
+    build:
+      context: ./server/vendor/laravel/sail/runtimes/8.2
+      dockerfile: Dockerfile
+      args:
+        WWWGROUP: '${WWWGROUP}'
+    image: sail-8.2/app
+    restart: unless-stopped
+    tty: true
+    environment:
+      LARAVEL_SAIL: 1
+      WWWUSER: '${WWWUSER}'
+      XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
+      XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
+      IGNITION_LOCAL_SITES_PATH: '${PWD}'
+    volumes:
+      - './server:/var/www/html'
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-server.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)
+      - traefik.http.services.${COMPOSE_PROJECT_NAME}-server.loadbalancer.server.port=80
+    depends_on:
+      - traefik
+      - mysql
+
+  client:
+    image: node:18-alpine
+    restart: unless-stopped
+    working_dir: /srv/client
+    tty: true
+    volumes:
+      - ./client:/srv/client
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}-client.rule=Host(`${DOMAIN}`)
+      - traefik.http.services.${COMPOSE_PROJECT_NAME}-client.loadbalancer.server.port=3000
+    depends_on:
+      - traefik
+      - server
+
+volumes:
+  sail-mysql:
+    driver: local
