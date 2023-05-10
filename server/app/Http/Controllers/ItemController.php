@@ -14,7 +14,7 @@ class PhanQuaController extends Controller
         try {
             $limit = $request->has('limit') ? $request->input() : 10;
 
-            $phanQuas = Item::where('name', 'like', '%'.$request->name.'%')
+            $phanQuas = PhanQua::where('name', 'like', '%' . $request->name . '%')
                 ->orderBy('id', 'ASC')
                 ->paginate($limit);
 
@@ -30,9 +30,8 @@ class PhanQuaController extends Controller
                 'success' => false,
                 'message' => 'No data',
             ], 404);
-        
-        } 
-        catch (Exception $exception) {
+
+        } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
@@ -52,13 +51,11 @@ class PhanQuaController extends Controller
                     'message' => 'success',
                 ], 200);
             }
-            
             return response()->json([
                 'success' => false,
                 'message' => 'Phan Qua not found',
             ], 404);
-        }
-        catch (Exception $exception) {
+        } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
@@ -75,8 +72,7 @@ class PhanQuaController extends Controller
 
         $validator = Validator::make($request->all(), $rules);
 
-        if ($validator->fails())
-        {
+        if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'message' => $validator->errors(),
@@ -94,8 +90,7 @@ class PhanQuaController extends Controller
                 'success' => false,
                 'message' => 'Created Phan Qua successfully',
             ], 200);
-        }
-        catch (Exception $exception) {
+        } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
@@ -105,7 +100,6 @@ class PhanQuaController extends Controller
 
     public function update(Request $request, $idPhanQua)
     {
-        
     }
 
     public function destroy($idPhanQua)
@@ -125,8 +119,7 @@ class PhanQuaController extends Controller
                 'success' => true,
                 'message' => 'Deleted Phan Qua successfully',
             ]);
-        }
-        catch (Exception $exception) {
+        } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),

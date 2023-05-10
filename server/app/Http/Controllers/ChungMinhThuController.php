@@ -15,8 +15,8 @@ class ChungMinhThuController extends Controller
         try {
             $limit = $request->has('limit') ? $request->input('limit') : 10;
             $chungMinhThus = ChungMinhThu::with('nhanKhau')
-                ->where('noiCap', 'like', '%'.$request->noiCap.'%')
-                ->where('soCMT', 'like', $request->soCMT.'%')
+                ->where('noiCap', 'like', '%' . $request->noiCap . '%')
+                ->where('soCMT', 'like', $request->soCMT . '%')
                 ->orderBy('id', 'ASC')
                 ->paginate($limit);
 
@@ -101,9 +101,7 @@ class ChungMinhThuController extends Controller
                 'success' => true,
                 'message' => 'Created Chung Minh Thu successfully',
             ], 200);
-        }
-        catch(Exception $exception)
-        {
+        } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
@@ -111,7 +109,7 @@ class ChungMinhThuController extends Controller
         }
     }
 
-    public function update ($idNhanKhau, Request $request)
+    public function update($idNhanKhau, Request $request)
     {
         $rules = [
             'soCMT' => 'numeric|required',
@@ -135,14 +133,12 @@ class ChungMinhThuController extends Controller
         try {
             $ChungMinhThu = $idNhanKhau->chungMinhThu;
 
-            if (!$ChungMinhThu)
-            {
+            if (!$ChungMinhThu) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Nhan Khau does not have Chung Minh Thu',
                 ], 404);
             }
-            
             $ChungMinhThu->soCMT = $request->soCMT;
             $ChungMinhThu->ngayCap = $request->ngayCap;
             $ChungMinhThu->noiCap = $request->noiCap;
@@ -153,9 +149,7 @@ class ChungMinhThuController extends Controller
                 'success' => true,
                 'message' => 'Updated Chung Minh Thu successfully',
             ], 200);
-        }
-        catch(Exception $exception)
-        {
+        } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
@@ -167,8 +161,7 @@ class ChungMinhThuController extends Controller
     {
         try {
             $chungMinhThu = ChungMinhThu::find($idChungMinhThu);
-            if (!$chungMinhThu)
-            {
+            if (!$chungMinhThu) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Chung Minh Thu not found',
@@ -181,7 +174,7 @@ class ChungMinhThuController extends Controller
                 'success' => true,
                 'message' => 'Deleted Chung Minh Thu successfully',
             ], 200);
-        } catch(Exception $exception) {
+        } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),

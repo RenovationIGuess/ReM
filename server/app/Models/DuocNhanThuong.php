@@ -35,22 +35,21 @@ class DuocNhanThuong extends Model
     //     'total_cost'
     // ];
 
-    // protected function totalCost(): Attribute 
-    // {
-    //     return new Attribute(
-    //         get: fn () => $this->calculateTotalCost(),
-    //     );
-    // }
+    protected function totalCost(): Attribute
+    {
+        return new Attribute(
+            get: fn() => $this->calculateTotalCost(),
+        );
+    }
 
-    // public function calculateTotalCost()
-    // {
-    //     $totalCost = 0;
-    //     foreach($this->phanQuas as $phanQua)
-    //     {
-    //         $totalCost += $phanQua->pivot->soLuong * $phanQua->unit_price;
-    //     }
-    //     return $totalCost;
-    // }
+    public function calculateTotalCost()
+    {
+        $totalCost = 0;
+        foreach ($this->phanQuas as $phanQua) {
+            $totalCost += $phanQua->pivot->soLuong * $phanQua->unit_price;
+        }
+        return $totalCost;
+    }
 
     public function suKien()
     {

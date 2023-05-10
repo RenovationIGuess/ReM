@@ -44,7 +44,7 @@ class DatabaseSeeder extends Seeder
         $hoKhaus = HoKhau::factory(60)->create();
 
         // Seed ThanhVienHo
-        foreach($nhanKhaus as $nhanKhau) {
+        foreach ($nhanKhaus as $nhanKhau) {
             $hoKhau = $hoKhaus->random(1);
             ThanhVienHo::create([
                 'idHoKhau' => $hoKhau->first()->id,
@@ -52,9 +52,8 @@ class DatabaseSeeder extends Seeder
                 'quanHeVoiChuHo' => fake()->randomElement(['Con', 'Em', 'Chau', 'Vo', 'Chong']),
             ]);
         }
-        foreach($hoKhaus as $hoKhau)
-        {
-            if ($hoKhau->nhanKhaus()->count() == 0){
+        foreach ($hoKhaus as $hoKhau) {
+            if ($hoKhau->nhanKhaus()->count() == 0) {
                 $hoKhau->delete();
             } else {
                 $ChuHo = $hoKhau->nhanKhaus->random(1)->first();
@@ -89,14 +88,10 @@ class DatabaseSeeder extends Seeder
         $suKiens = SuKien::factory(10)->create();
 
         // Seed PhanThuong
-        foreach($suKiens as $suKien)
-        {
-            if ($suKien->type == 1)
-            {
-                foreach (range(1, 4) as $capHoc)
-                {
-                    foreach(range(1, 3) as $thanhTichHocTap)
-                    {
+        foreach ($suKiens as $suKien) {
+            if ($suKien->type == 1) {
+                foreach (range(1, 4) as $capHoc) {
+                    foreach (range(1, 3) as $thanhTichHocTap) {
                         PhanThuong::create([
                             'idSuKien' => $suKien->id,
                             'thanhTichHocTap' => $thanhTichHocTap,
@@ -105,21 +100,18 @@ class DatabaseSeeder extends Seeder
                         ]);
                     }
                 }
-            }
-            else if ($suKien->type == 0)
-            {
+            } else if ($suKien->type == 0) {
                 PhanThuong::create([
                     'idSuKien' => $suKien->id,
                     'type' => 0,
                 ]);
             }
         }
-        
+
         // Seed PhanThuongDetail
         $phanThuongs = PhanThuong::all();
-        foreach ($phanThuongs as $phanThuong){
-            if ($phanThuong->type == 0)
-            {
+        foreach ($phanThuongs as $phanThuong) {
+            if ($phanThuong->type == 0) {
                 PhanThuongDetail::create([
                     'idItem' => 2,
                     'idPhanThuong' => $phanThuong->id,
@@ -130,56 +122,38 @@ class DatabaseSeeder extends Seeder
                     'idPhanThuong' => $phanThuong->id,
                     'soLuong' => 4,
                 ]);
-            }
-            else if ($phanThuong->type == 1)
-            {
-                if ($phanThuong->thanhTichHocTap == ThanhTichHocTap::GIOI && $phanThuong->capHoc == CapHoc::CAP_1)
-                {
+            } else if ($phanThuong->type == 1) {
+                if ($phanThuong->thanhTichHocTap == ThanhTichHocTap::GIOI && $phanThuong->capHoc == CapHoc::CAP_1) {
                     PhanThuongDetail::create([
                         'idItem' => 4,
                         'idPhanThuong' => $phanThuong->id,
                         'soLuong' => 10,
                     ]);
-                }
-
-                else if ($phanThuong->thanhTichHocTap == ThanhTichHocTap::TIEN_TIEN && $phanThuong->capHoc == CapHoc::CAP_1)
-                {
+                } else if ($phanThuong->thanhTichHocTap == ThanhTichHocTap::TIEN_TIEN && $phanThuong->capHoc == CapHoc::CAP_1) {
                     PhanThuongDetail::create([
                         'idItem' => 4,
                         'idPhanThuong' => $phanThuong->id,
                         'soLuong' => 7,
                     ]);
-                }
-
-                else if ($phanThuong->thanhTichHocTap == ThanhTichHocTap::OTHER && $phanThuong->capHoc == CapHoc::CAP_1)
-                {
+                } else if ($phanThuong->thanhTichHocTap == ThanhTichHocTap::OTHER && $phanThuong->capHoc == CapHoc::CAP_1) {
                     PhanThuongDetail::create([
                         'idItem' => 4,
                         'idPhanThuong' => $phanThuong->id,
                         'soLuong' => 5,
                     ]);
-                }
-
-                else if ($phanThuong->thanhTichHocTap == ThanhTichHocTap::OTHER && ($phanThuong->capHoc == CapHoc::CAP_2 || $phanThuong->capHoc == CapHoc::CAP_3))
-                {
+                } else if ($phanThuong->thanhTichHocTap == ThanhTichHocTap::OTHER && ($phanThuong->capHoc == CapHoc::CAP_2 || $phanThuong->capHoc == CapHoc::CAP_3)) {
                     PhanThuongDetail::create([
                         'idItem' => 5,
                         'idPhanThuong' => $phanThuong->id,
                         'soLuong' => 5,
                     ]);
-                }
-
-                else if ($phanThuong->thanhTichHocTap == ThanhTichHocTap::TIEN_TIEN && ($phanThuong->capHoc == CapHoc::CAP_2 || $phanThuong->capHoc == CapHoc::CAP_3))
-                {
+                } else if ($phanThuong->thanhTichHocTap == ThanhTichHocTap::TIEN_TIEN && ($phanThuong->capHoc == CapHoc::CAP_2 || $phanThuong->capHoc == CapHoc::CAP_3)) {
                     PhanThuongDetail::create([
                         'idItem' => 5,
                         'idPhanThuong' => $phanThuong->id,
                         'soLuong' => 7,
                     ]);
-                }
-
-                else if ($phanThuong->thanhTichHocTap == ThanhTichHocTap::GIOI && ($phanThuong->capHoc == CapHoc::CAP_2 || $phanThuong->capHoc == CapHoc::CAP_3))
-                {
+                } else if ($phanThuong->thanhTichHocTap == ThanhTichHocTap::GIOI && ($phanThuong->capHoc == CapHoc::CAP_2 || $phanThuong->capHoc == CapHoc::CAP_3)) {
                     PhanThuongDetail::create([
                         'idItem' => 5,
                         'idPhanThuong' => $phanThuong->id,
@@ -191,22 +165,17 @@ class DatabaseSeeder extends Seeder
 
         //Seed DuocNhanThuong
         $nhanKhaus = NhanKhauController::getInAgeRange(0, 18);
-        foreach($suKiens as $suKien)
-        {
-            foreach($nhanKhaus as $nhanKhau)
-            {
+        foreach ($suKiens as $suKien) {
+            foreach ($nhanKhaus as $nhanKhau) {
                 $thanhTichHocTap = array_rand([0, 1, 2, 3]);
                 $capHoc = array_rand([0, 1, 2, 3, 4]);
                 $phanThuongRoot = null;
-                foreach($suKien->phanThuongs as $phanThuong)
-                {
-                    if ($phanThuong->capHoc == $capHoc && $phanThuong->thanhTichHocTap == $thanhTichHocTap)
-                    {
+                foreach ($suKien->phanThuongs as $phanThuong) {
+                    if ($phanThuong->capHoc == $capHoc && $phanThuong->thanhTichHocTap == $thanhTichHocTap) {
                         $phanThuongRoot = $phanThuong;
                     }
                 }
-                if ($phanThuongRoot)
-                {
+                if ($phanThuongRoot) {
                     DuocNhanThuong::create([
                         'idSuKien' => $suKien->id,
                         'idNhanKhau' => $nhanKhau->id,

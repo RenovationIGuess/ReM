@@ -15,7 +15,7 @@ class TamVangController extends Controller
     {
         try {
             $TamVangs = TamVang::with('nhanKhau')
-                ->where('maGiayTamVang', 'like', $request->maGiayTamTru.'%')
+                ->where('maGiayTamVang', 'like', $request->maGiayTamTru . '%')
                 ->orderBy('id', 'ASC');
 
             if ($TamVangs) {
@@ -78,8 +78,7 @@ class TamVangController extends Controller
 
         $validator = Validator::make($request->all(), $rules);
 
-        if ($validator->fails())
-        {
+        if ($validator->fails()) {
             return response()->json(
                 [
                     'data' => $validator->errors(),
@@ -107,9 +106,7 @@ class TamVangController extends Controller
                 'success' => true,
                 'message' => 'Created Tam Vang for Nhan Khau successfully',
             ], 200);
-        }
-        catch(Exception $exception)
-        {
+        } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
@@ -121,7 +118,7 @@ class TamVangController extends Controller
     {
         try {
             //
-        } catch(Exception $exception) {
+        } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
@@ -147,7 +144,7 @@ class TamVangController extends Controller
                 'message' => 'Deleted Tam Tru successfully',
             ]);
 
-        } catch(Exception $exception) {
+        } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),

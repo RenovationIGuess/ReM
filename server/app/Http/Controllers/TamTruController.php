@@ -15,7 +15,7 @@ class TamTruController extends Controller
     {
         try {
             $TamTrus = TamTru::with('nhanKhau')
-                ->where('maGiayTamTru', 'like', $request->maGiayTamTru.'%')
+                ->where('maGiayTamTru', 'like', $request->maGiayTamTru . '%')
                 ->orderBy('id', 'ASC');
 
             if ($TamTrus) {
@@ -78,8 +78,7 @@ class TamTruController extends Controller
 
         $validator = Validator::make($request->all(), $rules);
 
-        if ($validator->fails())
-        {
+        if ($validator->fails()) {
             return response()->json(
                 [
                     'data' => $validator->errors(),
@@ -107,9 +106,7 @@ class TamTruController extends Controller
                 'success' => true,
                 'message' => 'Created Tam Tru for Nhan Khau successfully',
             ], 200);
-        }
-        catch (Exception $exception) 
-        {
+        } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
@@ -121,7 +118,7 @@ class TamTruController extends Controller
     {
         try {
             //
-        } catch(Exception $exception) {
+        } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
@@ -147,7 +144,7 @@ class TamTruController extends Controller
                 'message' => 'Deleted Tam Tru successfully',
             ]);
 
-        } catch(Exception $exception) {
+        } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
