@@ -25,7 +25,7 @@ const HomeLayout = ({ children }: PropsType) => {
       <div className="flex h-screen w-screen items-center justify-center shadow-md">
         <Sidebar />
         <motion.div
-          className="relative h-full basis-5/6 overflow-y-auto bg-bgDefault px-3 pt-3"
+          className="relative h-full basis-5/6 overflow-y-auto bg-bgDefault p-3"
           initial="hidden"
           animate="enter"
           exit="exit"
@@ -33,7 +33,7 @@ const HomeLayout = ({ children }: PropsType) => {
           transition={{ duration: 0.6, type: 'easeInOut' }}
         >
           {children}
-          <p className="text-end text-sm opacity-30">© 2023 KTPM Team. All Rights Reserved.</p>
+          {/* <p className="text-end text-sm opacity-30">© 2023 KTPM Team. All Rights Reserved.</p> */}
         </motion.div>
       </div>
     </AnimatePresence>

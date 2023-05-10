@@ -19,7 +19,7 @@ class SuKienController extends Controller
         try {
             $limit = $request->has('limit') ? $request->input('limit') : 10;
             $suKiens = SuKien::with('phanThuongs')
-                ->where('name', 'like', '%'.$request->name.'%')
+                ->where('name', 'like', '%' . $request->name . '%')
                 ->orderBy('id', 'ASC')
                 ->paginate($limit);
 
@@ -51,7 +51,16 @@ class SuKienController extends Controller
 
             $suKien->phanThuongs;
             $suKien->duocNhanThuongs;
-            
+
+            $suKien->phanThuongs;
+            $suKien->duocNhanThuongs;
+
+            $suKien->phanThuongs;
+            $suKien->duocNhanThuongs;
+
+            $suKien->phanThuongs;
+            $suKien->duocNhanThuongs;
+
             if ($suKien) {
                 return response()->json([
                     'data' => $suKien,
@@ -78,13 +87,12 @@ class SuKienController extends Controller
         $rules = [
             'name' => 'string|required',
             'ngayBatDau' => 'date|required|after:yesterday',
-            'type' => ['required'|Rule::in([0, 1])],
+            'type' => ['required' | Rule::in([0, 1])],
         ];
 
         $validator = Validator::make($request->all(), $rules);
 
-        if ($validator->fails())
-        {
+        if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'message' => $validator->errors(),
@@ -103,8 +111,7 @@ class SuKienController extends Controller
                 'success' => true,
                 'message' => 'Created Su Kien successfully',
             ], 200);
-        }
-        catch (Exception $exception) {
+        } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
@@ -117,13 +124,12 @@ class SuKienController extends Controller
         $rules = [
             'name' => 'string|required',
             'ngayBatDau' => 'date|required|after:yesterday',
-            'type' => ['required'|Rule::in([0, 1])],
+            'type' => ['required' | Rule::in([0, 1])],
         ];
 
         $validator = Validator::make($request->all(), $rules);
 
-        if ($validator->fails())
-        {
+        if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'message' => $validator->errors(),
@@ -142,8 +148,7 @@ class SuKienController extends Controller
                 'success' => true,
                 'message' => 'Created Su Kien successfully',
             ], 200);
-        }
-        catch (Exception $exception) {
+        } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
@@ -156,29 +161,25 @@ class SuKienController extends Controller
         try {
             $suKien = SuKien::find($idSuKien);
 
-            if (!$suKien)
-            {
+            if (!$suKien) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Su Kien not found',
                 ], 404);
             }
-            
-            if ($suKien->isDone)
-            {
+
+            if ($suKien->isDone) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Cannot delete this Su Kien because it is over',
                 ], 403);
             }
 
-            foreach($suKien->phanThuongs as $phanThuong)
-            {
+            foreach ($suKien->phanThuongs as $phanThuong) {
                 $phanThuong->delete();
             }
 
-            foreach($suKien->duocNhanThuongs as $duocNhanThuong)
-            {
+            foreach ($suKien->duocNhanThuongs as $duocNhanThuong) {
                 $duocNhanThuong->delete();
             }
 
@@ -188,8 +189,7 @@ class SuKienController extends Controller
                 'success' => true,
                 'message' => 'Deleted Su Kien successfully',
             ], 200);
-        }
-        catch (Exception $exception) {
+        } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
@@ -205,30 +205,26 @@ class SuKienController extends Controller
 
             $suKien = SuKien::find($idSuKien);
 
-            foreach($suKien->duocNhanThuongs as $duocNhanThuong)
-            {
+            foreach ($suKien->duocNhanThuongs as $duocNhanThuong) {
                 $duocNhanThuong['idHoKhau'] = $duocNhanThuong->nhanKhau->thanhVienHo->idHoKhau;
                 $duocNhanThuong->phanThuong;
             }
 
             $grouped = $suKien->duocNhanThuongs->groupBy('idHoKhau');
 
-            foreach($grouped as $idHoKhau => $duocNhanThuongs)
-            {
+            foreach ($grouped as $idHoKhau => $duocNhanThuongs) {
                 $hoKhau = HoKhau::find($idHoKhau);
                 $hoKhau['duocNhanThuongs'] = $duocNhanThuongs;
                 $hoKhaus->add($hoKhau);
             }
 
-            foreach($hoKhaus as $hoKhau)
-            {
+            foreach ($hoKhaus as $hoKhau) {
                 $hoKhau['totalCost'] = 0;
-                foreach($hoKhau->duocNhanThuongs as $duocNhanThuong)
-                {
+                foreach ($hoKhau->duocNhanThuongs as $duocNhanThuong) {
                     $hoKhau['totalCost'] += $duocNhanThuong->phanThuong->cost;
                 }
             }
-            
+
             if ($suKien) {
                 return response()->json([
                     'data' => $hoKhaus,
@@ -255,12 +251,9 @@ class SuKienController extends Controller
         $totalQuantity = 0;
         $totalCost = 0;
 
-        foreach ($suKien->phanThuongs as $phanThuong)
-        {
-            foreach($phanThuong->items as $item)
-            {
-                if ($item->id == $item_id)
-                {
+        foreach ($suKien->phanThuongs as $phanThuong) {
+            foreach ($phanThuong->items as $item) {
+                if ($item->id == $item_id) {
                     $quantity = $item->pivot->soLuong * $phanThuong->count;
                     $totalQuantity += $quantity;
                     $totalCost += $quantity * $item->unit_price;
@@ -277,10 +270,8 @@ class SuKienController extends Controller
             $uniqueItemIds = collect();
             $suKien = SuKien::find($idSuKien);
 
-            foreach($suKien->phanThuongs as $phanThuong)
-            {
-                foreach($phanThuong->items as $item)
-                {
+            foreach ($suKien->phanThuongs as $phanThuong) {
+                foreach ($phanThuong->items as $item) {
                     $uniqueItemIds->add($item->id);
                 }
             }
@@ -288,12 +279,11 @@ class SuKienController extends Controller
 
             $uniqueItems = Item::findMany($uniqueItemIds);
 
-            foreach($uniqueItems as $uniqueItem)
-            {
+            foreach ($uniqueItems as $uniqueItem) {
                 $uniqueItem['totalQuantity'] = $this->calculateTotal($suKien, $uniqueItem->id)[0];
                 $uniqueItem['totalCost'] = $this->calculateTotal($suKien, $uniqueItem->id)[1];
             }
-            
+
             if ($uniqueItems) {
                 return response()->json([
                     'data' => $uniqueItems,

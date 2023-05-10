@@ -30,7 +30,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::group(['prefix' => 'auth'], function ($router) {
-    
+
     Route::post('login', [AuthController::class, 'login']);
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('register', [AuthController::class, 'register']);
@@ -44,7 +44,7 @@ Route::group(['prefix' => 'ho-khau'], function ($router) {
     Route::post('/{idHoKhau}/edit/tach-ho-khau', [HoKhauController::class, 'tachHoKhau']);
 });
 
-Route::group(['prefix' => 'nhan-khau'], function($router) {
+Route::group(['prefix' => 'nhan-khau'], function ($router) {
     Route::get('/', [NhanKhauController::class, 'index']);
     Route::get('/{idNhanKhau}', [NhanKhauController::class, 'show']);
     Route::post('/create', [NhanKhauController::class, 'store']);
@@ -73,13 +73,13 @@ Route::group(['prefix' => 'tam-tru'], function ($router) {
     Route::delete('/{idTamTru}', [TamTruController::class, 'destroy']);
 });
 
-Route::group(['prefix' => 'thong-ke'], function($router) {
+Route::group(['prefix' => 'thong-ke'], function ($router) {
     Route::get('/nhan-khau/tuoi', [ThongKeController::class, 'thongKeTheoTuoi']);
-    Route::get('/nhan-khau/gioi-tinh', function(){});
-    Route::get('/nhan-khau/tam-tru-tam-vang', function(){});
+    Route::get('/nhan-khau/gioi-tinh', function () { });
+    Route::get('/nhan-khau/tam-tru-tam-vang', function () { });
 });
 
-Route::group(['prefix' => 'su-kien'], function($router) {
+Route::group(['prefix' => 'su-kien'], function ($router) {
     Route::get('/', [SuKienController::class, 'index']); //DONE
     Route::get('/{idSuKien}', [SuKienController::class, 'show']); //DONE
     Route::post('/create', [SuKienController::class, 'store']); //UNDONE
@@ -90,7 +90,7 @@ Route::group(['prefix' => 'su-kien'], function($router) {
     Route::delete('/{idSuKien}/delete', [SuKienController::class, 'destroy']);
 });
 
-Route::group(['prefix' => 'nhan-thuong'], function($router) {
+Route::group(['prefix' => 'nhan-thuong'], function ($router) {
     Route::put('/{idDuocNhanThuong}/edit', [DuocNhanThuongController::class, 'update']);
     Route::delete('/{idDuocNhanThuong}/delete', [DuocNhanThuongController::class, 'destroy']);
 });

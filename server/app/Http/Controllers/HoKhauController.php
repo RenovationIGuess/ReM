@@ -15,7 +15,7 @@ class HoKhauController extends Controller
         try {
             $limit = $request->has('limit') ? $request->input('limit') : 10;
             $hoKhaus = HoKhau::with('nhanKhaus')
-                ->where('maHoKhau', 'like', $request->maHoKhau.'%')
+                ->where('maHoKhau', 'like', $request->maHoKhau . '%')
                 ->orderBy('id', 'ASC')
                 ->paginate($limit);
 
@@ -31,7 +31,7 @@ class HoKhauController extends Controller
                 'success' => false,
                 'message' => 'No data',
             ], 404);
-                
+
         } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
@@ -67,7 +67,7 @@ class HoKhauController extends Controller
     }
 
     public function store(Request $request)
-    {   
+    {
         $rules = [
             'maHoKhau' => 'required|string',
             'idChuHo' => 'required|numeric',
@@ -80,7 +80,7 @@ class HoKhauController extends Controller
 
         $validator = Validator::make($request->all(), $rules);
 
-        if ($validator->fails()){
+        if ($validator->fails()) {
             return response()->json(
                 [
                     'data' => $validator->errors(),
@@ -126,7 +126,7 @@ class HoKhauController extends Controller
     public function update(Request $request, $idHoKhau)
     {
         try {
-            
+
         } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
@@ -173,7 +173,7 @@ class HoKhauController extends Controller
         try {
             $oldHoKhau = HoKhau::with('nhanKhaus')
                 ->find($idHoKhau);
-            
+
             $nhanKhaus = $oldHoKhau->nhanKhaus();
 
             $nhanKhauMois = collect($request->get('nhanKhauMois'))->map(
@@ -182,11 +182,13 @@ class HoKhauController extends Controller
                 }
             );
 
-            if($nhanKhauMois->every(
-                function (NhanKhau $nhanKhauMoi) use($idHoKhau) {
-                    return $nhanKhauMoi->thanhVienHo->hoKhau->id == $idHoKhau;
-                }
-            )) {
+            if (
+                $nhanKhauMois->every(
+                    function (NhanKhau $nhanKhauMoi) use ($idHoKhau) {
+                        return $nhanKhauMoi->thanhVienHo->hoKhau->id == $idHoKhau;
+                    }
+                )
+            ) {
 
                 $newHoKhau = HoKhau::create([
                     'maHoKhau' => $request->maHoKhau,
@@ -204,13 +206,13 @@ class HoKhauController extends Controller
                     'message' => 'Tach ho khau thanh cong',
                 ], 201);
             }
-                
+
             return response()->json([
                 'data' => $nhanKhauMois,
                 'success' => false,
                 'message' => 'Ho Khau not found',
             ], 404);
-            
+
         } catch (Exception $exception) {
             return response()->json([
                 'success' => false,

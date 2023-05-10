@@ -28,10 +28,10 @@ class SuKien extends Model
         'total_cost',
     ];
 
-    protected function totalCost() : Attribute
+    protected function totalCost(): Attribute
     {
         return new Attribute(
-            get: fn () => $this->calculateTotalCost(),
+            get: fn() => $this->calculateTotalCost(),
         );
     }
 
@@ -53,8 +53,7 @@ class SuKien extends Model
     public function calculateTotalCost()
     {
         $totalCost = 0;
-        foreach($this->phanThuongs as $phanThuong)
-        {
+        foreach ($this->phanThuongs as $phanThuong) {
             $totalCost += $phanThuong->cost * $phanThuong->count;
         }
         return $totalCost;
