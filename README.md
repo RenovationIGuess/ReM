@@ -22,7 +22,7 @@ make devup
 
 Câu lệnh sẽ tạo file `.env` ở thư mục root bao gồm các biến môi trường về domain và database có thể custom chúng bằng cách chỉnh sửa file này
 
-Cài đặt các dependency:
+Cài đặt các dependencies:
 
 ```sh
 make devinstall
@@ -40,15 +40,16 @@ Câu lệnh để seed fake data:
 make devfresh
 ```
 
+`server` sẽ được khởi chạy ở chế độ `--detached` có thể truy cập theo đường dẫn `http://project.localhost:3000/api/`
+<br>
+<br>
+
 Khởi chạy dự án:
 
 ```sh
 make devrun
 ```
 
-`server` sẽ được khởi chạy ở chế độ `--detached` có thể truy cập theo đường dẫn `http://project.localhost:3000/api/`
-<br>
-<br>
 Có thể truy cập giao diện người dùng `client` theo đường dẫn `http://project.localhost:3000`
 <br>
 <br>

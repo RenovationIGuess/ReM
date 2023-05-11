@@ -15,8 +15,7 @@ devinstall:
 	@docker exec -it $(COMPOSE_PROJECT_NAME)-server-1 sh -c "chown -R :www-data storage/* bootstrap/cache"
 	
 devrun:
-	@docker exec -d -u $$(id -u):$$(id -g) $(COMPOSE_PROJECT_NAME)-server-1 php artisan serve
-	@docker exec -it -u $$(id -u):$$(id -g) $(COMPOSE_PROJECT_NAME)-client-1 yarn dev
+	docker exec -it -u $$(id -u):$$(id -g) $(COMPOSE_PROJECT_NAME)-client-1 yarn dev
 
 devmigrate:
 	USER=$$(id -u):$$(id -g) docker exec -it $(COMPOSE_PROJECT_NAME)-server-1 php artisan migrate --seed

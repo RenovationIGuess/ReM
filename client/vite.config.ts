@@ -11,7 +11,8 @@ export default defineConfig({
     },
     host: true, // needed for the Docker Container port mapping to work
     strictPort: true,
-    port: 3000 // app port
+    port: 3000, // app port
+    timeout: 60000 // 1 minute timeout
   },
   resolve: {
     alias: [{ find: '~', replacement: path.resolve(__dirname, 'src') }]
