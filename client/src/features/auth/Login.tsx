@@ -27,7 +27,7 @@ const Login = () => {
 
   return (
     <DefaultLayout>
-      <div className="w-[25vw] rounded-md bg-slate-600 p-4">
+      <div className="bg-slate-600 w-[25vw] rounded-md p-4">
         <h6 className="text-center text-3xl font-bold">Đăng nhập</h6>
         <Form
           form={form}
@@ -64,7 +64,7 @@ const Login = () => {
           </Form.Item>
 
           <Form.Item>
-            <Button size="large" type="primary" htmlType="submit" className="mt-4" block>
+            <Button size="large" type="primary" ghost htmlType="submit" className="mt-4" block>
               {isLoading ? <LoadingOutlined /> : 'Đăng nhập'}
             </Button>
           </Form.Item>

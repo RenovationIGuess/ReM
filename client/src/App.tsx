@@ -3,6 +3,14 @@ import { Outlet, Route, Routes } from 'react-router-dom'
 import Login from './features/auth/Login'
 import RequireAuth from './features/auth/RequireAuth'
 import Welcome from './features/users/Welcome'
+import ResidentsList from './features/residents/List'
+import ResidentCreate from './features/residents/Create'
+import ResidentDetail from './features/residents/Detail'
+import ResidentEdit from './features/residents/Edit'
+import HouseHoldsList from './features/households/List'
+import Gift from './features/gift'
+import Temporary from './features/temporary'
+import AboutUs from './features/about'
 
 function App() {
   return (
@@ -10,8 +18,38 @@ function App() {
       <Route path="/" element={<Outlet />}>
         <Route path="login" element={<Login />} />
 
+        <Route path="nhan-khau">
+          <Route index element={<ResidentsList />} />
+          <Route path="them" element={<ResidentCreate />} />
+          <Route path=":id" element={<ResidentDetail />} />
+          <Route path="chinh-sua/:id" element={<ResidentEdit />} />
+        </Route>
+
         <Route element={<RequireAuth />}>
           <Route index element={<Welcome />} />
+
+          <Route path="ho-khau">
+            <Route index element={<HouseHoldsList />} />
+          </Route>
+
+          <Route path="nhan-khau">
+            <Route index element={<ResidentsList />} />
+            <Route path="them" element={<ResidentCreate />} />
+            <Route path=":id" element={<ResidentDetail />} />
+            <Route path="chinh-sua/:id" element={<ResidentEdit />} />
+          </Route>
+
+          <Route path="tam-tru">
+            <Route index element={<Temporary />} />
+          </Route>
+
+          <Route path="tang-qua">
+            <Route index element={<Gift />} />
+          </Route>
+
+          <Route path="thong-tin">
+            <Route index element={<AboutUs />} />
+          </Route>
         </Route>
       </Route>
     </Routes>
