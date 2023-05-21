@@ -5,6 +5,7 @@ import DefaultLayout from '~/components/Layout/DefaultLayout'
 import { useSendLogoutMutation } from '../auth/authApiSlice'
 import { useNavigate } from 'react-router-dom'
 import { useGetCurrentUsersQuery } from './usersApiSlice'
+import HomeLayout from '~/components/Layout/HomeLayout'
 
 const Welcome = () => {
   const navigate = useNavigate()
@@ -27,8 +28,8 @@ const Welcome = () => {
   }
 
   return (
-    <DefaultLayout>
-      <div className="w-[30vw] rounded-md bg-slate-600 p-4">
+    <HomeLayout>
+      <div className="bg-slate-600 w-[30vw] rounded-md p-4">
         <div className="mb-4 flex items-center justify-between">
           <p className="text-xl font-bold">Đăng nhập thành công:</p>
           <Tooltip title="Đăng xuất" className="flex items-center justify-center">
@@ -51,7 +52,7 @@ const Welcome = () => {
           Token: <span className="text-black">{accessToken?.slice(0, 55)}...</span>
         </p>
       </div>
-    </DefaultLayout>
+    </HomeLayout>
   )
 }
 
