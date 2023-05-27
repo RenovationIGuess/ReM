@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\NhanKhau;
+use App\Models\DinhChinh;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class HoKhau extends Model
 {
@@ -22,4 +24,15 @@ class HoKhau extends Model
         'ngayChuyenDi',
         'lyDoChuyen',
     ];
+
+    public function nhanKhaus()
+    {
+        return $this->belongsToMany(NhanKhau::class, 'thanh_vien_ho', 'idNhanKhau', 'idHoKhau')
+            ->withPivot('quanHeVoiChuHo');
+    }
+
+    public function dinhChinhs()
+    {
+        return $this->hasMany(DinhChinh::class, 'idHoKhau', 'id');
+    }
 }

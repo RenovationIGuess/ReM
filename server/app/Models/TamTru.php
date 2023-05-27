@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\NhanKhau;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class TamTru extends Model
 {
@@ -19,4 +20,9 @@ class TamTru extends Model
         'denNgay',
         'lyDo',
     ];
+
+    public function nhanKhau()
+    {
+        return $this->belongsTo(NhanKhau::class, 'idNhanKhau', 'id');
+    }
 }
