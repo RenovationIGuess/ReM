@@ -8,6 +8,7 @@ use App\Models\DuocNhanThuong;
 use App\Models\PhanQua;
 use App\Models\PhanThuongDetail;
 use App\Models\SuKien;
+use App\Models\ThanhVienHo;
 use App\Models\ToDanPho;
 use App\Models\User;
 use App\Models\HoKhau;
@@ -33,10 +34,10 @@ class DatabaseSeeder extends Seeder
         ToDanPho::factory(3)->create();
 
         // Seed NhanKhau
-        $nhanKhaus = NhanKhau::factory(100)->create();
+        $nhanKhaus = NhanKhau::factory(300)->create();
 
         // Seed HoKhau
-        HoKhau::factory(100)->create();
+        $hoKhaus = HoKhau::factory(60)->create();
 
         // Seed SuKien
         $suKiens = SuKien::factory(10)->create();
@@ -52,6 +53,26 @@ class DatabaseSeeder extends Seeder
                     'thanhTichHocTap' => fake()->randomElement([1, 2, 3]),
                     'anhGiayKhen' => fake()->url(),
                 ]);
+            }
+        }
+
+        // Seed ThanhVienHo
+        foreach($nhanKhaus as $nhanKhau) {
+            $hoKhau = $hoKhaus->random(1);
+            ThanhVienHo::create([
+                'idHoKhau' => $hoKhau->first()->id,
+                'idNhanKhau' => $nhanKhau->id,
+                'quanHeVoiChuHo' => fake()->randomElement(['Con', 'Em', 'Chau', 'Vo', 'Chong']),
+            ]);
+        }
+        foreach($hoKhaus as $hoKhau)
+        {
+            if ($hoKhau->nhanKhaus()->count() == 0){
+                $hoKhau->delete();
+            } else {
+                $ChuHo = $hoKhau->nhanKhaus->random(1)->first();
+                $hoKhau->idChuHo = $ChuHo->id;
+                $hoKhau->save();
             }
         }
 

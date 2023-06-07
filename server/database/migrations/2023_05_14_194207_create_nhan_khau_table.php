@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('nguyenQuan')->nullable();
             $table->string('diaChiThuongTru')->nullable();
             $table->string('diaChiHienTai')->nullable();
-            $table->string('dantoc')->nullable();
+            $table->string('danToc')->nullable();
             $table->string('quocTich')->nullable();
             $table->string('tonGiao')->nullable();
             $table->string('soHoChieu')->nullable();
@@ -38,7 +38,7 @@ return new class extends Migration
             $table->unsignedBigInteger('idNguoiTao')->nullable();
             $table->unsignedSmallInteger('status')->default(1);
             $table->unsignedBigInteger('idNguoiXoa')->nullable();
-            $table->string('lydoXoa')->nullable();
+            $table->string('lyDoXoa')->nullable();
             $table->string('ghiChu')->nullable();
             $table->timestamps();
 

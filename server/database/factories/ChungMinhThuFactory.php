@@ -17,7 +17,10 @@ class ChungMinhThuFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'idNhanKhau' => 1,
+            'soCMT' => fake()->unique()->creditCardNumber(),
+            'ngayCap' => fake()->dateTimeThisYear(),
+            'noiCap' => "Cuc canh sat Ha Noi",
         ];
     }
 }

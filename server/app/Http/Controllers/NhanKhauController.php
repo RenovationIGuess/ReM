@@ -2,9 +2,165 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\NhanKhau;
+use Exception;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class NhanKhauController extends Controller
 {
-    //
+    public function index(Request $request): JsonResponse
+    {
+        try {
+            $limit = $request->has('limit') ? $request->input('limit') : 10;
+            $nhanKhaus = NhanKhau::with('duocKhaiTu', 'chungMinhThu')
+                ->where('hoTen', 'like', '%'.$request->hoTen.'%')
+                ->where('maNhanKhau', 'like', $request->maNhanKhau.'%')
+                ->orderBy('id', 'ASC')
+                ->paginate($limit);
+
+            if ($nhanKhaus) {
+                return response()->json([
+                    'data' => $nhanKhaus,
+                    'success' => true,
+                    'message' => 'success',
+                ], 200);
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'No data',
+            ], 404);
+
+        } catch (Exception $exception) {
+            return response()->json([
+                'success' => false,
+                'message' => $exception->getMessage(),
+            ]);
+        }
+    }
+
+    public function show($idNhanKhau): JsonResponse
+    {
+        try {
+            $nhanKhau = NhanKhau::with('duocKhaiTu', 'chungMinhThu')
+                ->find($idNhanKhau);
+            if ($nhanKhau) {
+                return response()->json([
+                    'data' => $nhanKhau,
+                    'success' => true,
+                    'message' => 'success',
+                ], 200);
+            }
+
+            return response()->json([
+                'sucess' => false,
+                'message' => 'Nhan Khau not found',
+            ], 404);
+
+        } catch (Exception $exception) {
+            return response()->json([
+                'success' => false,
+                'message' => $exception->getMessage(),
+            ]);
+        }
+    }
+
+    public function store(Request $request) 
+    {
+        try {
+            $request->validate([
+                'maNhanKhau' => 'required|string',
+                'hoTen' => 'required|string',
+                'biDanh' => 'string',
+                'gioiTinh' => 'required|string',
+                'noiSinh' => 'required|string',
+                'ngaySinh' => 'required|before_or_equal:today',
+                'nguyenQuan' => 'required|string',
+                'diaChiThuongTru' => 'required|string',
+                'diaChiHienTai' => 'required|string',
+                'danToc' => 'string',
+                'quocTich' => 'string',
+                'tonGiao' => 'string',
+                'soHoChieu' => 'numeric',
+                'trinhDoHocVan' => 'string',
+                'ngheNghiep' => 'string',
+                'noiLamViec' => 'string',
+                //khong can du cac truong
+                //'tienAn' => 'string',
+                'ghiChu' => 'string',
+            ]);
+
+            $nhanKhau = NhanKhau::create([
+                'maNhanKhau' => $request->maNhanKhau,
+                'hoTen' => $request->hoTen,
+                'biDanh' => $request->biDanh,
+                'gioiTinh' => $request->gioiTinh,
+                'noiSinh' => $request->noiSinh,
+                'ngaySinh' => $request->ngaySinh,
+                'nguyenQuan' => $request->nguyenQuan,
+                'diaChiThuongTru' => $request->diaChiThuongTru,
+                'diaChiHienTai' => $request->diaChiHienTai,
+                'danToc' => $request->danToc,
+                'quocTich' => $request->quocTich,
+                'tonGiao' => $request->tonGiao,
+                'soHoChieu' => $request->soHoChieu,
+                'trinhDoHocVan' => $request->trinhDoHocVan,
+                'ngheNghiep' => $request->ngheNghiep,
+                'noiLamViec' => $request->noiLamViec,
+                //khong du cac truong
+                'ghiChu' => $request->ghiChu,
+            ]);
+
+            return response()->json([
+                'data' => $nhanKhau,
+                'success' => true,
+                'message' => 'Created Nhan Khau successfully',
+            ], 200);
+
+        } catch (Exception $exception) {
+            return response()->json([
+                'success' => false,
+                'message' => $exception->getMessage(),
+            ]);
+        }
+    }
+
+    public function update(Request $request, $idNhanKhau)
+    {
+        try {
+            //
+        } catch(Exception $exception) {
+            return response()->json([
+                'success' => false,
+                'message' => $exception->getMessage(),
+            ]);
+        }
+    }
+
+    public function destroy($idNhanKhau) 
+    {
+        try {
+            $nhanKhau = NhanKhau::find($idNhanKhau);
+            if (!$nhanKhau) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Nhan Khau not found',
+                ], 404);
+            }
+
+            $nhanKhau->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Deleted Nhan Khau successfully',
+            ]);
+
+        } catch(Exception $exception) {
+            return response()->json([
+                'success' => false,
+                'message' => $exception->getMessage(),
+            ]);
+        }
+    }
 }
