@@ -17,6 +17,6 @@ class Controller extends BaseController
      */
     public function __construct()
     {
-        $this->middleware('jwtauth', ['except' => ['login', 'register']]);
+        //$this->middleware('jwtauth', ['except' => ['login', 'register']]);
     }
 }
