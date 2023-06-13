@@ -6,6 +6,7 @@ use App\Models\NhanKhau;
 use Exception;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Validator;
 
 class NhanKhauController extends Controller
 {
@@ -68,29 +69,42 @@ class NhanKhauController extends Controller
 
     public function store(Request $request) 
     {
-        try {
-            $request->validate([
-                'maNhanKhau' => 'required|string',
-                'hoTen' => 'required|string',
-                'biDanh' => 'string',
-                'gioiTinh' => 'required|string',
-                'noiSinh' => 'required|string',
-                'ngaySinh' => 'required|before_or_equal:today',
-                'nguyenQuan' => 'required|string',
-                'diaChiThuongTru' => 'required|string',
-                'diaChiHienTai' => 'required|string',
-                'danToc' => 'string',
-                'quocTich' => 'string',
-                'tonGiao' => 'string',
-                'soHoChieu' => 'numeric',
-                'trinhDoHocVan' => 'string',
-                'ngheNghiep' => 'string',
-                'noiLamViec' => 'string',
-                //khong can du cac truong
-                //'tienAn' => 'string',
-                'ghiChu' => 'string',
-            ]);
+        $rules = [
+            'maNhanKhau' => 'required|string',
+            'hoTen' => 'required|string',
+            'biDanh' => 'string',
+            'gioiTinh' => 'required|string',
+            'noiSinh' => 'required|string',
+            'ngaySinh' => 'required|before_or_equal:today',
+            'nguyenQuan' => 'required|string',
+            'diaChiThuongTru' => 'required|string',
+            'diaChiHienTai' => 'required|string',
+            'danToc' => 'string',
+            'quocTich' => 'string',
+            'tonGiao' => 'string',
+            'soHoChieu' => 'numeric',
+            'trinhDoHocVan' => 'string',
+            'ngheNghiep' => 'string',
+            'noiLamViec' => 'string',
+            //khong can du cac truong
+            //'tienAn' => 'string',
+            'ghiChu' => 'string',
+        ];
 
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()){
+            return response()->json(
+                [
+                    'data' => $validator->errors(),
+                    'success' => false,
+                    'message' => 'Validator Error',
+                ],
+                400
+            );
+        }
+
+        try {
             $nhanKhau = NhanKhau::create([
                 'maNhanKhau' => $request->maNhanKhau,
                 'hoTen' => $request->hoTen,
@@ -162,5 +176,14 @@ class NhanKhauController extends Controller
                 'message' => $exception->getMessage(),
             ]);
         }
+    }
+
+    public static function getInAgeRange($start, $end)
+    {
+        $nhanKhaus = NhanKhau::all()->filter( function (NhanKhau $value, int $key) use ($start, $end) {
+            return $value->age <= $end && $value->age >= $start;
+        });
+
+        return $nhanKhaus;
     }
 }

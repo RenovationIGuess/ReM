@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use App\Models\KhaiTu;
-use App\Models\SuKien;
 use App\Models\TamTru;
 use App\Models\TamVang;
 use App\Models\ChungMinhThu;
 use App\Models\DuocNhanThuong;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -48,6 +49,17 @@ class NhanKhau extends Model
         'lyDoXoa',
         'ghiChu',
     ];
+
+    protected $appends = [
+        'age',
+    ];
+
+    protected function age(): Attribute
+    {
+        return new Attribute(
+            get: fn (mixed $value, array $attributes) => Carbon::parse($attributes['ngaySinh'])->age,
+        );
+    }
 
     public function duocNhanThuongs()
     {
