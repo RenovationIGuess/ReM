@@ -21,7 +21,7 @@ class NhanKhauFactory extends Factory
             'maNhanKhau' => fake()->unique()->creditCardNumber(),
             'gioiTinh' => fake()->randomElement(['Nam', 'Nu']),
             'noiSinh' => fake()->city(),
-            'ngaySinh' => fake()->dateTimeThisYear(),
+            'ngaySinh' => fake()->dateTimeThisCentury(),
             'nguyenQuan' => fake()->streetAddress(),
             'diaChiThuongTru' => fake()->streetAddress(),
             'diaChiHienTai' => fake()->streetAddress(),

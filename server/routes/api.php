@@ -3,6 +3,8 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PhanQuaController;
 use App\Http\Controllers\SuKienController;
+use App\Http\Controllers\ThongKeController;
+use App\Models\NhanKhau;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HoKhauController;
@@ -32,11 +34,27 @@ Route::group(['prefix' => 'auth'], function ($router) {
     Route::get('me', [AuthController::class, 'me']);
 });
 
+Route::group(['prefix' => 'ho-khau'], function ($router) {
+    Route::get('/', [HoKhauController::class, 'index']);
+    Route::get('/{idHoKhau}', [HoKhauController::class, 'show']);
+    Route::post('/{idHoKhau}/edit/tach-ho-khau', [HoKhauController::class, 'tachHoKhau']);
+});
+
 Route::group(['prefix' => 'nhan-khau'], function($router) {
     Route::get('/', [NhanKhauController::class, 'index']);
     Route::get('/{idNhanKhau}', [NhanKhauController::class, 'show']);
     Route::post('/create', [NhanKhauController::class, 'store']);
     Route::post('/{idNhanKhau}/tam-tru/create', function () {});
+    Route::post('/{idNhanKhau}/tam-vang/create', function () {});
+    Route::post('/{idNhanKhau}/khai-tu', function () {});
+    Route::post('/{idNhanKhau}/chung-minh-thu/create', function () {});
+    Route::put('/{idNhanKhau}/edit', [NhanKhauController::class, 'update']);
+});
+
+Route::group(['prefix' => 'thong-ke'], function($router) {
+    Route::get('/nhan-khau/tuoi', [ThongKeController::class, 'thongKeTheoTuoi']);
+    Route::get('/nhan-khau/gioi-tinh', function(){});
+    Route::get('/nhan-khau/tam-tru-tam-vang', function(){});
 });
 
 Route::group(['prefix' => 'su-kien'], function($router) {
