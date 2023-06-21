@@ -6,6 +6,7 @@ use App\Models\SuKien;
 use App\Models\PhanQua;
 use App\Models\NhanKhau;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class DuocNhanThuong extends Model
@@ -14,7 +15,8 @@ class DuocNhanThuong extends Model
 
     protected $table = 'duoc_nhan_thuong';
 
-    protected $attributes = [];
+    protected $attributes = [
+    ];
 
     protected $fillable = [
         'idSuKien',
@@ -24,6 +26,27 @@ class DuocNhanThuong extends Model
         'thanhTichHocTap',
         'anhGiayKhen',
     ];
+
+    protected $appends = [
+        'total_cost'
+    ];
+
+    protected function totalCost(): Attribute 
+    {
+        return new Attribute(
+            get: fn () => $this->calculateTotalCost(),
+        );
+    }
+
+    public function calculateTotalCost()
+    {
+        $totalCost = 0;
+        foreach($this->phanQuas as $phanQua)
+        {
+            $totalCost += $phanQua->pivot->soLuong * $phanQua->unit_price;
+        }
+        return $totalCost;
+    }
 
     public function suKien()
     {
@@ -39,15 +62,5 @@ class DuocNhanThuong extends Model
     {
         return $this->belongsToMany(PhanQua::class, 'phan_thuong_details', 'idPhanQua', 'idDuocNhanThuong')
             ->withPivot('soLuong');
-    }
-
-    public function totalCost()
-    {
-        $totalCost = 0;
-        foreach($this->phanQuas as $phanQua)
-        {
-            $totalCost += $phanQua->pivot->soLuong * $phanQua->unit_price;
-        }
-        return $totalCost;
     }
 }

@@ -78,20 +78,24 @@ class DatabaseSeeder extends Seeder
 
         // Seed PhanQua
         DB::table('phan_qua')->insert([
-            'name' => 'banh',
-            'unit_price' => 2000,
+            'name' => 'Bánh Choco Pie',
+            'unit_price' => 12000,
         ]);
         DB::table('phan_qua')->insert([
-            'name' => 'keo',
-            'unit_price' => 2000,
+            'name' => 'kẹo',
+            'unit_price' => 7000,
         ]);
         DB::table('phan_qua')->insert([
-            'name' => 'snack',
-            'unit_price' => 2000,
+            'name' => 'snack 45g',
+            'unit_price' => 10000,
         ]);
         DB::table('phan_qua')->insert([
-            'name' => 'vo',
-            'unit_price' => 2000,
+            'name' => 'Vở ô li 48',
+            'unit_price' => 8000,
+        ]);
+        DB::table('phan_qua')->insert([
+            'name' => 'Vở kẻ ngang 72 trang',
+            'unit_price' => 6500,
         ]);
         
         // Seed PhanThuongDetail

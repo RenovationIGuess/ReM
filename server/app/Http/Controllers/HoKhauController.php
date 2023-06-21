@@ -163,6 +163,13 @@ class HoKhauController extends Controller
 
     public function tachHoKhau($idHoKhau, Request $request)
     {
+        $rules = [
+            'maHoKhau' => 'string|required',
+            'idChuHo' => 'numeric|required',
+            'maKhuVuc' => 'string|required',
+            'diaChi' => 'string|required',
+            'ngayLap' => 'date',
+        ];
         try {
             $oldHoKhau = HoKhau::with('nhanKhaus')
                 ->find($idHoKhau);

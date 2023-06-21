@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
+use App\Models\TamTru;
+use App\Models\TamVang;
 use App\Models\NhanKhau;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ThongKeController extends Controller
 {
@@ -42,5 +46,57 @@ class ThongKeController extends Controller
             'message' => 'success',
             'success' => true,
         ]);
+    }
+
+    public function thongKeTheoGioiTinh()
+    {
+
+    }
+
+    public function thongKeTamVangTamTru(Request $request)
+    {
+        $rules = [
+            'ngayBatDau' => 'date',
+            'ngayKetThuc' => 'date',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails())
+        {
+            return response()->json(
+                [
+                    'data' => $validator->errors(),
+                    'success' => false,
+                    'message' => 'Validation Error',
+                ],
+                400
+            );
+        }
+
+        try {
+            $tamVangs = TamVang::with('nhanKhau')
+                ->whereTime('created_at', '>', $request->ngayBatDau)
+                ->whereTime('created_at', '<', $request->ngayKetThuc)
+                ->orderBy('id', 'ASC');
+
+            $tamTrus = TamTru::with('nhanKhau')
+                ->whereTime('created_at', '>', $request->ngayBatDau)
+                ->whereTime('created_at', '<', $request->ngayKetThuc)
+                ->orderBy('id', 'ASC');
+
+            return response()->json([
+                'data' => ['tamVangs' => $tamVangs, 'tamTrus' => $tamTrus],
+                'success' => true,
+                'message' => 'success',
+            ], 200);
+
+        } catch (Exception $exception)
+        {
+            return response()->json([
+                'success' => false,
+                'message' => $exception->getMessage(),
+            ]);
+        }
     }
 }

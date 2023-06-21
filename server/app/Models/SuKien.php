@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\NhanKhau;
 use App\Models\DuocNhanThuong;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class SuKien extends Model
@@ -20,6 +21,17 @@ class SuKien extends Model
         'ngayBatDau',
     ];
 
+    protected $appends = [
+        'total_cost',
+    ];
+
+    protected function totalCost() : Attribute
+    {
+        return new Attribute(
+            get: fn () => $this->calculateTotalCost(),
+        );
+    }
+
     public function duocNhanThuongs()
     {
         return $this->hasMany(DuocNhanThuong::class, 'idSuKien', 'id');
@@ -28,5 +40,15 @@ class SuKien extends Model
     public function nhanKhaus()
     {
         return $this->belongsToMany(NhanKhau::class, 'duoc_nhan_thuong', 'idNhanKhau', 'idSuKien');
+    }
+
+    public function calculateTotalCost()
+    {
+        $totalCost = 0;
+        foreach($this->duocNhanThuongs as $duocNhanThuong)
+        {
+            $totalCost += $duocNhanThuong->total_cost;
+        }
+        return $totalCost;
     }
 }

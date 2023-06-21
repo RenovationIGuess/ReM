@@ -93,12 +93,13 @@ class NhanKhauController extends Controller
 
         $validator = Validator::make($request->all(), $rules);
 
-        if ($validator->fails()){
+        if ($validator->fails())
+        {
             return response()->json(
                 [
                     'data' => $validator->errors(),
                     'success' => false,
-                    'message' => 'Validator Error',
+                    'message' => 'Validation Error',
                 ],
                 400
             );
@@ -142,8 +143,69 @@ class NhanKhauController extends Controller
 
     public function update(Request $request, $idNhanKhau)
     {
+        $rules = [
+            'maNhanKhau' => 'required|string',
+            'hoTen' => 'required|string',
+            'biDanh' => 'string',
+            'gioiTinh' => 'required|string',
+            'noiSinh' => 'required|string',
+            'ngaySinh' => 'required|before_or_equal:today',
+            'nguyenQuan' => 'required|string',
+            'diaChiThuongTru' => 'required|string',
+            'diaChiHienTai' => 'required|string',
+            'danToc' => 'string',
+            'quocTich' => 'string',
+            'tonGiao' => 'string',
+            'soHoChieu' => 'numeric',
+            'trinhDoHocVan' => 'string',
+            'ngheNghiep' => 'string',
+            'noiLamViec' => 'string',
+            //khong can du cac truong
+            //'tienAn' => 'string',
+            'ghiChu' => 'string',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails())
+        {
+            return response()->json(
+                [
+                    'data' => $validator->errors(),
+                    'success' => false,
+                    'message' => 'Validation Error',
+                ],
+                400
+            );
+        }
+
         try {
-            //
+            $nhanKhau = NhanKhau::find($idNhanKhau);
+            $nhanKhau->maNhanKhau = $request->maNhanKhau;
+            $nhanKhau->hoTen = $request->hoTen;
+            $nhanKhau->biDanh = $request->biDanh;
+            $nhanKhau->gioiTinh = $request->gioiTinh;
+            $nhanKhau->ngaySinh = $request->ngaySinh;
+            $nhanKhau->nguyenQuan = $request->nguyenQuan;
+            $nhanKhau->diaChiThuongTru = $request->diaChiThuongTru;
+            $nhanKhau->diaChiHienTai = $request->diaChiHienTai;
+            $nhanKhau->danToc = $request->danToc;
+            $nhanKhau->quocTich = $request->quocTich;
+            $nhanKhau->tonGiao = $request->tonGiao;
+            $nhanKhau->soHoChieu = $request->soHoChieu;
+            $nhanKhau->trinhDoHocVan = $request->trinhDoHocVan;
+            $nhanKhau->ngheNghiep = $request->ngheNghiep;
+            $nhanKhau->noiLamViec = $request->noiLamViec;
+            $nhanKhau->tienAn = $request->tienAn;
+            $nhanKhau->ghiChu = $request->ghiChu;
+            $nhanKhau->save();
+
+            return response()->json([
+                'data' => $nhanKhau,
+                'success' => true,
+                'message' => 'Updated Nhan Khau successfully',
+            ], 200);
+
         } catch(Exception $exception) {
             return response()->json([
                 'success' => false,
@@ -168,7 +230,7 @@ class NhanKhauController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Deleted Nhan Khau successfully',
-            ]);
+            ], 200);
 
         } catch(Exception $exception) {
             return response()->json([
