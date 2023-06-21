@@ -71,12 +71,12 @@ class NhanKhau extends Model
         return $this->hasOne(ChungMinhThu::class, 'idNhanKhau', 'id');
     }
 
-    public function tamVang()
+    public function tamVangs()
     {
         return $this->hasMany(TamVang::class, 'idNhanKhau', 'id');
     }
 
-    public function tamTru()
+    public function tamTrus()
     {
         return $this->hasMany(TamTru::class, 'idNhanKhau', 'id');
     }

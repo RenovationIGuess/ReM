@@ -16,6 +16,7 @@ class TamVang extends Model
         'idNhanKhau',
         'maGiayTamVang',
         'noiTamTru',
+        'tuNgay',
         'denNgay',
         'lyDo',
     ];
