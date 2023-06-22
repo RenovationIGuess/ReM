@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-final class Gender
+final class GioiTinh
 {
     public const MALE = 1;
     public const FEMALE = 2;

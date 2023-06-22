@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('su_kien', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
+            $table->string('name');
             $table->date('ngayBatDau')->nullable();
+            $table->boolean('isDone')->default(false);
+            $table->smallInteger('type')->default(1)->comment="0: not related to study, 1: related";
             $table->timestamps();
         });
     }

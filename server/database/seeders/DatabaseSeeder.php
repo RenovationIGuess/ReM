@@ -4,16 +4,20 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-use App\Models\DuocNhanThuong;
-use App\Models\PhanQua;
-use App\Models\PhanThuongDetail;
-use App\Models\SuKien;
-use App\Models\ThanhVienHo;
-use App\Models\ToDanPho;
+use App\Enums\CapHoc;
+use App\Enums\ThanhTichHocTap;
+use App\Http\Controllers\NhanKhauController;
+use App\Models\Item;
 use App\Models\User;
 use App\Models\HoKhau;
+use App\Models\SuKien;
 use App\Models\NhanKhau;
+use App\Models\ToDanPho;
+use App\Models\PhanThuong;
+use App\Models\ThanhVienHo;
+use App\Models\DuocNhanThuong;
 use Illuminate\Database\Seeder;
+use App\Models\PhanThuongDetail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -39,23 +43,6 @@ class DatabaseSeeder extends Seeder
         // Seed HoKhau
         $hoKhaus = HoKhau::factory(60)->create();
 
-        // Seed SuKien
-        $suKiens = SuKien::factory(10)->create();
-
-        // Seed DuocNhanThuong
-        foreach ($nhanKhaus as $nhanKhau){
-            foreach($suKiens->random(3)->collect() as $chosenSuKien){
-                DuocNhanThuong::create([
-                    'idNhanKhau' => $nhanKhau->id,
-                    'idSuKien' => $chosenSuKien->id,
-                    'tenTruong' => 'DHBKHN',
-                    'tenLop' => 'Viet Nhat 03 - K65',
-                    'thanhTichHocTap' => fake()->randomElement([1, 2, 3]),
-                    'anhGiayKhen' => fake()->url(),
-                ]);
-            }
-        }
-
         // Seed ThanhVienHo
         foreach($nhanKhaus as $nhanKhau) {
             $hoKhau = $hoKhaus->random(1);
@@ -76,40 +63,161 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        // Seed PhanQua
-        DB::table('phan_qua')->insert([
+        // Seed Item
+        DB::table('items')->insert([
             'name' => 'Bánh Choco Pie',
             'unit_price' => 12000,
         ]);
-        DB::table('phan_qua')->insert([
+        DB::table('items')->insert([
             'name' => 'kẹo',
             'unit_price' => 7000,
         ]);
-        DB::table('phan_qua')->insert([
+        DB::table('items')->insert([
             'name' => 'snack 45g',
             'unit_price' => 10000,
         ]);
-        DB::table('phan_qua')->insert([
+        DB::table('items')->insert([
             'name' => 'Vở ô li 48',
             'unit_price' => 8000,
         ]);
-        DB::table('phan_qua')->insert([
+        DB::table('items')->insert([
             'name' => 'Vở kẻ ngang 72 trang',
             'unit_price' => 6500,
         ]);
-        
-        // Seed PhanThuongDetail
-        $duocNhanThuongs = DuocNhanThuong::all();
-        $phanQuas = PhanQua::all();
-        foreach ($duocNhanThuongs as $duocNhanThuong){
-            foreach($phanQuas->random(3)->collect() as $phanQua){
-                PhanThuongDetail::create([
-                    'idDuocNhanThuong' => $duocNhanThuong->id,
-                    'idPhanQua' => $phanQua->id,
-                    'soLuong' => fake()->numberBetween(1, 3),
+
+        // Seed SuKien
+        $suKiens = SuKien::factory(10)->create();
+
+        // Seed PhanThuong
+        foreach($suKiens as $suKien)
+        {
+            if ($suKien->type == 1)
+            {
+                foreach (range(1, 4) as $capHoc)
+                {
+                    foreach(range(1, 3) as $thanhTichHocTap)
+                    {
+                        PhanThuong::create([
+                            'idSuKien' => $suKien->id,
+                            'thanhTichHocTap' => $thanhTichHocTap,
+                            'capHoc' => $capHoc,
+                            'type' => 1,
+                        ]);
+                    }
+                }
+            }
+            else if ($suKien->type == 0)
+            {
+                PhanThuong::create([
+                    'idSuKien' => $suKien->id,
+                    'type' => 0,
                 ]);
             }
         }
+        
+        // Seed PhanThuongDetail
+        $phanThuongs = PhanThuong::all();
+        foreach ($phanThuongs as $phanThuong){
+            if ($phanThuong->type == 0)
+            {
+                PhanThuongDetail::create([
+                    'idItem' => 2,
+                    'idPhanThuong' => $phanThuong->id,
+                    'soLuong' => 5,
+                ]);
+                PhanThuongDetail::create([
+                    'idItem' => 3,
+                    'idPhanThuong' => $phanThuong->id,
+                    'soLuong' => 4,
+                ]);
+            }
+            else if ($phanThuong->type == 1)
+            {
+                if ($phanThuong->thanhTichHocTap == ThanhTichHocTap::GIOI && $phanThuong->capHoc == CapHoc::CAP_1)
+                {
+                    PhanThuongDetail::create([
+                        'idItem' => 4,
+                        'idPhanThuong' => $phanThuong->id,
+                        'soLuong' => 10,
+                    ]);
+                }
 
+                else if ($phanThuong->thanhTichHocTap == ThanhTichHocTap::TIEN_TIEN && $phanThuong->capHoc == CapHoc::CAP_1)
+                {
+                    PhanThuongDetail::create([
+                        'idItem' => 4,
+                        'idPhanThuong' => $phanThuong->id,
+                        'soLuong' => 7,
+                    ]);
+                }
+
+                else if ($phanThuong->thanhTichHocTap == ThanhTichHocTap::OTHER && $phanThuong->capHoc == CapHoc::CAP_1)
+                {
+                    PhanThuongDetail::create([
+                        'idItem' => 4,
+                        'idPhanThuong' => $phanThuong->id,
+                        'soLuong' => 5,
+                    ]);
+                }
+
+                else if ($phanThuong->thanhTichHocTap == ThanhTichHocTap::OTHER && ($phanThuong->capHoc == CapHoc::CAP_2 || $phanThuong->capHoc == CapHoc::CAP_3))
+                {
+                    PhanThuongDetail::create([
+                        'idItem' => 5,
+                        'idPhanThuong' => $phanThuong->id,
+                        'soLuong' => 5,
+                    ]);
+                }
+
+                else if ($phanThuong->thanhTichHocTap == ThanhTichHocTap::TIEN_TIEN && ($phanThuong->capHoc == CapHoc::CAP_2 || $phanThuong->capHoc == CapHoc::CAP_3))
+                {
+                    PhanThuongDetail::create([
+                        'idItem' => 5,
+                        'idPhanThuong' => $phanThuong->id,
+                        'soLuong' => 7,
+                    ]);
+                }
+
+                else if ($phanThuong->thanhTichHocTap == ThanhTichHocTap::GIOI && ($phanThuong->capHoc == CapHoc::CAP_2 || $phanThuong->capHoc == CapHoc::CAP_3))
+                {
+                    PhanThuongDetail::create([
+                        'idItem' => 5,
+                        'idPhanThuong' => $phanThuong->id,
+                        'soLuong' => 10,
+                    ]);
+                }
+            }
+        }
+
+        //Seed DuocNhanThuong
+        $nhanKhaus = NhanKhauController::getInAgeRange(0, 18);
+        foreach($suKiens as $suKien)
+        {
+            foreach($nhanKhaus as $nhanKhau)
+            {
+                $thanhTichHocTap = array_rand([0, 1, 2, 3]);
+                $capHoc = array_rand([0, 1, 2, 3, 4]);
+                $phanThuongRoot = null;
+                foreach($suKien->phanThuongs as $phanThuong)
+                {
+                    if ($phanThuong->capHoc == $capHoc && $phanThuong->thanhTichHocTap == $thanhTichHocTap)
+                    {
+                        $phanThuongRoot = $phanThuong;
+                    }
+                }
+                if ($phanThuongRoot)
+                {
+                    DuocNhanThuong::create([
+                        'idSuKien' => $suKien->id,
+                        'idNhanKhau' => $nhanKhau->id,
+                        'tenTruong' => 'DHBKHN',
+                        'tenLop' => 'Viet Nhat 03 - K65',
+                        'thanhTichHocTap' => $thanhTichHocTap,
+                        'capHoc' => $capHoc,
+                        'idPhanThuong' => $phanThuongRoot->id,
+                    ]);
+                }
+            }
+        }
     }
 }

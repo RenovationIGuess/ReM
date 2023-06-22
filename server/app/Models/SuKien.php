@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\NhanKhau;
+use App\Models\PhanThuong;
 use App\Models\DuocNhanThuong;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -19,6 +20,8 @@ class SuKien extends Model
     protected $fillable = [
         'name',
         'ngayBatDau',
+        'isDone',
+        'type',
     ];
 
     protected $appends = [
@@ -42,12 +45,17 @@ class SuKien extends Model
         return $this->belongsToMany(NhanKhau::class, 'duoc_nhan_thuong', 'idNhanKhau', 'idSuKien');
     }
 
+    public function phanThuongs()
+    {
+        return $this->hasMany(PhanThuong::class, 'idSuKien', 'id');
+    }
+
     public function calculateTotalCost()
     {
         $totalCost = 0;
-        foreach($this->duocNhanThuongs as $duocNhanThuong)
+        foreach($this->phanThuongs as $phanThuong)
         {
-            $totalCost += $duocNhanThuong->total_cost;
+            $totalCost += $phanThuong->cost * $phanThuong->count;
         }
         return $totalCost;
     }

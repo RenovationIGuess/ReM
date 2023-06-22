@@ -9,13 +9,13 @@ class PhanThuongDetail extends Model
 {
     use HasFactory;
 
-    //protected $table = 'phan_thuong_details';
+    protected $table = 'phan_thuong_details';
 
     protected $attributes = [];
 
     protected $fillable = [
-        'idDuocNhanThuong',
-        'idPhanQua',
+        'idItem',
+        'idPhanThuong',
         'soLuong',
     ];
 

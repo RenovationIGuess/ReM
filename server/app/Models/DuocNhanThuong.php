@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
+use App\Models\Item;
 use App\Models\SuKien;
-use App\Models\PhanQua;
 use App\Models\NhanKhau;
+use App\Models\PhanThuong;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -24,29 +25,32 @@ class DuocNhanThuong extends Model
         'tenTruong',
         'tenLop',
         'thanhTichHocTap',
+        'capHoc',
         'anhGiayKhen',
+        'hasRewarded',
+        'idPhanThuong',
     ];
 
-    protected $appends = [
-        'total_cost'
-    ];
+    // protected $appends = [
+    //     'total_cost'
+    // ];
 
-    protected function totalCost(): Attribute 
-    {
-        return new Attribute(
-            get: fn () => $this->calculateTotalCost(),
-        );
-    }
+    // protected function totalCost(): Attribute 
+    // {
+    //     return new Attribute(
+    //         get: fn () => $this->calculateTotalCost(),
+    //     );
+    // }
 
-    public function calculateTotalCost()
-    {
-        $totalCost = 0;
-        foreach($this->phanQuas as $phanQua)
-        {
-            $totalCost += $phanQua->pivot->soLuong * $phanQua->unit_price;
-        }
-        return $totalCost;
-    }
+    // public function calculateTotalCost()
+    // {
+    //     $totalCost = 0;
+    //     foreach($this->phanQuas as $phanQua)
+    //     {
+    //         $totalCost += $phanQua->pivot->soLuong * $phanQua->unit_price;
+    //     }
+    //     return $totalCost;
+    // }
 
     public function suKien()
     {
@@ -58,9 +62,8 @@ class DuocNhanThuong extends Model
         return $this->belongsTo(NhanKhau::class, 'idNhanKhau', 'id');
     }
 
-    public function phanQuas()
+    public function phanThuong()
     {
-        return $this->belongsToMany(PhanQua::class, 'phan_thuong_details', 'idPhanQua', 'idDuocNhanThuong')
-            ->withPivot('soLuong');
+        return $this->belongsTo(PhanThuong::class, 'idPhanThuong', 'id');
     }
 }

@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('phan_qua', function (Blueprint $table) {
+        Schema::create('items', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
-            $table->float('unit_price')->nullable();
+            $table->string('name');
+            $table->float('unit_price');
         });
     }
 

@@ -19,6 +19,7 @@ class SuKienFactory extends Factory
         return [
             'name' => fake()->randomElement(['Trung Thu ', 'Tet Thieu Nhi ', 'Cuoi Nam ']) . fake()->year(),
             'ngayBatDau' => fake()->dateTimeThisDecade(),
+            'type' => fake()->randomElement([0, 1]),
         ];
     }
 }

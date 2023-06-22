@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Exception;
-use App\Models\PhanQua;
+use App\Models\Item;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -14,7 +14,7 @@ class PhanQuaController extends Controller
         try {
             $limit = $request->has('limit') ? $request->input() : 10;
 
-            $phanQuas = PhanQua::where('name', 'like', '%'.$request->name.'%')
+            $phanQuas = Item::where('name', 'like', '%'.$request->name.'%')
                 ->orderBy('id', 'ASC')
                 ->paginate($limit);
 
@@ -43,7 +43,7 @@ class PhanQuaController extends Controller
     public function show($idPhanQua)
     {
         try {
-            $phanQua = PhanQua::find($idPhanQua);
+            $phanQua = Item::find($idPhanQua);
 
             if ($phanQua) {
                 return response()->json([
@@ -84,7 +84,7 @@ class PhanQuaController extends Controller
         }
 
         try {
-            $phanQua = PhanQua::create([
+            $phanQua = Item::create([
                 'name' => $request->name,
                 'unit_price' => $request->unit_price,
             ]);
@@ -111,7 +111,7 @@ class PhanQuaController extends Controller
     public function destroy($idPhanQua)
     {
         try {
-            $phanQua = PhanQua::find($idPhanQua);
+            $phanQua = Item::find($idPhanQua);
             if (!$phanQua) {
                 return response()->json([
                     'success' => false,

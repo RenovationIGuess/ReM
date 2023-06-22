@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Exception;
 use App\Models\KhaiTu;
+use App\Models\NhanKhau;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -63,6 +64,11 @@ class KhaiTuController extends Controller
         }
 
         try {
+
+            $nhanKhau = NhanKhau::find($idNguoiChet);
+            $nhanKhau->note = "Đã qua đời";
+            $nhanKhau->save();
+
             $khaiTu = KhaiTu::create([
                 'soGiayKhaiTu' => $request->soGiayKhaiTu,
                 'ngayChet' => $request->ngayChet,

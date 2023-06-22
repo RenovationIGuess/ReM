@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-class StudyAchievement
+class ThanhTichHocTap
 {
     public const NULL = 0;
     public const TIEN_TIEN = 1;

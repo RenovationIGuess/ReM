@@ -15,13 +15,18 @@ return new class extends Migration
     {
         Schema::create('duoc_nhan_thuong', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('idSuKien')->nullable();
-            $table->unsignedBigInteger('idNhanKhau')->nullable();
+            $table->unsignedBigInteger('idSuKien');
+            $table->unsignedBigInteger('idNhanKhau');
             $table->string('tenTruong')->nullable();
             $table->string('tenLop')->nullable();
-            $table->integer('thanhTichHocTap')->nullable();
+            $table->smallInteger('thanhTichHocTap');
+            $table->smallInteger('capHoc');
             $table->string('anhGiayKhen')->nullable();
+            $table->boolean('hasRewarded')->default(false);
+            $table->unsignedBigInteger('idPhanThuong');
             $table->timestamps();
+
+            $table->foreign('idPhanThuong')->references('id')->on('phan_thuong')->cascadeOnDelete();
         });
     }
 

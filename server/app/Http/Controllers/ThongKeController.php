@@ -50,7 +50,7 @@ class ThongKeController extends Controller
 
     public function thongKeTheoGioiTinh()
     {
-
+        
     }
 
     public function thongKeTamVangTamTru(Request $request)

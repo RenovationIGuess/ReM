@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PhanQua extends Model
+class Item extends Model
 {
     use HasFactory;
 
-    protected $table = 'phan_qua';
+    protected $table = 'items';
 
     protected $attributes = [];
 
@@ -18,7 +18,7 @@ class PhanQua extends Model
         'unit_price',
     ];
 
-    public function duocNhanThuongs()
+    public function phanThuongs()
     {
         return $this->belongsToMany(DuocNhanThuong::class, 'phan_thuong_details', 'idDuocNhanThuong', 'idPhanQua');
     }

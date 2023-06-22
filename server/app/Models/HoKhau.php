@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\NhanKhau;
 use App\Models\DinhChinh;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class HoKhau extends Model
@@ -24,6 +25,17 @@ class HoKhau extends Model
         'ngayChuyenDi',
         'lyDoChuyen',
     ];
+
+    protected $appends = [
+        'chu_ho'
+    ];
+
+    protected function chuHo() : Attribute
+    {
+        return new Attribute(
+            get: fn () => NhanKhau::find($this->idChuHo),
+        );
+    }
 
     public function nhanKhaus()
     {
