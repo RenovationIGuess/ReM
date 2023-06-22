@@ -14,9 +14,12 @@ import Gift from './features/gift'
 import EventList from './features/gift/EventList'
 import Temporary from './features/temporary'
 import AboutUs from './features/about'
+<<<<<<< HEAD
 import { ChildrenList } from './features/gift/ChildrenList'
 import { StatisticList } from './features/gift/StatisticList'
 import { GiftList } from './features/gift/GiftList'
+=======
+>>>>>>> create household CRUD ui
 import Create from './features/households/Create'
 import Prefetch from './features/auth/Prefetch'
 
