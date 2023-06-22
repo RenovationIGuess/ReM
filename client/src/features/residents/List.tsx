@@ -14,7 +14,7 @@ const List = () => {
           <Input.Search className="w-[25vw]" placeholder="Tìm kiếm gì đó ..." />
           <Button onClick={() => navigate('/nhan-khau/them')}>Thêm nhân khẩu mới</Button>
         </div>
-        <div className="mt-2 h-full grow rounded-lg bg-bgPrimary px-4 py-2 shadow-md">
+        <div className="mt-2 grow rounded-lg bg-bgPrimary px-4 py-2 shadow-md">
           <div className="flex w-full items-center justify-between">
             <p className="text-2xl font-medium">Danh sách nhân khẩu</p>
             <Statistic value={112893} />

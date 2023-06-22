@@ -31,7 +31,7 @@ class HoKhauController extends Controller
                 'success' => false,
                 'message' => 'No data',
             ], 404);
-                
+
         } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
@@ -67,7 +67,7 @@ class HoKhauController extends Controller
     }
 
     public function store(Request $request)
-    {   
+    {
         $rules = [
             'maHoKhau' => 'required|string',
             'idChuHo' => 'required|numeric',
@@ -126,7 +126,7 @@ class HoKhauController extends Controller
     public function update(Request $request, $idHoKhau)
     {
         try {
-            
+
         } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
@@ -173,7 +173,7 @@ class HoKhauController extends Controller
         try {
             $oldHoKhau = HoKhau::with('nhanKhaus')
                 ->find($idHoKhau);
-            
+
             $nhanKhaus = $oldHoKhau->nhanKhaus();
 
             $nhanKhauMois = collect($request->get('nhanKhauMois'))->map(
@@ -204,13 +204,13 @@ class HoKhauController extends Controller
                     'message' => 'Tach ho khau thanh cong',
                 ], 201);
             }
-                
+
             return response()->json([
                 'data' => $nhanKhauMois,
                 'success' => false,
                 'message' => 'Ho Khau not found',
             ], 404);
-            
+
         } catch (Exception $exception) {
             return response()->json([
                 'success' => false,

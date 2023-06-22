@@ -1,170 +1,26 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Space, Table } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
-
-interface DataType {
-  key: string
-  id: string
-  name: string
-  gender: string
-  dob: string
-  ethnic: string
-  address: string
-}
-
-const data: DataType[] = [
-  {
-    key: '1',
-    id: '20202020',
-    name: 'Nguyễn Tùng Lâm',
-    gender: 'Nam',
-    dob: '2002-01-01',
-    ethnic: 'Kinh',
-    address: '1 Đại Cồ Việt, Bách Khoa, Hai Bà Trưng, Hà Nội'
-  },
-  {
-    key: '2',
-    id: '20202020',
-    name: 'Trần Nhật Huy',
-    gender: 'Nam',
-    dob: '2002-01-01',
-    ethnic: 'Kinh',
-    address: '1 Đại Cồ Việt, Bách Khoa, Hai Bà Trưng, Hà Nội'
-  },
-  {
-    key: '3',
-    id: '20202020',
-    name: 'Phạm Tiến Lộc',
-    gender: 'Nam',
-    dob: '2002-01-01',
-    ethnic: 'Kinh',
-    address: '1 Đại Cồ Việt, Bách Khoa, Hai Bà Trưng, Hà Nội'
-  },
-  {
-    key: '4',
-    id: '20202020',
-    name: 'Lê Duy Thái',
-    gender: 'Nam',
-    dob: '2002-01-01',
-    ethnic: 'Kinh',
-    address: '1 Đại Cồ Việt, Bách Khoa, Hai Bà Trưng, Hà Nội'
-  },
-  {
-    key: '5',
-    id: '20202020',
-    name: 'Bùi Đức Dũng',
-    gender: 'Nam',
-    dob: '2002-01-01',
-    ethnic: 'Kinh',
-    address: '1 Đại Cồ Việt, Bách Khoa, Hai Bà Trưng, Hà Nội'
-  },
-  {
-    key: '6',
-    id: '20202020',
-    name: 'Nguyễn Tùng Lâm',
-    gender: 'Nam',
-    dob: '2002-01-01',
-    ethnic: 'Kinh',
-    address: '1 Đại Cồ Việt, Bách Khoa, Hai Bà Trưng, Hà Nội'
-  },
-  {
-    key: '7',
-    id: '20202020',
-    name: 'Trần Nhật Huy',
-    gender: 'Nam',
-    dob: '2002-01-01',
-    ethnic: 'Kinh',
-    address: '1 Đại Cồ Việt, Bách Khoa, Hai Bà Trưng, Hà Nội'
-  },
-  {
-    key: '8',
-    id: '20202020',
-    name: 'Phạm Tiến Lộc',
-    gender: 'Nam',
-    dob: '2002-01-01',
-    ethnic: 'Kinh',
-    address: '1 Đại Cồ Việt, Bách Khoa, Hai Bà Trưng, Hà Nội'
-  },
-  {
-    key: '9',
-    id: '20202020',
-    name: 'Lê Duy Thái',
-    gender: 'Nam',
-    dob: '2002-01-01',
-    ethnic: 'Kinh',
-    address: '1 Đại Cồ Việt, Bách Khoa, Hai Bà Trưng, Hà Nội'
-  },
-  {
-    key: '10',
-    id: '20202020',
-    name: 'Bùi Đức Dũng',
-    gender: 'Nam',
-    dob: '2002-01-01',
-    ethnic: 'Kinh',
-    address: '1 Đại Cồ Việt, Bách Khoa, Hai Bà Trưng, Hà Nội'
-  },
-  {
-    key: '11',
-    id: '20202020',
-    name: 'Nguyễn Tùng Lâm',
-    gender: 'Nam',
-    dob: '2002-01-01',
-    ethnic: 'Kinh',
-    address: '1 Đại Cồ Việt, Bách Khoa, Hai Bà Trưng, Hà Nội'
-  },
-  {
-    key: '12',
-    id: '20202020',
-    name: 'Trần Nhật Huy',
-    gender: 'Nam',
-    dob: '2002-01-01',
-    ethnic: 'Kinh',
-    address: '1 Đại Cồ Việt, Bách Khoa, Hai Bà Trưng, Hà Nội'
-  },
-  {
-    key: '13',
-    id: '20202020',
-    name: 'Phạm Tiến Lộc',
-    gender: 'Nam',
-    dob: '2002-01-01',
-    ethnic: 'Kinh',
-    address: '1 Đại Cồ Việt, Bách Khoa, Hai Bà Trưng, Hà Nội'
-  },
-  {
-    key: '14',
-    id: '20202020',
-    name: 'Lê Duy Thái',
-    gender: 'Nam',
-    dob: '2002-01-01',
-    ethnic: 'Kinh',
-    address: '1 Đại Cồ Việt, Bách Khoa, Hai Bà Trưng, Hà Nội'
-  },
-  {
-    key: '15',
-    id: '20202020',
-    name: 'Bùi Đức Dũng',
-    gender: 'Nam',
-    dob: '2002-01-01',
-    ethnic: 'Kinh',
-    address: '1 Đại Cồ Việt, Bách Khoa, Hai Bà Trưng, Hà Nội'
-  }
-]
+import { useGetResidentsByPageQuery } from './api/residentsApiSlice'
 
 const ResigentsTable = () => {
   const navigate = useNavigate()
 
-  const columns: ColumnsType<DataType> = [
+  const [page, setPage] = useState<Page>({ page: 1, offset: 10 })
+  const { data: residentsData } = useGetResidentsByPageQuery(page)
+
+  const columns: ColumnsType<IResident> = [
     {
       title: 'Mã nhân khẩu',
-      dataIndex: 'id',
-      key: 'id'
+      dataIndex: 'maNhanKhau',
+      key: 'maNhanKhau'
     },
     {
       title: 'Họ và tên',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'hoTen',
+      key: 'hoTen',
       render: (text, record) => (
         <button
           className="transition-colors hover:text-primary"
@@ -176,23 +32,23 @@ const ResigentsTable = () => {
     },
     {
       title: 'Giới tính',
-      dataIndex: 'gender',
-      key: 'gender'
+      dataIndex: 'gioiTinh',
+      key: 'gioiTinh'
     },
     {
       title: 'Ngày sinh',
-      dataIndex: 'dob',
-      key: 'dob'
+      dataIndex: 'ngaySinh',
+      key: 'ngaySinh'
     },
     {
       title: 'Dân tộc',
-      dataIndex: 'ethnic',
-      key: 'ethnic'
+      dataIndex: 'danToc',
+      key: 'danToc'
     },
     {
       title: 'Địa chỉ',
-      dataIndex: 'address',
-      key: 'address'
+      dataIndex: 'diaChiHienTai',
+      key: 'diaChiHienTai'
     },
     {
       title: ' ',
@@ -209,7 +65,23 @@ const ResigentsTable = () => {
     }
   ]
 
-  return <Table rowSelection={{ type: 'checkbox' }} columns={columns} dataSource={data} />
+  return (
+    <Table
+      rowSelection={{ type: 'checkbox' }}
+      columns={columns}
+      dataSource={residentsData?.data.data}
+      scroll={{ y: 600 }}
+      pagination={{
+        defaultPageSize: 10,
+        showSizeChanger: true,
+        pageSizeOptions: ['10', '15', '20'],
+        total: residentsData?.data.total,
+        onChange(page, pageSize) {
+          setPage({ page, offset: pageSize })
+        }
+      }}
+    />
+  )
 }
 
 export default React.memo(ResigentsTable)
