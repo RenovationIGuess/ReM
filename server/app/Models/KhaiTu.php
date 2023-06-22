@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\User;
+use App\Models\NhanKhau;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class KhaiTu extends Model
 {
@@ -19,4 +21,19 @@ class KhaiTu extends Model
         'lyDoChet',
         'idNguoiTao',
     ];
+
+    public function nguoiKhaiTu()
+    {
+        return $this->belongsTo(NhanKhau::class, 'idNguoiKhaiTu', 'id');
+    }
+
+    public function nguoiChet()
+    {
+        return $this->belongsTo(NhanKhau::class, 'idNguoiChet', 'id');
+    }
+
+    public function nguoiTao()
+    {
+        return $this->belongsTo(User::class, 'idNguoiTao', 'id');
+    }
 }

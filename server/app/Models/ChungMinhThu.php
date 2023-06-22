@@ -17,4 +17,9 @@ class ChungMinhThu extends Model
         'ngayCap',
         'noiCap',
     ];
+
+    public function nhanKhau()
+    {
+        return $this->belongsTo(NhanKhau::class, 'idNhanKhau', 'id');
+    }
 }

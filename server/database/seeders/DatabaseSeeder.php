@@ -8,6 +8,7 @@ use App\Models\DuocNhanThuong;
 use App\Models\PhanQua;
 use App\Models\PhanThuongDetail;
 use App\Models\SuKien;
+use App\Models\ThanhVienHo;
 use App\Models\ToDanPho;
 use App\Models\User;
 use App\Models\HoKhau;
@@ -33,10 +34,10 @@ class DatabaseSeeder extends Seeder
         ToDanPho::factory(3)->create();
 
         // Seed NhanKhau
-        $nhanKhaus = NhanKhau::factory(100)->create();
+        $nhanKhaus = NhanKhau::factory(300)->create();
 
         // Seed HoKhau
-        HoKhau::factory(100)->create();
+        $hoKhaus = HoKhau::factory(60)->create();
 
         // Seed SuKien
         $suKiens = SuKien::factory(10)->create();
@@ -55,22 +56,46 @@ class DatabaseSeeder extends Seeder
             }
         }
 
+        // Seed ThanhVienHo
+        foreach($nhanKhaus as $nhanKhau) {
+            $hoKhau = $hoKhaus->random(1);
+            ThanhVienHo::create([
+                'idHoKhau' => $hoKhau->first()->id,
+                'idNhanKhau' => $nhanKhau->id,
+                'quanHeVoiChuHo' => fake()->randomElement(['Con', 'Em', 'Chau', 'Vo', 'Chong']),
+            ]);
+        }
+        foreach($hoKhaus as $hoKhau)
+        {
+            if ($hoKhau->nhanKhaus()->count() == 0){
+                $hoKhau->delete();
+            } else {
+                $ChuHo = $hoKhau->nhanKhaus->random(1)->first();
+                $hoKhau->idChuHo = $ChuHo->id;
+                $hoKhau->save();
+            }
+        }
+
         // Seed PhanQua
         DB::table('phan_qua')->insert([
-            'name' => 'banh',
-            'unit_price' => 2000,
+            'name' => 'Bánh Choco Pie',
+            'unit_price' => 12000,
         ]);
         DB::table('phan_qua')->insert([
-            'name' => 'keo',
-            'unit_price' => 2000,
+            'name' => 'kẹo',
+            'unit_price' => 7000,
         ]);
         DB::table('phan_qua')->insert([
-            'name' => 'snack',
-            'unit_price' => 2000,
+            'name' => 'snack 45g',
+            'unit_price' => 10000,
         ]);
         DB::table('phan_qua')->insert([
-            'name' => 'vo',
-            'unit_price' => 2000,
+            'name' => 'Vở ô li 48',
+            'unit_price' => 8000,
+        ]);
+        DB::table('phan_qua')->insert([
+            'name' => 'Vở kẻ ngang 72 trang',
+            'unit_price' => 6500,
         ]);
         
         // Seed PhanThuongDetail
