@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -16,7 +15,7 @@ return new class extends Migration
             $table->string('name');
             $table->date('ngayBatDau')->nullable();
             $table->boolean('isDone')->default(false);
-            $table->smallInteger('type')->default(1)->comment="0: not related to study, 1: related";
+            $table->smallInteger('type')->default(1)->comment = "0: not related to study, 1: related";
             $table->timestamps();
         });
     }

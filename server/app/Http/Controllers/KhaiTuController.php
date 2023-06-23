@@ -15,7 +15,7 @@ class KhaiTuController extends Controller
     {
         try {
             $TamTrus = KhaiTu::with('nguoiChet', 'nguoiKhaiTu')
-                ->where('maGiayTamTru', 'like', $request->maGiayTamTru.'%')
+                ->where('maGiayTamTru', 'like', $request->maGiayTamTru . '%')
                 ->orderBy('id', 'ASC');
 
             if ($TamTrus) {
@@ -51,8 +51,7 @@ class KhaiTuController extends Controller
 
         $validator = Validator::make($request->all(), $rules);
 
-        if ($validator->fails())
-        {
+        if ($validator->fails()) {
             return response()->json(
                 [
                     'data' => $validator->errors(),
@@ -60,7 +59,7 @@ class KhaiTuController extends Controller
                     'message' => 'Validation Error',
                 ],
                 400
-            ); 
+            );
         }
 
         try {
@@ -83,9 +82,7 @@ class KhaiTuController extends Controller
                 'success' => true,
                 'message' => 'Khai Tu cho 1 Nhan Khau thanh cong',
             ], 200);
-        }
-        catch (Exception $exception) 
-        {
+        } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
@@ -111,7 +108,7 @@ class KhaiTuController extends Controller
                 'message' => 'Deleted Tam Tru successfully',
             ]);
 
-        } catch(Exception $exception) {
+        } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),

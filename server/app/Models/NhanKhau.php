@@ -17,7 +17,6 @@ class NhanKhau extends Model
     use HasFactory;
 
     protected $table = 'nhan_khau';
-    
     protected $attributes = [];
 
     protected $fillable = [
@@ -57,7 +56,7 @@ class NhanKhau extends Model
     protected function age(): Attribute
     {
         return new Attribute(
-            get: fn (mixed $value, array $attributes) => Carbon::parse($attributes['ngaySinh'])->age,
+            get: fn(mixed $value, array $attributes) => Carbon::parse($attributes['ngaySinh'])->age,
         );
     }
 

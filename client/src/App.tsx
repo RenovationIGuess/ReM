@@ -11,8 +11,12 @@ import HouseHoldsList from './features/households/List'
 import HouseholdDetail from './features/households/Detail'
 import HouseholdEdit from './features/households/Edit'
 import Gift from './features/gift'
+import EventList from './features/gift/EventList'
 import Temporary from './features/temporary'
 import AboutUs from './features/about'
+import { ChildrenList } from './features/gift/ChildrenList'
+import { StatisticList } from './features/gift/StatisticList'
+import { GiftList } from './features/gift/GiftList'
 import Create from './features/households/Create'
 import Prefetch from './features/auth/Prefetch'
 
@@ -52,16 +56,24 @@ function App() {
             </Route>
 
             <Route path="tang-qua">
-              <Route index element={<Gift />} />
-            </Route>
+              <Route index element={<EventList />} />
+            </Route >
+
+            <Route path="su-kien">
+              <Route path=':id' index element={<ChildrenList />} />
+              <Route path='thong-ke-ho-khau/:id' index element={<StatisticList />} />
+              <Route path='phan-qua/:id' index element={<GiftList />} />
+              <Route path='them-be/:id' />
+              <Route path='them-qua/:id' />
+            </Route >
 
             <Route path="thong-tin">
               <Route index element={<AboutUs />} />
             </Route>
           </Route>
-        </Route>
-      </Route>
-    </Routes>
+        </Route >
+      </Route >
+    </Routes >
   )
 }
 

@@ -30,10 +30,10 @@ class HoKhau extends Model
         'chu_ho'
     ];
 
-    protected function chuHo() : Attribute
+    protected function chuHo(): Attribute
     {
         return new Attribute(
-            get: fn () => NhanKhau::find($this->idChuHo),
+            get: fn() => NhanKhau::find($this->idChuHo),
         );
     }
 

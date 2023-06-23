@@ -15,8 +15,8 @@ class NhanKhauController extends Controller
         try {
             $limit = $request->has('limit') ? $request->input('limit') : 10;
             $nhanKhaus = NhanKhau::with('duocKhaiTu', 'chungMinhThu')
-                ->where('hoTen', 'like', '%'.$request->hoTen.'%')
-                ->where('maNhanKhau', 'like', $request->maNhanKhau.'%')
+                ->where('hoTen', 'like', '%' . $request->hoTen . '%')
+                ->where('maNhanKhau', 'like', $request->maNhanKhau . '%')
                 ->orderBy('id', 'ASC')
                 ->paginate($limit);
 
@@ -67,7 +67,7 @@ class NhanKhauController extends Controller
         }
     }
 
-    public function store(Request $request) 
+    public function store(Request $request)
     {
         $rules = [
             'maNhanKhau' => 'required|string',
@@ -93,8 +93,7 @@ class NhanKhauController extends Controller
 
         $validator = Validator::make($request->all(), $rules);
 
-        if ($validator->fails())
-        {
+        if ($validator->fails()) {
             return response()->json(
                 [
                     'data' => $validator->errors(),
@@ -167,8 +166,7 @@ class NhanKhauController extends Controller
 
         $validator = Validator::make($request->all(), $rules);
 
-        if ($validator->fails())
-        {
+        if ($validator->fails()) {
             return response()->json(
                 [
                     'data' => $validator->errors(),
@@ -206,7 +204,7 @@ class NhanKhauController extends Controller
                 'message' => 'Updated Nhan Khau successfully',
             ], 200);
 
-        } catch(Exception $exception) {
+        } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
@@ -214,7 +212,7 @@ class NhanKhauController extends Controller
         }
     }
 
-    public function destroy($idNhanKhau) 
+    public function destroy($idNhanKhau)
     {
         try {
             $nhanKhau = NhanKhau::find($idNhanKhau);
@@ -232,7 +230,7 @@ class NhanKhauController extends Controller
                 'message' => 'Deleted Nhan Khau successfully',
             ], 200);
 
-        } catch(Exception $exception) {
+        } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
@@ -242,7 +240,7 @@ class NhanKhauController extends Controller
 
     public static function getInAgeRange($start, $end)
     {
-        $nhanKhaus = NhanKhau::all()->filter( function (NhanKhau $value, int $key) use ($start, $end) {
+        $nhanKhaus = NhanKhau::all()->filter(function (NhanKhau $value, int $key) use ($start, $end) {
             return $value->age <= $end && $value->age >= $start;
         });
 

@@ -15,7 +15,7 @@ class HoKhauController extends Controller
         try {
             $limit = $request->has('limit') ? $request->input('limit') : 10;
             $hoKhaus = HoKhau::with('nhanKhaus')
-                ->where('maHoKhau', 'like', $request->maHoKhau.'%')
+                ->where('maHoKhau', 'like', $request->maHoKhau . '%')
                 ->orderBy('id', 'ASC')
                 ->paginate($limit);
 
@@ -80,7 +80,7 @@ class HoKhauController extends Controller
 
         $validator = Validator::make($request->all(), $rules);
 
-        if ($validator->fails()){
+        if ($validator->fails()) {
             return response()->json(
                 [
                     'data' => $validator->errors(),
@@ -182,11 +182,13 @@ class HoKhauController extends Controller
                 }
             );
 
-            if($nhanKhauMois->every(
-                function (NhanKhau $nhanKhauMoi) use($idHoKhau) {
-                    return $nhanKhauMoi->thanhVienHo->hoKhau->id == $idHoKhau;
-                }
-            )) {
+            if (
+                $nhanKhauMois->every(
+                    function (NhanKhau $nhanKhauMoi) use ($idHoKhau) {
+                        return $nhanKhauMoi->thanhVienHo->hoKhau->id == $idHoKhau;
+                    }
+                )
+            ) {
 
                 $newHoKhau = HoKhau::create([
                     'maHoKhau' => $request->maHoKhau,
