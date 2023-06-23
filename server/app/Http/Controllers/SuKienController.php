@@ -6,7 +6,9 @@ use Exception;
 use App\Models\Item;
 use App\Models\HoKhau;
 use App\Models\SuKien;
+use App\Models\PhanThuong;
 use Illuminate\Http\Request;
+use App\Enums\ThanhTichHocTap;
 use App\Models\DuocNhanThuong;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
@@ -51,16 +53,7 @@ class SuKienController extends Controller
 
             $suKien->phanThuongs;
             $suKien->duocNhanThuongs;
-
-            $suKien->phanThuongs;
-            $suKien->duocNhanThuongs;
-
-            $suKien->phanThuongs;
-            $suKien->duocNhanThuongs;
-
-            $suKien->phanThuongs;
-            $suKien->duocNhanThuongs;
-
+            
             if ($suKien) {
                 return response()->json([
                     'data' => $suKien,
@@ -85,14 +78,15 @@ class SuKienController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'name' => 'string|required',
+            'name' => 'string|required|unique:su_kien',
             'ngayBatDau' => 'date|required|after:yesterday',
-            'type' => ['required' | Rule::in([0, 1])],
+            'type' => 'numeric|required',
         ];
 
         $validator = Validator::make($request->all(), $rules);
 
-        if ($validator->fails()) {
+        if ($validator->fails())
+        {
             return response()->json([
                 'success' => false,
                 'message' => $validator->errors(),
@@ -105,6 +99,42 @@ class SuKienController extends Controller
                 'ngayBatDau' => $request->ngayBatDau,
                 'type' => $request->type,
             ]);
+
+            $phan_thuongs = $request->phan_thuongs;
+            if ($request->type == 1)
+            {
+                foreach($phan_thuongs as $phan_thuong)
+                {
+                    $phanThuong = PhanThuong::create([
+                        'thanhTichHocTap' => $phan_thuong['thanhTichHocTap'],
+                        'capHoc' => $phan_thuong['capHoc'],
+                        'type' => 1,
+                        'idSuKien' => $suKien->id,
+                    ]);
+
+                    foreach($phan_thuong['items'] as $item)
+                    {
+                        $phanThuong->items()->attach($item['idItem'], ['soLuong' => $item['soLuong']]);
+                    }
+                }
+            }
+            else if ($request->type == 0)
+            {
+                foreach($phan_thuongs as $phan_thuong)
+                {
+                    $phanThuong = PhanThuong::create([
+                        'type' => 0,
+                        'idSuKien' => $suKien->id,
+                    ]);
+
+                    foreach($phan_thuong['items'] as $item)
+                    {
+                        $phanThuong->items()->attach($item['idItem'], ['soLuong' => $item['soLuong']]);
+                    }
+                }
+            }
+
+            $suKien->phanThuongs;
 
             return response()->json([
                 'data' => $suKien,
@@ -167,7 +197,7 @@ class SuKienController extends Controller
                     'message' => 'Su Kien not found',
                 ], 404);
             }
-
+            
             if ($suKien->isDone) {
                 return response()->json([
                     'success' => false,
@@ -224,7 +254,7 @@ class SuKienController extends Controller
                     $hoKhau['totalCost'] += $duocNhanThuong->phanThuong->cost;
                 }
             }
-
+            
             if ($suKien) {
                 return response()->json([
                     'data' => $hoKhaus,
@@ -283,7 +313,7 @@ class SuKienController extends Controller
                 $uniqueItem['totalQuantity'] = $this->calculateTotal($suKien, $uniqueItem->id)[0];
                 $uniqueItem['totalCost'] = $this->calculateTotal($suKien, $uniqueItem->id)[1];
             }
-
+            
             if ($uniqueItems) {
                 return response()->json([
                     'data' => $uniqueItems,
