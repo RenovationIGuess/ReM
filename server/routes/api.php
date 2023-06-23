@@ -82,7 +82,7 @@ Route::group(['prefix' => 'thong-ke'], function ($router) {
 Route::group(['prefix' => 'su-kien'], function ($router) {
     Route::get('/', [SuKienController::class, 'index']); //DONE
     Route::get('/{idSuKien}', [SuKienController::class, 'show']); //DONE
-    Route::post('/create', [SuKienController::class, 'store']); //UNDONE
+    Route::post('/create', [SuKienController::class, 'store']); //DONE
     Route::put('/{idSuKien}/edit', [SuKienController::class, 'update']); //UNDONE
     Route::post('/{idSuKien}/duoc-nhan-thuong/create', [DuocNhanThuongController::class, 'store']); //UNDONE
     Route::get('/{idSuKien}/thong-ke-ho-khau', [SuKienController::class, 'thongKeHoKhau']);
