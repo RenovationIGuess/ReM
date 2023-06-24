@@ -283,7 +283,7 @@ class HoKhauController extends Controller
                     'message' => 'success',
                 ]);
             }
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Không tìm thấy dữ liệu!',

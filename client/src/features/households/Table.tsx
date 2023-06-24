@@ -1,17 +1,16 @@
-import Table, { ColumnsType } from 'antd/es/table'
+import React from 'react'
+import { Table } from 'antd'
+import type { ColumnsType } from 'antd/es/table'
 import { useNavigate } from 'react-router-dom'
-import { useEffect, useState } from 'react'
 import { useHouseholdStore } from '~/app/householdStore'
+import { EditOutlined } from '@ant-design/icons'
 
 const HouseholdsTable = () => {
   const navigate = useNavigate()
 
-  const [page, setPage] = useState<Page>({ page: 1, offset: 10 })
-
-  const [households, getHouseholdByPage] = useHouseholdStore(state => [
-    state.households,
-    state.getHouseholdByPage
-  ])
+  const [households, householdsTotal, currentPage, getHouseholdByPage] = useHouseholdStore(
+    state => [state.households, state.householdsTotal, state.currentPage, state.getHouseholdByPage]
+  )
 
   const columns: ColumnsType<IHousehold> = [
     {
@@ -30,7 +29,6 @@ const HouseholdsTable = () => {
     {
       title: 'Tên chủ hộ',
       render: (_, record) => {
-        console.log(record.chu_ho)
         return record.chu_ho?.hoTen
       }
     },
@@ -58,22 +56,33 @@ const HouseholdsTable = () => {
       render: value => {
         return new Date(value).toLocaleDateString()
       }
+    },
+    {
+      title: '',
+      key: 'action',
+      render: (_, record) => (
+        <EditOutlined
+          onClick={() => navigate(`/ho-khau/chinh-sua/${record.id}`)}
+          className="cursor-pointer text-primary"
+        />
+      )
     }
   ]
 
   return (
     <Table
+      rowKey={record => record.id}
       dataSource={households}
       columns={columns}
       scroll={{ y: 600 }}
       pagination={{
-        defaultPageSize: 10,
+        current: currentPage.page,
+        defaultPageSize: currentPage.offset,
         showSizeChanger: true,
         pageSizeOptions: ['10', '15', '20'],
-        total: 100,
+        total: householdsTotal,
         onChange: (page, pageSize) => {
           getHouseholdByPage({ page, offset: pageSize })
-          setPage({ page, offset: pageSize })
         }
       }}
     />

@@ -1,11 +1,14 @@
-import { Button, Input, Statistic } from 'antd'
 import React from 'react'
+import { Button, Input, Statistic } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import HomeLayout from '~/components/Layout/HomeLayout'
-import HouseholdsTable from './HouseholdsTable'
+import HouseholdsTable from './Table'
+import { useHouseholdStore } from '~/app/householdStore'
 
 const List = () => {
   const navigate = useNavigate()
+
+  const householdsTotal = useHouseholdStore(state => state.householdsTotal)
 
   return (
     <HomeLayout>
@@ -17,7 +20,7 @@ const List = () => {
         <div className="mt-2 grow rounded-lg bg-bgPrimary px-4 py-2 shadow-md">
           <div className="flex w-full items-center justify-between">
             <p className="text-2xl font-medium">Danh sách hộ khẩu</p>
-            <Statistic value={112893} />
+            <Statistic value={householdsTotal} />
           </div>
           <HouseholdsTable />
         </div>
