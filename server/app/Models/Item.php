@@ -18,6 +18,8 @@ class Item extends Model
         'unit_price',
     ];
 
+    public $timestamps = false;
+
     public function phanThuongs()
     {
         return $this->belongsToMany(DuocNhanThuong::class, 'phan_thuong_details', 'idDuocNhanThuong', 'idPhanQua');

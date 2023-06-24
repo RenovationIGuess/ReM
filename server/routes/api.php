@@ -13,6 +13,7 @@ use App\Http\Controllers\TamVangController;
 use App\Http\Controllers\ThongKeController;
 use App\Http\Controllers\NhanKhauController;
 use App\Http\Controllers\DuocNhanThuongController;
+use App\Http\Controllers\ItemController;
 
 /*
 |--------------------------------------------------------------------------
@@ -76,7 +77,7 @@ Route::group(['prefix' => 'tam-tru'], function ($router) {
 Route::group(['prefix' => 'thong-ke'], function ($router) {
     Route::get('/nhan-khau/tuoi', [ThongKeController::class, 'thongKeTheoTuoi']);
     Route::get('/nhan-khau/gioi-tinh', function () { });
-    Route::get('/nhan-khau/tam-tru-tam-vang', function () { });
+    Route::get('/nhan-khau/tam-tru-tam-vang', [ThongKeController::class, 'thongKeTamVangTamTru']);
 });
 
 Route::group(['prefix' => 'su-kien'], function ($router) {
@@ -84,20 +85,20 @@ Route::group(['prefix' => 'su-kien'], function ($router) {
     Route::get('/{idSuKien}', [SuKienController::class, 'show']); //DONE
     Route::post('/create', [SuKienController::class, 'store']); //DONE
     Route::put('/{idSuKien}/edit', [SuKienController::class, 'update']); //UNDONE
-    Route::post('/{idSuKien}/duoc-nhan-thuong/create', [DuocNhanThuongController::class, 'store']); //UNDONE
-    Route::get('/{idSuKien}/thong-ke-ho-khau', [SuKienController::class, 'thongKeHoKhau']);
-    Route::get('/{idSuKien}/thong-ke-phan-qua', [SuKienController::class, 'thongKeItems']);
-    Route::delete('/{idSuKien}/delete', [SuKienController::class, 'destroy']);
+    Route::post('/{idSuKien}/duoc-nhan-thuong/create', [DuocNhanThuongController::class, 'store']); //DONE
+    Route::get('/{idSuKien}/thong-ke-ho-khau', [SuKienController::class, 'thongKeHoKhau']); //DONE
+    Route::get('/{idSuKien}/thong-ke-phan-qua', [SuKienController::class, 'thongKeItems']); //DONE
+    Route::delete('/{idSuKien}/delete', [SuKienController::class, 'destroy']); //DONE
 });
 
-Route::group(['prefix' => 'nhan-thuong'], function ($router) {
+Route::group(['prefix' => 'duoc-nhan-thuong'], function ($router) {
     Route::put('/{idDuocNhanThuong}/edit', [DuocNhanThuongController::class, 'update']);
     Route::delete('/{idDuocNhanThuong}/delete', [DuocNhanThuongController::class, 'destroy']);
 });
 
-// Route::group(['prefix' => 'phan-qua'], function($router) {
-//     Route::get('/', [PhanQuaController::class, 'index']);
-//     Route::get('/{idPhanQua}', [PhanQuaController::class, 'show']);
-//     Route::get('/create', [PhanQuaController::class, 'store']);
-//     Route::get('/edit', [PhanQuaController::class, 'update']);
-// });
+Route::group(['prefix' => 'items'], function($router) {
+    Route::get('/', [ItemController::class, 'index']);
+    Route::get('/{idPhanQua}', [ItemController::class, 'show']);
+    Route::post('/create', [ItemController::class, 'store']);
+    Route::get('/edit', [ItemController::class, 'update']);
+});

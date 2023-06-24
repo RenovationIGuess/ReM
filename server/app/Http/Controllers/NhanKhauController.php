@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\NhanKhau;
 use Exception;
+use App\Models\NhanKhau;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Validator;
 
 class NhanKhauController extends Controller
 {
@@ -37,7 +37,7 @@ class NhanKhauController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -63,7 +63,7 @@ class NhanKhauController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -136,7 +136,7 @@ class NhanKhauController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -179,6 +179,14 @@ class NhanKhauController extends Controller
 
         try {
             $nhanKhau = NhanKhau::find($idNhanKhau);
+        
+            if (!$nhanKhau) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Nhan Khau not found',
+                ], 404);
+            }
+
             $nhanKhau->maNhanKhau = $request->maNhanKhau;
             $nhanKhau->hoTen = $request->hoTen;
             $nhanKhau->biDanh = $request->biDanh;
@@ -208,7 +216,7 @@ class NhanKhauController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -234,7 +242,7 @@ class NhanKhauController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
