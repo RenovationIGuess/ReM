@@ -18,7 +18,7 @@ class NhanKhauFactory extends Factory
     {
         return [
             'hoTen' => fake()->name(),
-            'maNhanKhau' => fake()->unique()->creditCardNumber(),
+            'maNhanKhau' => "NK" . fake()->unique()->creditCardNumber(),
             'gioiTinh' => fake()->randomElement([1, 2]),
             'noiSinh' => fake()->city(),
             'ngaySinh' => fake()->dateTimeThisCentury(),
