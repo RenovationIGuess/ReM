@@ -200,9 +200,6 @@ class HoKhauController extends Controller
     public function tachHoKhau($idHoKhau, Request $request)
     {
         // Data tu request:
-        /*
-            Ma ho khau muon tach: maHoKhau: string,
-        */
         $data = request()->validate([
             'maHoKhau' => 'string|required',
             'idChuHo' => 'numeric|required',
@@ -213,17 +210,11 @@ class HoKhauController extends Controller
             'lyDoChuyenDi' => 'string|required',
         ]);
 
-        // $validator = Validator::make($request->all(), $rules);
-
         try {
-            // Lay ho khau duoc chon de tach tu db
-            $oldHoKhau = HoKhau::with('nhanKhaus')
-                ->find($idHoKhau);
-
             // Tim cac nhan khau moi
             $nhanKhauMois = collect($request->get('nhanKhauMois'))->map(
                 function ($nhanKhauMoi) {
-                    return NhanKhau::find($nhanKhauMoi['id']);
+                    return NhanKhau::find($nhanKhauMoi);
                 }
             );
 
@@ -234,14 +225,17 @@ class HoKhauController extends Controller
                 }
             )) {
                 // Neu input chuan -> Tao ho khau moi dua tren input
-                $newHoKhau = HoKhau::create($data);
+                $hoKhauMoi = HoKhau::create($data);
 
                 // Gan id ho khau moi cho nhan khau duoc chon
-                foreach ($nhanKhauMois as $nhanKhauMoi) {
-                    $nhanKhauMoi->thanhVienHo()->idHoKhau = $newHoKhau->id;
-                    $nhanKhauMoi->thanhVienHo()->save();
-                }
+                $nhanKhauMois->each(
+                    function (NhanKhau $nhanKhauMoi) use ($hoKhauMoi) {
+                        $nhanKhauMoi->thanhVienHo->idHoKhau = $hoKhauMoi->id;
+                        $nhanKhauMoi->thanhVienHo->save();
+                    }
+                );
 
+                // Them vao dinh chinh
                 DinhChinh::create([
                     'idHoKhau' => $idHoKhau,
                     'thongTinThayDoi' => "Tách hộ khẩu",
@@ -252,6 +246,7 @@ class HoKhauController extends Controller
                 ]);
 
                 return response()->json([
+                    'data' => $hoKhauMoi,
                     'success' => true,
                     'message' => 'Tách hộ khẩu thành công!',
                 ], 201);

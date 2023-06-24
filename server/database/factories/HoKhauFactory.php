@@ -17,7 +17,7 @@ class HoKhauFactory extends Factory
     public function definition(): array
     {
         return [
-            'maHoKhau' => fake()->unique()->creditCardNumber(),
+            'maHoKhau' => "HK" . fake()->unique()->creditCardNumber(),
             'maKhuVuc' => fake()->countryCode(),
             'diaChi' => fake()->streetAddress(),
             'ngayLap' => fake()->dateTimeThisDecade(),

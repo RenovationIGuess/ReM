@@ -72,64 +72,52 @@ class NhanKhauController extends Controller
     {
         $moiSinh = $request->query('moiSinh');
 
-        $nhanKhauData = request('nhanKhau')->validate([
-            'maNhanKhau' => 'required|string',
-            'hoTen' => 'required|string',
-            'biDanh' => 'string',
-            'gioiTinh' => 'required|string',
-            'noiSinh' => 'required|string',
-            'ngaySinh' => 'required|before_or_equal:today',
-            'nguyenQuan' => 'required|string',
-            'diaChiThuongTru' => 'required|string',
-            'diaChiHienTai' => 'required|string',
-            'danToc' => 'string',
-            'quocTich' => 'string',
-            'tonGiao' => 'string',
-            'soHoChieu' => 'string',
-            'trinhDoHocVan' => 'string',
-            'ngheNghiep' => 'string',
-            'noiLamViec' => 'string',
+        $data = request()->validate([
+            'idHoKhau' => 'required|numeric',
+            'nhanKhau.maNhanKhau' => 'required|string',
+            'nhanKhau.hoTen' => 'required|string',
+            'nhanKhau.biDanh' => 'string',
+            'nhanKhau.gioiTinh' => 'required|string',
+            'nhanKhau.noiSinh' => 'required|string',
+            'nhanKhau.ngaySinh' => 'required|before_or_equal:today',
+            'nhanKhau.nguyenQuan' => 'required|string',
+            'nhanKhau.diaChiThuongTru' => 'required|string',
+            'nhanKhau.diaChiHienTai' => 'required|string',
+            'nhanKhau.danToc' => 'string',
+            'nhanKhau.quocTich' => 'string',
+            'nhanKhau.tonGiao' => 'string',
+            'nhanKhau.soHoChieu' => 'string',
+            'nhanKhau.trinhDoHocVan' => 'string',
+            'nhanKhau.ngheNghiep' => 'string',
+            'nhanKhau.noiLamViec' => 'string',
             //khong can du cac truong
             //'tienAn' => 'string',
-            'ghiChu' => 'string',
+            'nhanKhau.ghiChu' => 'string',
+            'cmt.soCMT' => "required|string",
+            'cmt.ngayCap' => "required|date",
+            'cmt.noiCap' => "required|string",
         ]);
 
-        $cmtData = request('chungMinhThu')->validate([
-            'soCMT' => "required|string",
-            'ngayCap' => "required|date",
-            'noiCap' => "required|string",
-        ]);
-
-        // $validator = Validator::make($request->all(), $rules);
-
-        // if ($validator->fails())
-        // {
-        //     return response()->json(
-        //         [
-        //             'data' => $validator->errors(),
-        //             'success' => false,
-        //             'message' => 'Validation Error',
-        //         ],
-        //         400
-        //     );
-        // }
+        $idHoKhau = $data['idHoKhau'];
+        $nhanKhauData = $data['nhanKhau'];
+        $cmtData = $data['cmt'];
 
         try {
             // Lay ra ho khau duoc chon
-            $hoKhau = HoKhau::with('nhanKhaus')->find($request->idHoKhau);
+            $hoKhau = HoKhau::with('nhanKhaus')->find($idHoKhau);
 
             // Kiem tra xem co ho khau da tim co ton tai k?
             if ($hoKhau) {
                 // Neu moi sinh thi sua info
                 if ($moiSinh == 1) {
-                    $data['ghiChu'] = 'Mới sinh';
-                    $data['noiLamViec'] = null;
-                    $data['trinhDoHocVan'] = null;
-                    $data['ngheNghiep'] = null;
+                    $nhanKhauData['ghiChu'] = 'Mới sinh';
+                    $nhanKhauData['noiLamViec'] = null;
+                    $nhanKhauData['trinhDoHocVan'] = null;
+                    $nhanKhauData['ngheNghiep'] = null;
                 }
 
                 // Tao nhan khau
-                $nhanKhau = NhanKhau::create($data);
+                $nhanKhau = NhanKhau::create($nhanKhauData);
 
                 // Tao moi quan he vs ho khau
                 $nhanKhau->thanhVienHo()->create([
@@ -138,22 +126,13 @@ class NhanKhauController extends Controller
                     'quanHeVoiChuHo' => "",
                 ]);
 
-                // request('nhanKhau')
-                // $request['nhanKhau'] 
-                // {
-                //     nhanKhau: {
-                //     'ghiChu': 'fsdafadsf',
-
-                //     },
-                //     cmt: {
-
-                //     }
-                // }
-
-                // Tao chung minh thu
-                $nhanKhau->chungMinhThu()->create([
-
-                ]);
+                // Tao chung minh thu neu khong phai moi sinh
+                if ($moiSinh == 0) {
+                    $nhanKhau->chungMinhThu()->create(array_merge(
+                        ['idNhanKhau' => $nhanKhau->id],
+                        $cmtData,
+                    ));
+                }
 
                 return response()->json([
                     'data' => $nhanKhau,
