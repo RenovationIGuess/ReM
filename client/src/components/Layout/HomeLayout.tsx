@@ -1,5 +1,6 @@
 import React from 'react'
 import Sidebar from './Sidebar'
+import { ToastContainer } from 'react-toastify'
 import { AnimatePresence, motion } from 'framer-motion'
 
 type PropsType = {
@@ -7,9 +8,9 @@ type PropsType = {
 }
 
 const variants = {
-  hidden: { opacity: 0, x: 0, y: -20 },
-  enter: { opacity: 1, x: 0, y: 0 },
-  exit: { opacity: 0, x: -0, y: 20 }
+  hidden: { opacity: 0, y: 10 },
+  enter: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -10 }
 }
 
 const HomeLayout = ({ children }: PropsType) => {
@@ -22,19 +23,22 @@ const HomeLayout = ({ children }: PropsType) => {
         }
       }}
     >
-      <div className="flex h-screen w-screen items-center justify-center shadow-md">
+      <div className="flex h-screen w-screen shadow-md">
+        <ToastContainer autoClose={1500} style={{ fontSize: '16px' }} />
         <Sidebar />
-        <motion.div
-          className="relative h-full basis-5/6 overflow-y-auto bg-bgDefault p-3"
-          initial="hidden"
-          animate="enter"
-          exit="exit"
-          variants={variants}
-          transition={{ duration: 0.6, type: 'easeInOut' }}
-        >
-          {children}
+        <div className="relative h-full grow overflow-y-auto bg-neutral-3 p-3">
+          <motion.div
+            className="h-max"
+            initial="hidden"
+            animate="enter"
+            exit="exit"
+            variants={variants}
+            transition={{ duration: 0.5, type: 'easeOut' }}
+          >
+            {children}
+          </motion.div>
           {/* <p className="text-end text-sm opacity-30">© 2023 KTPM Team. All Rights Reserved.</p> */}
-        </motion.div>
+        </div>
       </div>
     </AnimatePresence>
   )

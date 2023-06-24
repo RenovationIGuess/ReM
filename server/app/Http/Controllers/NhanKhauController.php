@@ -155,7 +155,7 @@ class NhanKhauController extends Controller
             'danToc' => 'string',
             'quocTich' => 'string',
             'tonGiao' => 'string',
-            'soHoChieu' => 'numeric',
+            'soHoChieu' => 'string',
             'trinhDoHocVan' => 'string',
             'ngheNghiep' => 'string',
             'noiLamViec' => 'string',

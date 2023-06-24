@@ -1,115 +1,142 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import HomeLayout from '~/components/Layout/HomeLayout'
 import SubHeader from '~/components/SubHeader'
+import { useResidentsStore } from './residentsStore'
+import { ApiOutlined, EditOutlined, LoadingOutlined, UserOutlined } from '@ant-design/icons'
+import { Avatar, Button } from 'antd'
+import Death from './Death'
+
+type ResidentInfoItemProps = {
+  label: string
+  value?: React.ReactNode
+}
+
+type EachResidentInfoDivProps = {
+  label: React.ReactNode
+  className?: string
+  children: React.ReactNode
+}
+
+const ResidentInfoItem = ({ label, value }: ResidentInfoItemProps) => {
+  return (
+    <div>
+      <p className="text-medium mb-1 text-base text-noneSelected">{label}</p>
+      <p className={`text-base`}>{value ?? <span className="text-unknow">Chưa cập nhật</span>}</p>
+    </div>
+  )
+}
+
+const EachResidentInfoDiv = ({ label, className, children }: EachResidentInfoDivProps) => {
+  return (
+    <div className={`mb-6 rounded-md border border-disabled p-4 ${className}`}>
+      <p className="mb-2 text-lg font-medium">{label}</p>
+      {children}
+    </div>
+  )
+}
 
 const Detail = () => {
   const { id } = useParams()
   const navigate = useNavigate()
 
+  const [resident, getResidentById] = useResidentsStore(state => [
+    state.resident,
+    state.getResidentById
+  ])
+
+  useEffect(() => {
+    getResidentById(id as string)
+  }, [id])
+
   return (
     <HomeLayout>
-      <div className="w-full rounded-lg bg-bgPrimary px-4 py-2 shadow-md">
+      <div className="h-full w-full rounded-lg bg-bgPrimary px-4 py-3 shadow-md">
         <SubHeader
           title="Thêm mới nhân khẩu"
           type="detail"
+          editBtn={
+            resident.ghiChu && (
+              <Button
+                type="primary"
+                ghost
+                icon={<EditOutlined />}
+                onClick={() => navigate(`/nhan-khau/chinh-sua/${resident.id}`)}
+              >
+                Chỉnh sửa thông tin giấy khai tử
+              </Button>
+            )
+          }
+          deleteBtn={resident.ghiChu ? <></> : <Death currnetResident={resident} />}
           onEdit={() => navigate(`/nhan-khau/chinh-sua/${id}`)}
         />
-        <div className="mb-4 grid auto-rows-max grid-cols-8 items-center justify-center">
-          <div className="col-span-3 col-start-3">
-            <div className="flex items-center gap-2">
-              <p className="basis-1/3 text-end">Mã nhân khẩu:</p>
-              <p className="grow text-lg">20202020</p>
-            </div>
 
-            <div className="mt-4 flex  items-center gap-2">
-              <p className="basis-1/3 text-end">Họ và tên:</p>
-              <p className="grow text-lg">Bùi Đức Dũng</p>
-            </div>
-
-            <div className="mt-4 flex items-center gap-2">
-              <p className="basis-1/3 text-end">Bí danh:</p>
-              <p className="grow text-lg">にゃん〜</p>
-            </div>
+        {Object.keys(resident).length === 0 ? (
+          <div className="flex w-full items-center justify-center">
+            <LoadingOutlined className="text-4xl text-primary" />
           </div>
+        ) : (
+          <>
+            <EachResidentInfoDiv label={`Mã nhân khẩu - ${resident.maNhanKhau}`}>
+              <div className="flex items-center justify-start gap-8">
+                <Avatar
+                  className="flex items-center justify-center"
+                  size={128}
+                  icon={<UserOutlined />}
+                />
 
-          <div
-            className="flex h-[9rem] w-[9rem] items-center justify-center rounded-full 
-            border-2 border-dotted border-borderDefault bg-bgDefault transition-all hover:border-primary"
-          >
-            Cập nhật ảnh
-          </div>
+                <div className="grid h-full grow grid-cols-3 gap-4">
+                  <ResidentInfoItem label="Họ và tên" value={resident.hoTen} />
+                  <ResidentInfoItem label="Giới tính" value={resident.gioiTinh} />
+                  <ResidentInfoItem
+                    label="Ngày sinh"
+                    value={
+                      resident.ngaySinh &&
+                      new Intl.DateTimeFormat('vi-GB', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      }).format(new Date(resident.ngaySinh))
+                    }
+                  />
+                  <ResidentInfoItem label="Bí danh" value={resident.biDanh} />
+                  {resident.ghiChu && (
+                    <ResidentInfoItem
+                      label="Ghi chú"
+                      value={<span className="font-semibold text-danger">{resident.ghiChu}</span>}
+                    />
+                  )}
+                </div>
+              </div>
+            </EachResidentInfoDiv>
 
-          <div className="col-span-4 col-start-3 flex items-center gap-2">
-            <p className="basis-1/4 text-end">Ngày sinh:</p>
-            <p className="grow text-lg">2002-01-01</p>
-          </div>
+            <EachResidentInfoDiv label="Thông tin nơi ở">
+              <div className="grid grid-cols-3 gap-4">
+                <ResidentInfoItem label="Nơi sinh" value={resident.noiSinh} />
+                <ResidentInfoItem label="Nguyên quán" value={resident.nguyenQuan} />
+                <ResidentInfoItem label="Địa chỉ thường trú" value={resident.diaChiThuongTru} />
+                <ResidentInfoItem label="Địa chỉ hiện tại" value={resident.diaChiHienTai} />
+              </div>
+            </EachResidentInfoDiv>
 
-          <div className="col-span-4 col-start-3 mt-4 flex items-center gap-2">
-            <p className="basis-1/4 text-end">Giới tính:</p>
-            <p className="grow last:text-lg">Nam</p>
-          </div>
+            <EachResidentInfoDiv label="Thông tin về công việc">
+              <div className="grid grid-cols-3 gap-4">
+                <ResidentInfoItem label="Trình độ học vấn" value={resident.trinhDoHocVan} />
+                <ResidentInfoItem label="Nghề nghiệp" value={resident.ngheNghiep} />
+                <ResidentInfoItem label="Nơi làm việc" value={resident.noiLamViec} />
+              </div>
+            </EachResidentInfoDiv>
 
-          <div className="col-span-4  col-start-3 mt-4 flex items-center gap-2">
-            <p className="basis-1/4 text-end">Nơi sinh:</p>
-            <p className="grow text-lg">1 Đại Cồ Việt, Bách Khoa, Hai Bà Trưng, Hà Nội</p>
-          </div>
-
-          <div className="col-span-4  col-start-3 mt-4 flex items-center gap-2">
-            <p className="basis-1/4 text-end">Nguyên quán:</p>
-            <p className="grow text-lg">1 Đại Cồ Việt, Bách Khoa, Hai Bà Trưng, Hà Nội</p>
-          </div>
-
-          <div className="col-span-4  col-start-3 mt-4 flex items-center gap-2">
-            <p className="basis-1/4 text-end">Dân tộc:</p>
-            <p className="grow text-lg">Kinh</p>
-          </div>
-
-          <div className="col-span-4  col-start-3 mt-4 flex items-center gap-2">
-            <p className="basis-1/4 text-end">Tôn giáo:</p>
-            <p className="grow text-lg">Không</p>
-          </div>
-
-          <div className="col-span-4  col-start-3 mt-4 flex items-center gap-2">
-            <p className="basis-1/4 text-end">Địa chỉ thường trú:</p>
-            <p className="grow text-lg">1 Đại Cồ Việt, Bách Khoa, Hai Bà Trưng, Hà Nội</p>
-          </div>
-
-          <div className="col-span-4  col-start-3 mt-4 flex items-center gap-2">
-            <p className="basis-1/4 text-end">Địa chỉ hiện tại:</p>
-            <p className="grow text-lg">1 Đại Cồ Việt, Bách Khoa, Hai Bà Trưng, Hà Nội</p>
-          </div>
-
-          <div className="col-span-4  col-start-3 mt-4 flex items-center gap-2">
-            <p className="basis-1/4 text-end">Quốc tịch:</p>
-            <p className="grow text-lg">Việt Nam</p>
-          </div>
-
-          <div className="col-span-4  col-start-3 mt-4 flex items-center gap-2">
-            <p className="basis-1/4 text-end">Số hộ chiếu:</p>
-            <p className="grow text-lg">123412341234</p>
-          </div>
-
-          <div className="col-span-4  col-start-3 mt-4 flex items-center gap-2">
-            <p className="basis-1/4 text-end">Trình độ học vấn:</p>
-            <p className="grow text-lg">Đại học</p>
-          </div>
-
-          <div className="col-span-4  col-start-3 mt-4 flex items-center gap-2">
-            <p className="basis-1/4 text-end">Nghề nghiệp:</p>
-            <p className="grow text-lg">Coder</p>
-          </div>
-
-          <div className="col-span-4  col-start-3 mt-4 flex items-center gap-2">
-            <p className="basis-1/4 text-end">Nơi làm việc:</p>
-            <p className="grow text-lg">1 Đại Cồ Việt, Bách Khoa, Hai Bà Trưng, Hà Nội</p>
-          </div>
-
-          <div className="col-span-4  col-start-3 mt-4 flex items-center gap-2">
-            <p className="basis-1/4 text-end">Ghi chú:</p>
-            <p className="grow text-lg">Đối tượng đặc biệt: wibu, fan MU, vozer, coder</p>
-          </div>
-        </div>
+            <EachResidentInfoDiv label="Thông tin khác">
+              <div className="grid grid-cols-3 gap-4">
+                <ResidentInfoItem label="Dân tộc" value={resident.danToc} />
+                <ResidentInfoItem label="Tôn giáo" value={resident.tonGiao} />
+                <ResidentInfoItem label="Quốc tịch" value={resident.quocTich} />
+                <ResidentInfoItem label="Số hộ chiếu" value={resident.soHoChieu} />
+              </div>
+            </EachResidentInfoDiv>
+          </>
+        )}
       </div>
     </HomeLayout>
   )
