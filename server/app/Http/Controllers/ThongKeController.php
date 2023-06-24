@@ -4,14 +4,17 @@ namespace App\Http\Controllers;
 
 use Exception;
 use App\Models\TamTru;
+use App\Enums\GioiTinh;
 use App\Models\TamVang;
 use App\Models\NhanKhau;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\NhanKhauController;
 
 class ThongKeController extends Controller
 {
-    public function thongKeTheoTuoi()
+    public function thongKeTheoDoTuoi()
     {
         $divisions = [
             '0-4' => range(0, 4),
@@ -50,7 +53,60 @@ class ThongKeController extends Controller
 
     public function thongKeTheoGioiTinh()
     {
+        try {
+            $males = NhanKhau::where('gioiTinh','=', GioiTinh::MALE)
+                ->get();
+            $females = NhanKhau::where('gioiTinh', '=', GioiTinh::FEMALE)
+                ->get();
+            
+            return response()->json([
+                'data' => ['namGioi' => $males, 'nuGioi' => $females],
+                'success' => true,
+                'message' => 'success',
+            ], 200);
+        }
+        catch (Exception $exception)
+        {
+            return response()->json([
+                'message' => $exception->getMessage(),
+                'success' => false,
+            ]);
+        }
+    }
 
+    public function thongKeTheoTuoi(Request $request)
+    {
+        $rules = [
+            'tuTuoi' => 'numeric|required',
+            'denTuoi' => 'numeric|required',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails())
+        {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 403);
+        }
+        try {
+            $statisticsByAges = NhanKhau::all()->filter( function (NhanKhau $nhanKhau, int $key) use ($request) {
+                return $nhanKhau->age >= intval($request->tuTuoi) && $nhanKhau->age <= intval($request->denTuoi);
+            });
+
+            return response()->json([
+                'data' => $statisticsByAges->count(),
+                'success' => true,
+                'message' => 'success',
+            ]);
+        } catch(Exception $exception)
+        {
+            return response()->json([
+                'success' => false,
+                'message' => $exception->getMessage(),
+            ], 500);
+        }
     }
 
     public function thongKeTamVangTamTru(Request $request)
@@ -74,15 +130,17 @@ class ThongKeController extends Controller
         }
 
         try {
-            $tamVangs = TamVang::with('nhanKhau')
-                ->whereTime('created_at', '>', $request->ngayBatDau)
-                ->whereTime('created_at', '<', $request->ngayKetThuc)
-                ->orderBy('id', 'ASC');
+            $tamVangs = DB::table('tam_vang')
+                ->whereDate('created_at', '>=', $request->ngayBatDau)
+                ->whereDate('created_at', '<=', $request->ngayKetThuc)
+                ->orderBy('id', 'ASC')
+                ->get();
 
-            $tamTrus = TamTru::with('nhanKhau')
-                ->whereTime('created_at', '>', $request->ngayBatDau)
-                ->whereTime('created_at', '<', $request->ngayKetThuc)
-                ->orderBy('id', 'ASC');
+            $tamTrus = DB::table('tam_tru')
+                ->whereDate('created_at', '>=', $request->ngayBatDau)
+                ->whereDate('created_at', '<=', $request->ngayKetThuc)
+                ->orderBy('id', 'ASC')
+                ->get();
 
             return response()->json([
                 'data' => ['tamVangs' => $tamVangs, 'tamTrus' => $tamTrus],

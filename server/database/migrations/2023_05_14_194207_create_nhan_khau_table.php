@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('maNhanKhau')->unique();
             $table->string('hoTen');
             $table->string('biDanh')->nullable();
-            $table->string('gioiTinh');
+            $table->smallInteger('gioiTinh');
             $table->string('noiSinh');
             $table->date('ngaySinh')->nullable();
             $table->string('nguyenQuan')->nullable();

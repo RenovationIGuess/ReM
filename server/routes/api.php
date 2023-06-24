@@ -74,9 +74,15 @@ Route::group(['prefix' => 'tam-tru'], function ($router) {
     Route::delete('/{idTamTru}', [TamTruController::class, 'destroy']);
 });
 
+Route::group(['prefix'=> 'tam-vang'], function ($router) {
+    Route::get('/', [TamVangController::class, 'index']);
+    Route::delete('/{idTamVang}',[TamVangController::class, 'destroy']);
+});
+
 Route::group(['prefix' => 'thong-ke'], function ($router) {
-    Route::get('/nhan-khau/tuoi', [ThongKeController::class, 'thongKeTheoTuoi']);
-    Route::get('/nhan-khau/gioi-tinh', function () { });
+    Route::get('/nhan-khau/tuoi', [ThongKeController::class, 'thongKeTheoDoTuoi']);
+    Route::get('/nhan-khau/age-range', [ThongKeController::class, 'thongKeTheoTuoi']);
+    Route::get('/nhan-khau/gioi-tinh', [ThongKeController::class, 'thongKeTheoGioiTinh']);
     Route::get('/nhan-khau/tam-tru-tam-vang', [ThongKeController::class, 'thongKeTamVangTamTru']);
 });
 

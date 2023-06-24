@@ -14,15 +14,13 @@ class TamTruController extends Controller
     public function index(Request $request): JsonResponse
     {
         try {
-            $TamTrus = TamTru::with('nhanKhau')
-                ->where('maGiayTamTru', 'like', $request->maGiayTamTru . '%')
-                ->orderBy('id', 'ASC');
+            $TamTrus = TamTru::all();
 
             if ($TamTrus) {
                 return response()->json([
                     'data' => $TamTrus,
                     'success' => true,
-                    'message' => 'success',
+                    'message' => 'Get all Tam Tru successfully',
                 ], 200);
             }
 

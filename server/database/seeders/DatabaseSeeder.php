@@ -188,5 +188,30 @@ class DatabaseSeeder extends Seeder
                 }
             }
         }
+
+        //Seed TamTru
+        $chosenNhanKhaus = $nhanKhaus->random(50);
+        foreach ($chosenNhanKhaus as $nhanKhau)
+        {
+            $nhanKhau->tamTrus()->create([
+                'maGiayTamTru' => '123345678',
+                'soDienThoaiDangKy' => '0123456789',
+                'tuNgay' => '2020-01-03',
+                'denNgay' => '2020-02-03',
+                'lyDo' => 'Cong viec',
+            ]);
+        }
+
+        $chosenNhanKhaus = $nhanKhaus->random(50);
+        foreach ($chosenNhanKhaus as $nhanKhau)
+        {
+            $nhanKhau->tamVangs()->create([
+                'maGiayTamVang' => '123345678',
+                'noiTamTru' => fake()->address(),
+                'tuNgay' => '2023-01-02',
+                'denNgay' => '2024-01-02',
+                'lyDo' => 'Cong viec',
+            ]);
+        }
     }
 }

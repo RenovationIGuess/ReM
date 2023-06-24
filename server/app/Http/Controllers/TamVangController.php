@@ -14,9 +14,7 @@ class TamVangController extends Controller
     public function index(Request $request): JsonResponse
     {
         try {
-            $TamVangs = TamVang::with('nhanKhau')
-                ->where('maGiayTamVang', 'like', $request->maGiayTamTru . '%')
-                ->orderBy('id', 'ASC');
+            $TamVangs = TamVang::all();
 
             if ($TamVangs) {
                 return response()->json([
