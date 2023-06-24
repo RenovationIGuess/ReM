@@ -18,6 +18,7 @@ import { StatisticList } from './features/gift/StatisticList'
 import { GiftList } from './features/gift/GiftList'
 import Create from './features/households/Create'
 import Prefetch from './features/auth/Prefetch'
+import SplitHousehold from './features/households/Split'
 
 function App() {
   return (
@@ -26,14 +27,13 @@ function App() {
         <Route path="login" element={<Login />} />
 
         <Route element={<Prefetch />}>
-          <Route path="nhan-khau">
-            <Route index element={<ResidentsList />} />
-            <Route path="them" element={<ResidentCreate />} />
-            <Route path=":id" element={<ResidentDetail />} />
-            <Route path="chinh-sua/:id" element={<ResidentEdit />} />
-          </Route>
-
           <Route element={<RequireAuth />}>
+            <Route path="nhan-khau">
+              <Route index element={<ResidentsList />} />
+              <Route path="them" element={<ResidentCreate />} />
+              <Route path=":id" element={<ResidentDetail />} />
+              <Route path="chinh-sua/:id" element={<ResidentEdit />} />
+            </Route>
             <Route index element={<Welcome />} />
 
             <Route path="ho-khau">
@@ -41,6 +41,7 @@ function App() {
               <Route path=":id" element={<HouseholdDetail />} />
               <Route path="chinh-sua/:id" element={<HouseholdEdit />} />
               <Route path="them" element={<Create />} />
+              <Route path="tach/:id" element={<SplitHousehold />} />
             </Route>
 
             <Route path="nhan-khau">
