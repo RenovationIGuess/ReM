@@ -42,7 +42,7 @@ class SuKienController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -50,11 +50,16 @@ class SuKienController extends Controller
     {
         try {
             $suKien = SuKien::find($idSuKien);
-
-            $suKien->phanThuongs;
-            $suKien->duocNhanThuongs;
             
             if ($suKien) {
+                $suKien->phanThuongs;
+                $suKien->duocNhanThuongs;
+                
+                foreach($suKien->duocNhanThuongs as $duocNhanThuong)
+                {
+                    $duocNhanThuong->nhanKhau;
+                }
+                
                 return response()->json([
                     'data' => $suKien,
                     'success' => true,
@@ -71,7 +76,7 @@ class SuKienController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -99,10 +104,10 @@ class SuKienController extends Controller
                 'ngayBatDau' => $request->ngayBatDau,
                 'type' => $request->type,
             ]);
-
-            $phan_thuongs = $request->phan_thuongs;
+            
             if ($request->type == 1)
             {
+                $phan_thuongs = $request->phan_thuongs;
                 foreach($phan_thuongs as $phan_thuong)
                 {
                     $phanThuong = PhanThuong::create([
@@ -120,17 +125,17 @@ class SuKienController extends Controller
             }
             else if ($request->type == 0)
             {
-                foreach($phan_thuongs as $phan_thuong)
-                {
-                    $phanThuong = PhanThuong::create([
-                        'type' => 0,
-                        'idSuKien' => $suKien->id,
-                    ]);
+                //Chi them 1 phan thuong
+                $phan_thuong = $request->phan_thuong;
 
-                    foreach($phan_thuong['items'] as $item)
-                    {
-                        $phanThuong->items()->attach($item['idItem'], ['soLuong' => $item['soLuong']]);
-                    }
+                $phanThuong = PhanThuong::create([
+                    'type' => 0,
+                    'idSuKien' => $suKien->id,
+                ]);
+
+                foreach($phan_thuong['items'] as $item)
+                {
+                    $phanThuong->items()->attach($item['idItem'], ['soLuong' => $item['soLuong']]);
                 }
             }
 
@@ -145,21 +150,22 @@ class SuKienController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
     public function update(Request $request, $idSuKien)
     {
         $rules = [
-            'name' => 'string|required',
+            'name' => 'string|required|unique:su_kien',
             'ngayBatDau' => 'date|required|after:yesterday',
-            'type' => ['required' | Rule::in([0, 1])],
+            'type' => 'numeric|required',
         ];
 
         $validator = Validator::make($request->all(), $rules);
 
-        if ($validator->fails()) {
+        if ($validator->fails())
+        {
             return response()->json([
                 'success' => false,
                 'message' => $validator->errors(),
@@ -167,22 +173,76 @@ class SuKienController extends Controller
         }
 
         try {
-            $suKien = SuKien::create([
-                'name' => $request->name,
-                'ngayBatDau' => $request->ngayBatDau,
-                'type' => $request->type,
-            ]);
+            $suKien = SuKien::find($idSuKien);
+
+            if (!$suKien) {
+                return response()->json(
+                    [
+                        'success' => false,
+                        'message' => 'Su Kien not found'
+                    ],
+                    404
+                );
+            }
+
+            if ($suKien->isDone) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cannot update this SuKien because it is over',
+                ], 403);
+            }
+
+            $suKien->name = $request->name;
+            $suKien->ngayBatDau = $request->ngayBatDau;
+            $suKien->type = $request->type;
+            $suKien->save();
+
+            
+            if ($request->type == 1)
+            {
+                $phan_thuongs = $request->phan_thuongs;
+                foreach($phan_thuongs as $phan_thuong)
+                {
+                    $phanThuong = PhanThuong::find($phan_thuong['id']);
+                    if ($phanThuong && $phanThuong->idSuKien == $idSuKien){
+                        $phanThuong->thanhTichHocTap = $phan_thuong['ThanhTichHocTap'];
+                        $phanThuong->capHoc = $phan_thuong['capHoc'];
+                        $phanThuong->type = 1;
+                        $phanThuong->save();
+
+                        $phanThuong->items()->detach();
+
+                        foreach($phan_thuong['items'] as $item)
+                        {
+                            $phanThuong->items()->attach($item['idItem'], ['soLuong' => $item['soLuong']]);
+                        }
+                    }
+                }
+            } else if ($request->type == 0)
+            {
+                $phan_thuong = $request->phan_thuong;
+                
+                $phanThuong = PhanThuong::find($phan_thuong['id']);
+                if ($phanThuong & $phanThuong->idSuKien == $idSuKien){
+                    $phanThuong->items()->detach();
+                    
+                    foreach($phan_thuong['items'] as $item)
+                    {
+                        $phanThuong->items()->attach($item['idItem'], ['soLuong' => $item['soLuong']]);
+                    }
+                }
+            }
 
             return response()->json([
                 'data' => $suKien,
                 'success' => true,
-                'message' => 'Created Su Kien successfully',
+                'message' => 'Updated Su Kien successfully',
             ], 200);
         } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -223,7 +283,7 @@ class SuKienController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -259,7 +319,7 @@ class SuKienController extends Controller
                 return response()->json([
                     'data' => $hoKhaus,
                     'success' => true,
-                    'message' => 'Get all of items for SuKien successfully',
+                    'message' => 'Thong ke ho Khau for SuKien successfully',
                 ], 200);
             }
 
@@ -272,7 +332,7 @@ class SuKienController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -331,7 +391,7 @@ class SuKienController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
-            ]);
+            ], 500);
         }
     }
 }

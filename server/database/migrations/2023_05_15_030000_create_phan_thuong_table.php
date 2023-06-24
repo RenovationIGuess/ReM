@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('phan_thuong', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('idSuKien');
-            $table->unsignedBigInteger('thanhTichHocTap')->nullable()->comment='0:null, 1:tien tien, 2:gioi, 3:other';
-            $table->unsignedBigInteger('capHoc')->nullable()->comment='0:null, 1:mau giao, 2:cap 1, 3:cap 2, 4: cap 3';
+            $table->smallInteger('thanhTichHocTap')->default(0)->comment='0:null, 1:tien tien, 2:gioi, 3:other';
+            $table->smallInteger('capHoc')->default(0)->comment='0:null, 1:mau giao, 2:cap 1, 3:cap 2, 4: cap 3';
             $table->unsignedBigInteger('type')->comment='0: not related to study, 1: related';
             $table->timestamps();
         });

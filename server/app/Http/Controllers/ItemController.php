@@ -5,24 +5,24 @@ namespace App\Http\Controllers;
 use Exception;
 use App\Models\Item;
 use Illuminate\Http\Request;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 
-class PhanQuaController extends Controller
+class ItemController extends Controller
 {
     public function index(Request $request)
     {
         try {
             $limit = $request->has('limit') ? $request->input() : 10;
 
-            $phanQuas = PhanQua::where('name', 'like', '%' . $request->name . '%')
+            $items = Item::where('name', 'like', '%' . $request->name . '%')
                 ->orderBy('id', 'ASC')
                 ->paginate($limit);
 
-            if ($phanQuas) {
+            if ($items) {
                 return response()->json([
-                    'data' => $phanQuas,
+                    'data' => $items,
                     'success' => true,
-                    'message' => 'Get PhanQuas successfully',
+                    'message' => 'Get Items successfully',
                 ], 200);
             }
 
@@ -35,31 +35,31 @@ class PhanQuaController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
-    public function show($idPhanQua)
+    public function show($idItem)
     {
         try {
-            $phanQua = Item::find($idPhanQua);
+            $item = Item::find($idItem);
 
-            if ($phanQua) {
+            if ($item) {
                 return response()->json([
-                    'data' => $phanQua,
+                    'data' => $item,
                     'success' => true,
                     'message' => 'success',
                 ], 200);
             }
             return response()->json([
                 'success' => false,
-                'message' => 'Phan Qua not found',
+                'message' => 'Item not found',
             ], 404);
         } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -80,50 +80,80 @@ class PhanQuaController extends Controller
         }
 
         try {
-            $phanQua = Item::create([
+            $item = Item::create([
                 'name' => $request->name,
                 'unit_price' => $request->unit_price,
             ]);
 
             return response()->json([
-                'data' => $phanQua,
-                'success' => false,
-                'message' => 'Created Phan Qua successfully',
+                'data' => $item,
+                'success' => true,
+                'message' => 'Created Item successfully',
             ], 200);
         } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
-    public function update(Request $request, $idPhanQua)
+    public function update(Request $request, $idItem)
     {
+        $rules = [
+            'name' => 'required|string',
+            'unit_price' => 'required|numeric',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails())
+        {
+            return response()->json(
+                [
+                    'success' => false,
+                    'message' => $validator->errors(),
+                ],
+                400
+            );
+        }
+
+        try {
+            $item = Item::find($idItem);
+            $item->name = $request->name;
+            $item->unit_price = $request->unit_price;
+            $item->save();
+
+        } catch (Exception $exception) {
+            return response()->json([
+                'success' => false,
+                'message' => $exception->getMessage(),
+            ], 500);
+        }
     }
 
-    public function destroy($idPhanQua)
+    public function destroy($idItem)
     {
         try {
-            $phanQua = Item::find($idPhanQua);
-            if (!$phanQua) {
+            $item = Item::find($idItem);
+            if (!$item) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Phan Qua not found',
+                    'message' => 'Item not found',
                 ], 404);
             }
 
-            $phanQua->delete();
+            $item->delete();
 
             return response()->json([
                 'success' => true,
-                'message' => 'Deleted Phan Qua successfully',
+                'message' => 'Deleted item successfully',
             ]);
         } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
-            ]);
+            ], 500);
         }
     }
 }

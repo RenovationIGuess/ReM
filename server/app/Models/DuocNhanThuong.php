@@ -31,26 +31,6 @@ class DuocNhanThuong extends Model
         'idPhanThuong',
     ];
 
-    // protected $appends = [
-    //     'total_cost'
-    // ];
-
-    protected function totalCost(): Attribute
-    {
-        return new Attribute(
-            get: fn() => $this->calculateTotalCost(),
-        );
-    }
-
-    public function calculateTotalCost()
-    {
-        $totalCost = 0;
-        foreach ($this->phanQuas as $phanQua) {
-            $totalCost += $phanQua->pivot->soLuong * $phanQua->unit_price;
-        }
-        return $totalCost;
-    }
-
     public function suKien()
     {
         return $this->belongsTo(SuKien::class, 'idSuKien', 'id');
