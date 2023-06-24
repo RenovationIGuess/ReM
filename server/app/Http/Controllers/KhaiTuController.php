@@ -65,7 +65,7 @@ class KhaiTuController extends Controller
         try {
 
             $nhanKhau = NhanKhau::find($idNguoiChet);
-            $nhanKhau->note = "Đã qua đời";
+            $nhanKhau->ghiChu = "Đã qua đời";
             $nhanKhau->save();
 
             $khaiTu = KhaiTu::create([
@@ -78,7 +78,7 @@ class KhaiTuController extends Controller
             ]);
 
             return response()->json([
-                'data' => $khaiTu,
+                'data' => $nhanKhau,
                 'success' => true,
                 'message' => 'Khai Tu cho 1 Nhan Khau thanh cong',
             ], 200);

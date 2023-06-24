@@ -1,21 +1,50 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button, DatePicker, Form, Input, Radio, Select, Space } from 'antd'
 import HomeLayout from '~/components/Layout/HomeLayout'
 import SubHeader from '~/components/SubHeader'
 import { showDeleteConfirm } from '~/components/ConfirmModal'
-import { ExclamationCircleFilled } from '@ant-design/icons'
+import { ExclamationCircleFilled, LoadingOutlined } from '@ant-design/icons'
 import UploadImage from '~/components/UploadImage'
+import { createResident } from '~/lib/residents'
+import { toast } from 'react-toastify'
+import dayjs from 'dayjs'
 
 const Create = () => {
+  const [form] = Form.useForm()
   const navigate = useNavigate()
+
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+
+  const onFinish = async (values: IResident) => {
+    try {
+      setIsLoading(true)
+
+      await createResident({ ...values, ngaySinh: (values.ngaySinh as any).format('YYYY-MM-DD') })
+      toast.success('Thêm mới nhân khẩu thành công', {
+        toastId: 'create-resident-success',
+        icon: '👏'
+      })
+      form.resetFields()
+    } catch (error) {
+      console.error('==> Toang méo chạy được rồi ><!', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   return (
     <HomeLayout>
       <div className="w-full rounded-lg bg-bgPrimary px-4 py-2 shadow-md">
         <SubHeader title="Thêm mới nhân khẩu" type="create" />
 
-        <Form className="grid auto-rows-max grid-cols-8 items-center justify-center">
+        <Form
+          form={form}
+          name="createResident"
+          autoComplete="off"
+          onFinish={onFinish}
+          className="grid auto-rows-max grid-cols-8 items-center justify-center"
+        >
           <div className="col-span-3 col-start-3">
             <Form.Item
               label="Mã nhân khẩu"
@@ -51,7 +80,14 @@ const Create = () => {
             className="col-span-3 col-start-3"
             rules={[{ required: true, message: 'Ngày sinh không được để trống' }]}
           >
-            <DatePicker placeholder="Ngày sinh" style={{ width: '90%' }} />
+            <DatePicker
+              placeholder="Ngày sinh"
+              format={'YYYY-MM-DD'}
+              disabledDate={current => {
+                return current && current > dayjs().endOf('day')
+              }}
+              style={{ width: '90%' }}
+            />
           </Form.Item>
 
           <Form.Item
@@ -61,8 +97,8 @@ const Create = () => {
             rules={[{ required: true, message: 'Giới tính không được để trống' }]}
           >
             <Radio.Group value={0}>
-              <Radio value={0}>Nam</Radio>
-              <Radio value={1}>Nữ</Radio>
+              <Radio value="Nam">Nam</Radio>
+              <Radio value="Nữ">Nữ</Radio>
             </Radio.Group>
           </Form.Item>
 
@@ -91,7 +127,6 @@ const Create = () => {
             name="danToc"
             labelCol={{ span: 12 }}
             className="col-span-2 col-start-3"
-            rules={[{ required: true, message: ' ' }]}
           >
             <Select
               showSearch
@@ -114,27 +149,22 @@ const Create = () => {
             />
           </Form.Item>
 
-          <Form.Item
-            label="Tôn giáo"
-            name="tonGiao"
-            className="col-span-2 ms-2"
-            rules={[{ required: true, message: ' ' }]}
-          >
+          <Form.Item label="Tôn giáo" name="tonGiao" className="col-span-2 ms-2">
             <Select
               showSearch
               placeholder="Tôn giáo"
               optionFilterProp="children"
               options={[
                 {
-                  value: 'không',
+                  value: 'Không',
                   label: 'Không'
                 },
                 {
-                  value: 'đạo phật',
+                  value: 'Đạo phật',
                   label: 'Đạo phật'
                 },
                 {
-                  value: 'thiên chúa giáo',
+                  value: 'Thiên chúa giáo',
                   label: 'Thiên chúa giáo'
                 }
               ]}
@@ -142,8 +172,8 @@ const Create = () => {
           </Form.Item>
 
           <Form.Item
-            label="Địa chỉ thường chú"
-            name="diaChiThuongChu"
+            label="Địa chỉ thường trú"
+            name="diaChiThuongTru"
             labelCol={{ span: 6 }}
             className="col-span-4 col-start-3"
             rules={[{ required: true, message: 'Địa chỉ thường chú không được để trống' }]}
@@ -166,7 +196,6 @@ const Create = () => {
             name="quocTich"
             labelCol={{ span: 12 }}
             className="col-span-2 col-start-3"
-            rules={[{ required: true, message: ' ' }]}
           >
             <Select
               showSearch
@@ -174,11 +203,11 @@ const Create = () => {
               optionFilterProp="children"
               options={[
                 {
-                  value: 'việtNam',
+                  value: 'Việt Nam',
                   label: 'Việt Nam'
                 },
                 {
-                  value: 'nhậtBản',
+                  value: 'Nhật Bản',
                   label: 'Nhật Bản'
                 },
                 {
@@ -198,7 +227,6 @@ const Create = () => {
             name="trinhDoHocVan"
             labelCol={{ span: 12 }}
             className="col-span-2 col-start-3"
-            rules={[{ required: true, message: ' ' }]}
           >
             <Select
               showSearch
@@ -206,15 +234,15 @@ const Create = () => {
               optionFilterProp="children"
               options={[
                 {
-                  value: 'cấp 3',
-                  label: 'cấp 3'
+                  value: 'Cấp 3',
+                  label: 'Cấp 3'
                 },
                 {
-                  value: 'đai học',
+                  value: 'Đai học',
                   label: 'Đại học'
                 },
                 {
-                  value: 'cao học',
+                  value: 'Cao học',
                   label: 'Cao học'
                 }
               ]}
@@ -230,18 +258,8 @@ const Create = () => {
             name="noiLamViec"
             labelCol={{ span: 6 }}
             className="col-span-4 col-start-3"
-            rules={[{ required: true, message: 'Nơi làm việc không được để trống' }]}
           >
             <Input.TextArea placeholder="Nhập nơi làm việc" />
-          </Form.Item>
-
-          <Form.Item
-            label="Ghi chú"
-            name="ghiChú"
-            labelCol={{ span: 6 }}
-            className="col-span-4 col-start-3"
-          >
-            <Input.TextArea placeholder="Nhập ghi chú" />
           </Form.Item>
 
           <Form.Item className="col-span-8 col-start-6 ms-32">
@@ -249,7 +267,8 @@ const Create = () => {
               <Button
                 type="primary"
                 htmlType="button"
-                className="bg-danger"
+                ghost
+                danger
                 onClick={() =>
                   showDeleteConfirm({
                     title: 'Bạn có chắc chắn muốn hủy quá trình ?',
@@ -262,8 +281,8 @@ const Create = () => {
               >
                 Hủy
               </Button>
-              <Button type="primary" htmlType="submit" className="bg-primary">
-                Thêm
+              <Button disabled={isLoading} type="primary" htmlType="submit" ghost>
+                {isLoading ? <LoadingOutlined /> : 'Thêm'}
               </Button>
             </Space>
           </Form.Item>

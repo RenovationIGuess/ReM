@@ -1,7 +1,10 @@
 import {
   CaretUpOutlined,
+  GiftFilled,
   GiftOutlined,
+  InfoCircleFilled,
   InfoCircleOutlined,
+  MacCommandFilled,
   MacCommandOutlined,
   SolutionOutlined,
   TeamOutlined,
@@ -15,11 +18,12 @@ import Logo from '~/assets/logo.png'
 
 type SideButtonProps = {
   icon: React.ReactNode
+  activedIcon: React.ReactNode
   text: string
   href: string
 }
 
-const SideButton = ({ icon, text, href }: SideButtonProps) => {
+const SideButton = ({ icon, activedIcon, text, href }: SideButtonProps) => {
   const navigate = useNavigate()
   const isActive =
     useLocation().pathname.slice(1).split('/').includes(href.slice(1)) ||
@@ -34,24 +38,54 @@ const SideButton = ({ icon, text, href }: SideButtonProps) => {
       }
       onClick={() => navigate(href)}
     >
-      {icon}
-      <p className="font-medium">{text}</p>
+      {isActive ? activedIcon : icon}
+      <p className={`${isActive ? 'font-semibold' : 'font-medium'}`}>{text}</p>
     </button>
   )
 }
 
 const Sidebar = () => {
   return (
-    <div className="flex h-full basis-1/6 flex-col items-center justify-start gap-8 px-3 pt-8">
+    <div className="flex h-full min-w-[13rem] max-w-[13rem] flex-col items-center justify-start gap-8 px-3 pt-8">
       <img className="w-3/5" src={Logo} alt="app logo" />
-      <div className="flex w-full grow flex-col items-center justify-start gap-2">
-        <SideButton icon={<MacCommandOutlined />} text="Thống kê" href="/" />
-        <SideButton icon={<TeamOutlined />} text="Hộ khẩu" href="/ho-khau" />
-        <SideButton icon={<SolutionOutlined />} text="Nhân khẩu" href="/nhan-khau" />
-        <SideButton icon={<UserAddOutlined />} text="Đăng ký tạm trú" href="/tam-tru" />
-        <SideButton icon={<GiftOutlined />} text="Tặng quà" href="/tang-qua" />
+      <div className="flex w-full grow flex-col items-center justify-start gap-1">
+        <SideButton
+          icon={<MacCommandOutlined />}
+          activedIcon={<MacCommandFilled />}
+          text="Thống kê"
+          href="/"
+        />
+        <SideButton
+          icon={<TeamOutlined />}
+          activedIcon={<TeamOutlined />}
+          text="Hộ khẩu"
+          href="/ho-khau"
+        />
+        <SideButton
+          icon={<SolutionOutlined />}
+          activedIcon={<SolutionOutlined />}
+          text="Nhân khẩu"
+          href="/nhan-khau"
+        />
+        <SideButton
+          icon={<UserAddOutlined />}
+          activedIcon={<UserAddOutlined />}
+          text="Đăng ký tạm trú"
+          href="/tam-tru"
+        />
+        <SideButton
+          icon={<GiftOutlined />}
+          activedIcon={<GiftFilled />}
+          text="Tặng quà"
+          href="/tang-qua"
+        />
         <Divider className="m-0" />
-        <SideButton icon={<InfoCircleOutlined />} text="Thông tin" href="/thong-tin" />
+        <SideButton
+          icon={<InfoCircleOutlined />}
+          activedIcon={<InfoCircleFilled />}
+          text="Thông tin"
+          href="/thong-tin"
+        />
       </div>
       <div className="w-full">
         <Divider className="m-0" />

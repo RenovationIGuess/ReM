@@ -72,7 +72,10 @@ class AuthController extends Controller
      */
     public function me(): JsonResponse
     {
-        return response()->json(auth()->user());
+        return response()->json([
+            'message' => 'Get current user successfully',
+            'data' => Auth::user(),
+        ], 200);
     }
 
     /**

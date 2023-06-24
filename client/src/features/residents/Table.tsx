@@ -1,21 +1,31 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Space, Table } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
-import { useGetResidentsByPageQuery } from './api/residentsApiSlice'
+import { useResidentsStore } from './residentsStore'
 
-const ResigentsTable = () => {
+const ResidentsTable = () => {
   const navigate = useNavigate()
-
-  const [page, setPage] = useState<Page>({ page: 1, offset: 10 })
-  const { data: residentsData } = useGetResidentsByPageQuery(page)
+  const [residents, total, setCurrentPage] = useResidentsStore(state => [
+    state.residents,
+    state.total,
+    state.setCurrentPage
+  ])
 
   const columns: ColumnsType<IResident> = [
     {
       title: 'Mã nhân khẩu',
       dataIndex: 'maNhanKhau',
-      key: 'maNhanKhau'
+      key: 'maNhanKhau',
+      render: (text, record) => (
+        <button
+          className="transition-colors hover:text-primary"
+          onClick={() => navigate(`/nhan-khau/${record.id}`)}
+        >
+          {text}
+        </button>
+      )
     },
     {
       title: 'Họ và tên',
@@ -54,34 +64,31 @@ const ResigentsTable = () => {
       title: ' ',
       key: 'action',
       render: (_, record) => (
-        <Space size="middle">
-          <EditOutlined
-            onClick={() => navigate(`/nhan-khau/chinh-sua/${record.id}`)}
-            className="cursor-pointer text-primary"
-          />
-          <DeleteOutlined className="cursor-pointer text-danger" />
-        </Space>
+        <EditOutlined
+          onClick={() => navigate(`/nhan-khau/chinh-sua/${record.id}`)}
+          className="cursor-pointer text-primary"
+        />
       )
     }
   ]
 
+  if (!residents) return <></>
+
   return (
     <Table
-      rowSelection={{ type: 'checkbox' }}
       columns={columns}
-      dataSource={residentsData?.data.data}
-      scroll={{ y: 600 }}
+      dataSource={Array.from(residents.values())}
       pagination={{
         defaultPageSize: 10,
         showSizeChanger: true,
         pageSizeOptions: ['10', '15', '20'],
-        total: residentsData?.data.total,
+        total: total,
         onChange(page, pageSize) {
-          setPage({ page, offset: pageSize })
+          setCurrentPage({ page, offset: pageSize })
         }
       }}
     />
   )
 }
 
-export default React.memo(ResigentsTable)
+export default React.memo(ResidentsTable)

@@ -6,11 +6,13 @@ import { Button, Space } from 'antd'
 type PropsType = {
   title: string
   type: 'create' | 'detail'
+  editBtn?: React.ReactNode
+  deleteBtn?: React.ReactNode
   onEdit?: () => void
   onDelete?: () => void
 }
 
-const SubHeader = ({ title, type, onEdit, onDelete }: PropsType) => {
+const SubHeader = ({ title, type, editBtn, deleteBtn, onEdit, onDelete }: PropsType) => {
   const navigate = useNavigate()
 
   return (
@@ -28,12 +30,17 @@ const SubHeader = ({ title, type, onEdit, onDelete }: PropsType) => {
           <p className="text-xl font-medium">{title}</p>
         ) : (
           <Space>
-            <Button type="primary" ghost color="#40A9FF" icon={<EditOutlined />} onClick={onEdit}>
-              Chỉnh sửa
-            </Button>
-            <Button type="primary" ghost danger icon={<DeleteOutlined />} onClick={onDelete}>
-              Xóa
-            </Button>
+            {editBtn ?? (
+              <Button type="primary" ghost icon={<EditOutlined />} onClick={onEdit}>
+                Chỉnh sửa
+              </Button>
+            )}
+
+            {deleteBtn ?? (
+              <Button type="primary" ghost danger icon={<DeleteOutlined />} onClick={onDelete}>
+                Xóa
+              </Button>
+            )}
           </Space>
         )}
       </>
