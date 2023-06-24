@@ -148,3 +148,12 @@ declare type IPhanThuongThongKe = {
   count: number,
   items: IItem[]
 }
+declare type Residents = Map<string, IResident>
+
+declare type KhaiTuData = {
+  soGiayKhaiTu: string
+  ngayChet: Date
+  lyDoChet: string
+  idNguoiTao: number
+  idNguoiKhaiTu: number
+}

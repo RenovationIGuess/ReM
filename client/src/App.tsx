@@ -1,4 +1,3 @@
-import { Button, Form, Input } from 'antd'
 import { Outlet, Route, Routes } from 'react-router-dom'
 import Login from './features/auth/Login'
 import RequireAuth from './features/auth/RequireAuth'
@@ -14,12 +13,9 @@ import Gift from './features/gift'
 import EventList from './features/gift/EventList'
 import Temporary from './features/temporary'
 import AboutUs from './features/about'
-<<<<<<< HEAD
 import { ChildrenList } from './features/gift/ChildrenList'
 import { StatisticList } from './features/gift/StatisticList'
 import { GiftList } from './features/gift/GiftList'
-=======
->>>>>>> create household CRUD ui
 import Create from './features/households/Create'
 import Prefetch from './features/auth/Prefetch'
 
@@ -60,23 +56,23 @@ function App() {
 
             <Route path="tang-qua">
               <Route index element={<EventList />} />
-            </Route >
+            </Route>
 
             <Route path="su-kien">
-              <Route path=':id' index element={<ChildrenList />} />
-              <Route path='thong-ke-ho-khau/:id' index element={<StatisticList />} />
-              <Route path=':id/thong-ke-phan-qua' index element={<GiftList />} />
-              <Route path='them-be/:id' />
-              <Route path='them-qua/:id' />
-            </Route >
+              <Route path=":id" index element={<ChildrenList />} />
+              <Route path="thong-ke-ho-khau/:id" index element={<StatisticList />} />
+              <Route path="phan-qua/:id" index element={<GiftList />} />
+              <Route path="them-be/:id" />
+              <Route path="them-qua/:id" />
+            </Route>
 
             <Route path="thong-tin">
               <Route index element={<AboutUs />} />
             </Route>
           </Route>
-        </Route >
-      </Route >
-    </Routes >
+        </Route>
+      </Route>
+    </Routes>
   )
 }
 
