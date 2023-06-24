@@ -80,6 +80,14 @@ class DuocNhanThuongController extends Controller
 
         try {
 
+            $suKien = SuKien::find($idSuKien);
+            if (!$suKien) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Su Kien not found'
+                ], 404);
+            }
+
             $beAlreadyIn = DuocNhanThuong::where('idSuKien', $idSuKien)
                 ->where('idNhanKhau', $request->idNhanKhau)
                 ->first();
@@ -88,32 +96,46 @@ class DuocNhanThuongController extends Controller
                 return response()->json([
                     'success' => false,
                     'message' => 'Đã có nhân khẩu này trong danh sách được nhận quà',
-                ], 404);
+                ], 403);
             }
-
-            $phanThuong = PhanThuong::where('idSuKien', $idSuKien)
+            
+            $duocNhanThuong = null;
+            if ($suKien->type == 1)
+            {
+                $phanThuong = PhanThuong::where('idSuKien', $idSuKien)
                 ->where('thanhTichHocTap', $request->thanhTichHocTap)
                 ->where('capHoc', $request->capHoc)
                 ->first();
 
-            if (!$phanThuong)
-            {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Không có phần thưởng nào phù hợp với thành tích học tập và cấp học đấy',
-                ], 404);
-            }
+                if (!$phanThuong)
+                {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Không có phần thưởng nào phù hợp với thành tích học tập và cấp học đấy',
+                    ], 404);
+                }
 
-            $duocNhanThuong = DuocNhanThuong::create([
-                'idSuKien' => $idSuKien,
-                'idNhanKhau' => $request->idNhanKhau,
-                'tenTruong' => $request->tenTruong,
-                'tenLop' => $request->tenLop,
-                'thanhTichHocTap' => $request->thanhTichHocTap,
-                'capHoc' => $request->capHoc,
-                'anhGiayKhen' => $request->anhGiayKhen,
-                'idPhanThuong' => $phanThuong->id,
-            ]);
+                $duocNhanThuong = DuocNhanThuong::create([
+                    'idSuKien' => $idSuKien,
+                    'idNhanKhau' => $request->idNhanKhau,
+                    'tenTruong' => $request->tenTruong,
+                    'tenLop' => $request->tenLop,
+                    'thanhTichHocTap' => $request->thanhTichHocTap,
+                    'capHoc' => $request->capHoc,
+                    'anhGiayKhen' => $request->anhGiayKhen,
+                    'idPhanThuong' => $phanThuong->id,
+                ]);
+            } else if ($suKien->type == 0)
+            {
+                $phanThuong = PhanThuong::where('idSuKien', $idSuKien)
+                    ->first();
+
+                $duocNhanThuong = DuocNhanThuong::create([
+                    'idSuKien' => $idSuKien,
+                    'idNhanKhau' => $request->idNhanKhau,
+                    'idPhanThuong' => $phanThuong,
+                ]);
+            }
 
             return response()->json([
                 'data' => $duocNhanThuong,
@@ -157,12 +179,40 @@ class DuocNhanThuongController extends Controller
                 ], 404);
             }
 
-            $duocNhanThuong->tenTruong = $request->tenTruong;
-            $duocNhanThuong->tenLop = $request->tenLop;
-            $duocNhanThuong->capHoc = $request->capHoc;
-            $duocNhanThuong->thanhTichHocTap = $request->thanhTichHocTap;
-            $duocNhanThuong->anhGiayKhen = $request->anhGiayKhen;
-            $duocNhanThuong->save();
+            $suKien = SuKien::find($duocNhanThuong->idSuKien);
+
+            if ($suKien->type == 1) {
+
+                $phanThuong = $suKien->phanThuongs()
+                ->where('thanhTichHocTap', $request->thanhTichHocTap)
+                ->where('capHoc', $request->capHoc)
+                ->first();
+
+                if (!$phanThuong)
+                {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Không có phần thưởng nào phù hợp với thành tích học tập và cấp học đấy',
+                    ], 404);
+                }
+
+                $duocNhanThuong->tenTruong = $request->tenTruong;
+                $duocNhanThuong->tenLop = $request->tenLop;
+                $duocNhanThuong->capHoc = $request->capHoc;
+                $duocNhanThuong->thanhTichHocTap = $request->thanhTichHocTap;
+                $duocNhanThuong->anhGiayKhen = $request->anhGiayKhen;
+                $duocNhanThuong->idPhanThuong = $phanThuong->id;
+                $duocNhanThuong->save();
+            } else if ($suKien->type == 0)
+            {
+                // khong co gi de chinh sua
+            }
+
+            return response()->json([
+                'data' => $duocNhanThuong,
+                'success' => true,
+                'message' => "Update DuocNhanThuong successfully"
+            ], 200);
 
         } catch (Exception $exception) {
             return response()->json([

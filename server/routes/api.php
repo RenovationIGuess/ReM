@@ -98,7 +98,7 @@ Route::group(['prefix' => 'duoc-nhan-thuong'], function ($router) {
 
 Route::group(['prefix' => 'items'], function($router) {
     Route::get('/', [ItemController::class, 'index']);
-    Route::get('/{idPhanQua}', [ItemController::class, 'show']);
+    Route::get('/{idItem}', [ItemController::class, 'show']);
     Route::post('/create', [ItemController::class, 'store']);
-    Route::get('/edit', [ItemController::class, 'update']);
+    Route::put('/{idItem}/edit', [ItemController::class, 'update']);
 });

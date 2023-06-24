@@ -120,9 +120,22 @@ class ItemController extends Controller
 
         try {
             $item = Item::find($idItem);
+            if (!$item) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Item not found',
+                ], 404);
+            }
+
             $item->name = $request->name;
             $item->unit_price = $request->unit_price;
             $item->save();
+
+            return response()->json([
+                'data' => $item,
+                'success' => true,
+                'message' => 'Update item successfully'
+            ], 200);
 
         } catch (Exception $exception) {
             return response()->json([

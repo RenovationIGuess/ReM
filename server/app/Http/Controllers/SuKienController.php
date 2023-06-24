@@ -119,15 +119,24 @@ class SuKienController extends Controller
                 }
             } else if ($request->type == 0) {
                 //Chi them 1 phan thuong
-                $phan_thuong = $request->phan_thuong;
+                $phan_thuongs = $request->phan_thuongs;
 
-                $phanThuong = PhanThuong::create([
-                    'type' => 0,
-                    'idSuKien' => $suKien->id,
-                ]);
+                if (count($phan_thuongs) != 1) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Sự kiện loại này được có 1 phần thưởng.'
+                    ], 403);
+                }
 
-                foreach ($phan_thuong['items'] as $item) {
-                    $phanThuong->items()->attach($item['idItem'], ['soLuong' => $item['soLuong']]);
+                foreach ($phan_thuongs as $phan_thuong) {
+                    $phanThuong = PhanThuong::create([
+                        'type' => 0,
+                        'idSuKien' => $suKien->id,
+                    ]);
+
+                    foreach ($phan_thuong['items'] as $item) {
+                        $phanThuong->items()->attach($item['idItem'], ['soLuong' => $item['soLuong']]);
+                    }
                 }
             }
 
@@ -186,8 +195,6 @@ class SuKienController extends Controller
             $suKien->name = $request->name;
             $suKien->ngayBatDau = $request->ngayBatDau;
             $suKien->type = $request->type;
-            $suKien->save();
-
 
             if ($request->type == 1) {
                 $phan_thuongs = $request->phan_thuongs;
@@ -197,8 +204,26 @@ class SuKienController extends Controller
                         $phanThuong->thanhTichHocTap = $phan_thuong['thanhTichHocTap'];
                         $phanThuong->capHoc = $phan_thuong['capHoc'];
                         $phanThuong->type = 1;
-                        $phanThuong->save();
 
+                        $phanThuong->items()->detach();
+
+                        foreach ($phan_thuong['items'] as $item) {
+                            $phanThuong->items()->attach($item['idItem'], ['soLuong' => $item['soLuong']]);
+                        }
+                        $phanThuong->save();
+                    }
+                }
+            } else if ($request->type == 0) {
+                $phan_thuongs = $request->phan_thuongs;
+                if (count($phan_thuongs) != 1) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Sự kiện loại này được có 1 phần thưởng.'
+                    ], 403);
+                }
+                foreach ($phan_thuongs as $phan_thuong) {
+                    $phanThuong = PhanThuong::find($phan_thuong['id']);
+                    if ($phanThuong && $phanThuong->idSuKien == $idSuKien) {
                         $phanThuong->items()->detach();
 
                         foreach ($phan_thuong['items'] as $item) {
@@ -206,18 +231,9 @@ class SuKienController extends Controller
                         }
                     }
                 }
-            } else if ($request->type == 0) {
-                $phan_thuong = $request->phan_thuong;
-
-                $phanThuong = PhanThuong::find($phan_thuong['id']);
-                if ($phanThuong & $phanThuong->idSuKien == $idSuKien) {
-                    $phanThuong->items()->detach();
-
-                    foreach ($phan_thuong['items'] as $item) {
-                        $phanThuong->items()->attach($item['idItem'], ['soLuong' => $item['soLuong']]);
-                    }
-                }
             }
+
+            $suKien->save();
 
             return response()->json([
                 'data' => $suKien,
