@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Exception;
+use App\Models\HoKhau;
 use App\Models\NhanKhau;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -69,7 +70,9 @@ class NhanKhauController extends Controller
 
     public function store(Request $request)
     {
-        $rules = [
+        $moiSinh = $request->query('moiSinh');
+
+        $nhanKhauData = request('nhanKhau')->validate([
             'maNhanKhau' => 'required|string',
             'hoTen' => 'required|string',
             'biDanh' => 'string',
@@ -82,56 +85,87 @@ class NhanKhauController extends Controller
             'danToc' => 'string',
             'quocTich' => 'string',
             'tonGiao' => 'string',
-            'soHoChieu' => 'numeric',
+            'soHoChieu' => 'string',
             'trinhDoHocVan' => 'string',
             'ngheNghiep' => 'string',
             'noiLamViec' => 'string',
             //khong can du cac truong
             //'tienAn' => 'string',
             'ghiChu' => 'string',
-        ];
+        ]);
 
-        $validator = Validator::make($request->all(), $rules);
+        $cmtData = request('chungMinhThu')->validate([
+            'soCMT' => "required|string",
+            'ngayCap' => "required|date",
+            'noiCap' => "required|string",
+        ]);
 
-        if ($validator->fails()) {
-            return response()->json(
-                [
-                    'data' => $validator->errors(),
-                    'success' => false,
-                    'message' => 'Validation Error',
-                ],
-                400
-            );
-        }
+        // $validator = Validator::make($request->all(), $rules);
+
+        // if ($validator->fails())
+        // {
+        //     return response()->json(
+        //         [
+        //             'data' => $validator->errors(),
+        //             'success' => false,
+        //             'message' => 'Validation Error',
+        //         ],
+        //         400
+        //     );
+        // }
 
         try {
-            $nhanKhau = NhanKhau::create([
-                'maNhanKhau' => $request->maNhanKhau,
-                'hoTen' => $request->hoTen,
-                'biDanh' => $request->biDanh,
-                'gioiTinh' => $request->gioiTinh,
-                'noiSinh' => $request->noiSinh,
-                'ngaySinh' => $request->ngaySinh,
-                'nguyenQuan' => $request->nguyenQuan,
-                'diaChiThuongTru' => $request->diaChiThuongTru,
-                'diaChiHienTai' => $request->diaChiHienTai,
-                'danToc' => $request->danToc,
-                'quocTich' => $request->quocTich,
-                'tonGiao' => $request->tonGiao,
-                'soHoChieu' => $request->soHoChieu,
-                'trinhDoHocVan' => $request->trinhDoHocVan,
-                'ngheNghiep' => $request->ngheNghiep,
-                'noiLamViec' => $request->noiLamViec,
-                //khong du cac truong
-                'ghiChu' => $request->ghiChu,
-            ]);
+            // Lay ra ho khau duoc chon
+            $hoKhau = HoKhau::with('nhanKhaus')->find($request->idHoKhau);
 
-            return response()->json([
-                'data' => $nhanKhau,
-                'success' => true,
-                'message' => 'Created Nhan Khau successfully',
-            ], 200);
+            // Kiem tra xem co ho khau da tim co ton tai k?
+            if ($hoKhau) {
+                // Neu moi sinh thi sua info
+                if ($moiSinh == 1) {
+                    $data['ghiChu'] = 'Mới sinh';
+                    $data['noiLamViec'] = null;
+                    $data['trinhDoHocVan'] = null;
+                    $data['ngheNghiep'] = null;
+                }
 
+                // Tao nhan khau
+                $nhanKhau = NhanKhau::create($data);
+
+                // Tao moi quan he vs ho khau
+                $nhanKhau->thanhVienHo()->create([
+                    'idNhanKhau' => $nhanKhau->id,
+                    'idHoKhau' => $hoKhau->id,
+                    'quanHeVoiChuHo' => "",
+                ]);
+
+                // request('nhanKhau')
+                // $request['nhanKhau'] 
+                // {
+                //     nhanKhau: {
+                //     'ghiChu': 'fsdafadsf',
+
+                //     },
+                //     cmt: {
+
+                //     }
+                // }
+
+                // Tao chung minh thu
+                $nhanKhau->chungMinhThu()->create([
+
+                ]);
+
+                return response()->json([
+                    'data' => $nhanKhau,
+                    'success' => true,
+                    'message' => 'Tạo nhân khẩu thành công!',
+                ], 200);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => "ID hộ khẩu không hợp lệ!",
+                ]);
+            }
         } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
