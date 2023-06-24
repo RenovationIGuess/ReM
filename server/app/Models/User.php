@@ -52,4 +52,9 @@ class User extends Authenticatable implements JWTSubject
     protected $hidden = [
         'password',
     ];
+
+    public function dinhChinhs()
+    {
+        return $this->hasMany(DinhChinh::class, 'idNguoiThayDoi', 'id');
+    }
 }

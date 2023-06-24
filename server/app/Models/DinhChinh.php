@@ -19,4 +19,14 @@ class DinhChinh extends Model
         'ngayThayDoi',
         'idNguoiThayDoi',
     ];
+
+    public function hoKhau()
+    {
+        return $this->belongsTo(HoKhau::class, 'idHoKhau');
+    }
+
+    public function nguoiThayDoi()
+    {
+        return $this->belongsTo(NguoiThayDoi::class, 'idNguoiThayDoi');
+    }
 }
