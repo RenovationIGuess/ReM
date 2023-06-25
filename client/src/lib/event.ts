@@ -1,0 +1,39 @@
+import axiosClient from '~/app/axiosClient'
+
+export const getEventByPage = async (page: Page) => {
+    const response = await axiosClient.get(`/su-kien?page=${page.page}&limit=${page.offset}`)
+    if (!response) return
+    console.log('Call api successfully', response.data.data)
+    return response.data.data
+}
+
+export const getEventById = async (id: string) => {
+    const response = await axiosClient.get(`/su-kien/${id}`)
+    if (!response) return
+    console.log('Call api get event by id successfully', response.data)
+    return response.data
+}
+
+export const getGiftsEventByEventId = async (id: string | undefined) => {
+    const response = await axiosClient.get(`/su-kien/${id}/thong-ke-phan-qua`)
+    if (!response) {
+        console.log('Fall')
+        return
+    }
+    console.log('Call api get gifts by event id successfully', response.data.data)
+    return response.data
+}
+
+export const getItems = async () => {
+    const response = await axiosClient.get(`/items`)
+    if (!response) return
+    console.log('Call api get items successfully', response.data)
+    return response.data.data
+}
+
+export const getStatisticById = async (id: string | undefined) => {
+    const response = await axiosClient.get(`/su-kien/${id}/thong-ke-ho-khau`)
+    if (!response) return
+    console.log('Call api get staticlsts by id successfully', response.data)
+    return response.data
+}

@@ -27,7 +27,7 @@ function MembersList({ membersList }: PropsType) {
               showDeleteConfirm({
                 title: 'Bạn có chắc chắn muốn xóa nhân khẩu này không?',
                 icon: <WarningFilled />,
-                onOk: () => {}
+                onOk: () => { }
               })
             }
           />

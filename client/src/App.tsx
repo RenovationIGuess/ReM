@@ -65,7 +65,7 @@ function App() {
             <Route path="su-kien">
               <Route path=':id' index element={<ChildrenList />} />
               <Route path='thong-ke-ho-khau/:id' index element={<StatisticList />} />
-              <Route path='phan-qua/:id' index element={<GiftList />} />
+              <Route path=':id/thong-ke-phan-qua' index element={<GiftList />} />
               <Route path='them-be/:id' />
               <Route path='them-qua/:id' />
             </Route >

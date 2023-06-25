@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import HomeLayout from '~/components/Layout/HomeLayout'
 import StatisticTable from './StatisticTable'
 import { Button, Form, Input, InputNumber, Modal, Pagination, Row, Statistic } from 'antd'
@@ -10,6 +10,8 @@ import { addGift, getGiftsSelector } from './gifts.slice'
 import { useAppDispatch } from '~/hooks/useRedux'
 import { useSelector } from 'react-redux'
 import { GiftCard } from './GiftCard'
+import { useEventStore } from '~/app/eventStore'
+import { useGetGiftsByPageQuery } from './api/gifts.slice'
 
 interface Values {
     name: string;
@@ -75,21 +77,22 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
 };
 
 export const GiftList = () => {
-    const gifts = useSelector(getGiftsSelector)
-    const perPage = 6
-    const total = gifts.length
 
     const { id } = useParams()
     const navigate = useNavigate()
     const [openCreateGift, setOpenCreateGift] = useState(false);
-    const [state, setState] = useState({ minValue: 0, maxValue: perPage })
-    const handleChange = (value: number) => {
-        setState({
-            minValue: (value - 1) * perPage,
-            maxValue: value * perPage
-        });
-    };
+    const [event, gifts, getEventById, getGiftsEventByEventId] = useEventStore(state => [
+        state.event,
+        state.gifts,
+        state.getEventById,
+        state.getGiftsEventByEventId
+    ])
 
+    useEffect(() => {
+        getEventById(id ? id : '1')
+        getGiftsEventByEventId(id)
+    }, [])
+    // const { data: giftsData } = useGetGiftsByPageQuery(page)
     const onCreate = (values: any) => {
         console.log('Received values of form: ', values);
         setOpenCreateGift(false);
@@ -114,18 +117,30 @@ export const GiftList = () => {
                 <TabList defaultActiveKey='3' eventId={id} />
                 <div className="mt-2 h-full grow rounded-lg bg-bgPrimary px-4 py-2 shadow-md">
                     <div className="flex w-full items-center justify-between">
-                        <p className="text-2xl font-medium">Tết trung thu 1987 - Danh sách phần quà</p>
+                        <p className="text-2xl font-medium">{`${event.name}`}- Danh sách phần quà</p>
                         <Statistic value={112893} />
                     </div>
                     {/* <GiftTable /> */}
                     <Row gutter={[16, 32]}>
-                        {gifts &&
-                            gifts.length > 0 &&
-                            gifts.slice(state.minValue, state.maxValue).map((gift) => (
-                                <GiftCard giftId={gift.id} giftName={gift.name} price={gift.price} imgUrl={gift.imageUrl} />
-                            ))}
+                        {
+                            gifts.map((gift) => {
+                                console.log(gift.id, gift.name)
+                                return (
+                                    <GiftCard giftId={gift.id} giftName={gift.name} price={gift.unit_price} quantity={gift.totalQuantity} cost={gift.totalCost} />
+                                )
+                            })}
                     </Row>
-                    <Pagination style={{ float: 'right' }} defaultCurrent={1} total={total} className='my-16' onChange={handleChange} defaultPageSize={perPage} />
+                    {/* <Pagination
+                        defaultPageSize={10}
+                        showSizeChanger={true}
+                        pageSizeOptions={['10', '15', '20']}
+                        style={{ float: 'right' }}
+                        defaultCurrent={1}
+                        total={2}
+                        className='my-16'
+                        onChange={(page, pageSize) => {
+                            setPage({ page, offset: pageSize, eventId: id })
+                        }} /> */}
 
                 </div>
             </div>

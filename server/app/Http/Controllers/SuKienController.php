@@ -50,16 +50,15 @@ class SuKienController extends Controller
     {
         try {
             $suKien = SuKien::find($idSuKien);
-            
+
             if ($suKien) {
                 $suKien->phanThuongs;
                 $suKien->duocNhanThuongs;
-                
-                foreach($suKien->duocNhanThuongs as $duocNhanThuong)
-                {
+
+                foreach ($suKien->duocNhanThuongs as $duocNhanThuong) {
                     $duocNhanThuong->nhanKhau;
                 }
-                
+
                 return response()->json([
                     'data' => $suKien,
                     'success' => true,
@@ -90,8 +89,7 @@ class SuKienController extends Controller
 
         $validator = Validator::make($request->all(), $rules);
 
-        if ($validator->fails())
-        {
+        if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'message' => $validator->errors(),
@@ -104,12 +102,10 @@ class SuKienController extends Controller
                 'ngayBatDau' => $request->ngayBatDau,
                 'type' => $request->type,
             ]);
-            
-            if ($request->type == 1)
-            {
+
+            if ($request->type == 1) {
                 $phan_thuongs = $request->phan_thuongs;
-                foreach($phan_thuongs as $phan_thuong)
-                {
+                foreach ($phan_thuongs as $phan_thuong) {
                     $phanThuong = PhanThuong::create([
                         'thanhTichHocTap' => $phan_thuong['thanhTichHocTap'],
                         'capHoc' => $phan_thuong['capHoc'],
@@ -117,14 +113,11 @@ class SuKienController extends Controller
                         'idSuKien' => $suKien->id,
                     ]);
 
-                    foreach($phan_thuong['items'] as $item)
-                    {
+                    foreach ($phan_thuong['items'] as $item) {
                         $phanThuong->items()->attach($item['idItem'], ['soLuong' => $item['soLuong']]);
                     }
                 }
-            }
-            else if ($request->type == 0)
-            {
+            } else if ($request->type == 0) {
                 //Chi them 1 phan thuong
                 $phan_thuong = $request->phan_thuong;
 
@@ -133,8 +126,7 @@ class SuKienController extends Controller
                     'idSuKien' => $suKien->id,
                 ]);
 
-                foreach($phan_thuong['items'] as $item)
-                {
+                foreach ($phan_thuong['items'] as $item) {
                     $phanThuong->items()->attach($item['idItem'], ['soLuong' => $item['soLuong']]);
                 }
             }
@@ -164,8 +156,7 @@ class SuKienController extends Controller
 
         $validator = Validator::make($request->all(), $rules);
 
-        if ($validator->fails())
-        {
+        if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'message' => $validator->errors(),
@@ -197,37 +188,32 @@ class SuKienController extends Controller
             $suKien->type = $request->type;
             $suKien->save();
 
-            
-            if ($request->type == 1)
-            {
+
+            if ($request->type == 1) {
                 $phan_thuongs = $request->phan_thuongs;
-                foreach($phan_thuongs as $phan_thuong)
-                {
+                foreach ($phan_thuongs as $phan_thuong) {
                     $phanThuong = PhanThuong::find($phan_thuong['id']);
-                    if ($phanThuong && $phanThuong->idSuKien == $idSuKien){
-                        $phanThuong->thanhTichHocTap = $phan_thuong['ThanhTichHocTap'];
+                    if ($phanThuong && $phanThuong->idSuKien == $idSuKien) {
+                        $phanThuong->thanhTichHocTap = $phan_thuong['thanhTichHocTap'];
                         $phanThuong->capHoc = $phan_thuong['capHoc'];
                         $phanThuong->type = 1;
                         $phanThuong->save();
 
                         $phanThuong->items()->detach();
 
-                        foreach($phan_thuong['items'] as $item)
-                        {
+                        foreach ($phan_thuong['items'] as $item) {
                             $phanThuong->items()->attach($item['idItem'], ['soLuong' => $item['soLuong']]);
                         }
                     }
                 }
-            } else if ($request->type == 0)
-            {
+            } else if ($request->type == 0) {
                 $phan_thuong = $request->phan_thuong;
-                
+
                 $phanThuong = PhanThuong::find($phan_thuong['id']);
-                if ($phanThuong & $phanThuong->idSuKien == $idSuKien){
+                if ($phanThuong & $phanThuong->idSuKien == $idSuKien) {
                     $phanThuong->items()->detach();
-                    
-                    foreach($phan_thuong['items'] as $item)
-                    {
+
+                    foreach ($phan_thuong['items'] as $item) {
                         $phanThuong->items()->attach($item['idItem'], ['soLuong' => $item['soLuong']]);
                     }
                 }
@@ -257,7 +243,7 @@ class SuKienController extends Controller
                     'message' => 'Su Kien not found',
                 ], 404);
             }
-            
+
             if ($suKien->isDone) {
                 return response()->json([
                     'success' => false,
@@ -314,7 +300,7 @@ class SuKienController extends Controller
                     $hoKhau['totalCost'] += $duocNhanThuong->phanThuong->cost;
                 }
             }
-            
+
             if ($suKien) {
                 return response()->json([
                     'data' => $hoKhaus,
@@ -373,7 +359,7 @@ class SuKienController extends Controller
                 $uniqueItem['totalQuantity'] = $this->calculateTotal($suKien, $uniqueItem->id)[0];
                 $uniqueItem['totalCost'] = $this->calculateTotal($suKien, $uniqueItem->id)[1];
             }
-            
+
             if ($uniqueItems) {
                 return response()->json([
                     'data' => $uniqueItems,
