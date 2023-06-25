@@ -76,6 +76,7 @@ class NhanKhauController extends Controller
             'idHoKhau' => 'required|numeric',
             'nhanKhau.maNhanKhau' => 'required|string',
             'nhanKhau.hoTen' => 'required|string',
+            'nhanKhau.image' => 'string',
             'nhanKhau.biDanh' => 'string',
             'nhanKhau.gioiTinh' => 'required|string',
             'nhanKhau.noiSinh' => 'required|string',
@@ -158,6 +159,7 @@ class NhanKhauController extends Controller
         $rules = [
             'maNhanKhau' => 'required|string',
             'hoTen' => 'required|string',
+            'image' => 'string',
             'biDanh' => 'string',
             'gioiTinh' => 'required|string',
             'noiSinh' => 'required|string',
@@ -202,6 +204,7 @@ class NhanKhauController extends Controller
 
             $nhanKhau->maNhanKhau = $request->maNhanKhau;
             $nhanKhau->hoTen = $request->hoTen;
+            $nhanKhau->image = $request->image;
             $nhanKhau->biDanh = $request->biDanh;
             $nhanKhau->gioiTinh = $request->gioiTinh;
             $nhanKhau->ngaySinh = $request->ngaySinh;
