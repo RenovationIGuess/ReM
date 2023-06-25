@@ -1,27 +1,32 @@
 import React, { useEffect, useState } from 'react'
-import { Space, Table } from 'antd'
+import { Checkbox, Space, Table } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { DeleteOutlined, EditOutlined, WarningFilled } from '@ant-design/icons'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useEventStore } from '~/app/eventStore'
 import { showDeleteConfirm } from '~/components/ConfirmModal'
 import axiosClient from '~/app/axiosClient'
+import Title from 'antd/es/typography/Title'
+import { PhanThuongDetailModal } from './modals/PhanThuongDetailModal'
+import { render } from 'react-dom'
 
 
 const ChildrenTable = (props: any) => {
     const navigate = useNavigate()
-    const { eventId } = props
+    const { eventId, event } = props
 
     const [page, setPage] = useState<Page>({ page: 1, offset: 10 })
 
-    const [event, getEventById] = useEventStore(state => [
-        state.event,
-        state.getEventById
-    ])
+    const [openPhanThuongDetail, setOpenPhanThuongDetail] = useState(false)
+    const [phanThuongId, setphanThuongId] = useState(44)
+    const [phanThuong, setPhanThuong] = useState<IPhanThuongThongKe | undefined>()
 
-    useEffect(() => {
-        getEventById(eventId ? eventId : '1')
-    }, [])
+    const onPhanThuongDetail = (duocNhanThuong: IPhanThuongThongKe | undefined) => {
+        setOpenPhanThuongDetail(true)
+        setPhanThuong(duocNhanThuong)
+        console.log(duocNhanThuong)
+    }
+
     const total = event.duoc_nhan_thuongs.length
     const onDelete = (duocNhanThuongId: number) => {
         showDeleteConfirm({
@@ -61,7 +66,10 @@ const ChildrenTable = (props: any) => {
         {
             title: 'Giới tính',
             dataIndex: ["nhan_khau", "gioiTinh"],
-            key: 'gender'
+            key: 'gender',
+            render: (_, record) => (
+                <>{record.nhan_khau.gioiTinh === 1 ? 'Nam' : 'Nữ'}</>
+            )
         },
         {
             title: 'Ngày sinh',
@@ -81,7 +89,13 @@ const ChildrenTable = (props: any) => {
         {
             title: 'Mã Phần quà',
             dataIndex: 'idPhanThuong',
-            key: 'gifts'
+            key: 'gifts',
+            render: (_, record) => (
+                <Title level={5} onClick={(e) => onPhanThuongDetail(event.phan_thuongs.find((phan_thuong: IPhanThuongThongKe) => {
+                    console.log(phan_thuong.id)
+                    return phan_thuong.id === record.idPhanThuong
+                }))}>{record.idPhanThuong}</Title>
+            )
         },
         {
             title: ' ',
@@ -89,7 +103,7 @@ const ChildrenTable = (props: any) => {
             render: (_, record) => (
                 <Space size="middle">
                     <EditOutlined
-                        onClick={() => navigate(`/nhan-khau/chinh-sua/${record.id}`)}
+                        onClick={() => navigate(`/duoc-nhan-qua/chinh-sua/${record.id}`)}
                         className="cursor-pointer text-primary"
                     />
                     <DeleteOutlined className="cursor-pointer text-danger" onClick={(e) => onDelete(record.id)} />
@@ -98,19 +112,32 @@ const ChildrenTable = (props: any) => {
         }
     ]
 
-    return <Table
-        columns={columns}
-        dataSource={event.duoc_nhan_thuongs}
-        pagination={{
-            defaultPageSize: 10,
-            showSizeChanger: true,
-            pageSizeOptions: ['10', '15', '20'],
-            total: total,
-            onChange: (page, pageSize) => {
-                setPage({ page, offset: pageSize })
-            }
-        }}
-    />
+    return (
+        <>
+            <Table
+                columns={columns}
+                dataSource={event.duoc_nhan_thuongs}
+                pagination={{
+                    defaultPageSize: 10,
+                    showSizeChanger: true,
+                    pageSizeOptions: ['10', '15', '20'],
+                    total: total,
+                    onChange: (page, pageSize) => {
+                        setPage({ page, offset: pageSize })
+                    }
+                }}
+            />
+            <PhanThuongDetailModal
+                open={openPhanThuongDetail}
+                onOk={() => {
+                    setOpenPhanThuongDetail(false)
+                }}
+                onCancel={() => {
+                    setOpenPhanThuongDetail(false)
+                }}
+                phan_thuong={phanThuong} />
+        </>
+    )
 }
 
 export default React.memo(ChildrenTable)

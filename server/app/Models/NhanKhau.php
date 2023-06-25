@@ -21,6 +21,7 @@ class NhanKhau extends Model
 
     protected $fillable = [
         'maNhanKhau',
+        'image',
         'hoTen',
         'biDanh',
         'gioiTinh',

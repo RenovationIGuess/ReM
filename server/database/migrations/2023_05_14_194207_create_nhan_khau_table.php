@@ -13,6 +13,7 @@ return new class extends Migration {
         Schema::create('nhan_khau', function (Blueprint $table) {
             $table->id();
             $table->string('maNhanKhau')->unique();
+            $table->string('image')->nullable();
             $table->string('hoTen');
             $table->string('biDanh')->nullable();
             $table->smallInteger('gioiTinh');

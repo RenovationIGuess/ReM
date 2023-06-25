@@ -74,9 +74,9 @@ Route::group(['prefix' => 'tam-tru'], function ($router) {
     Route::delete('/{idTamTru}', [TamTruController::class, 'destroy']);
 });
 
-Route::group(['prefix'=> 'tam-vang'], function ($router) {
+Route::group(['prefix' => 'tam-vang'], function ($router) {
     Route::get('/', [TamVangController::class, 'index']);
-    Route::delete('/{idTamVang}',[TamVangController::class, 'destroy']);
+    Route::delete('/{idTamVang}', [TamVangController::class, 'destroy']);
 });
 
 Route::group(['prefix' => 'thong-ke'], function ($router) {
@@ -98,11 +98,12 @@ Route::group(['prefix' => 'su-kien'], function ($router) {
 });
 
 Route::group(['prefix' => 'duoc-nhan-thuong'], function ($router) {
+    Route::get('/{idDuocNhanThuong}', [DuocNhanThuongController::class, 'show']);
     Route::put('/{idDuocNhanThuong}/edit', [DuocNhanThuongController::class, 'update']);
     Route::delete('/{idDuocNhanThuong}/delete', [DuocNhanThuongController::class, 'destroy']);
 });
 
-Route::group(['prefix' => 'items'], function($router) {
+Route::group(['prefix' => 'items'], function ($router) {
     Route::get('/', [ItemController::class, 'index']);
     Route::get('/{idItem}', [ItemController::class, 'show']);
     Route::post('/create', [ItemController::class, 'store']);

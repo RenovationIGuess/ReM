@@ -19,25 +19,6 @@ const items: TabsProps['items'] = [
 ]
 
 const TabList = (props: any) => {
-<<<<<<< HEAD
-    const { defaultActiveKey, eventId } = props
-    const navigate = useNavigate()
-    const onChange = (key: string) => {
-        switch (key) {
-            case '1':
-                navigate(`/su-kien/${eventId}`)
-                break
-            case '2':
-                navigate(`/su-kien/thong-ke-ho-khau/${eventId}`)
-                break
-            case '3':
-                navigate(`/su-kien/${eventId}/thong-ke-phan-qua/`)
-        }
-    };
-    return (
-        <Tabs defaultActiveKey={defaultActiveKey} items={items} onChange={onChange} />
-    )
-=======
   const { defaultActiveKey, eventId } = props
   const navigate = useNavigate()
   const onChange = (key: string) => {
@@ -53,7 +34,6 @@ const TabList = (props: any) => {
     }
   }
   return <Tabs defaultActiveKey={defaultActiveKey} items={items} onChange={onChange} />
->>>>>>> feat(client): crud nhan khau
 }
 
 export default TabList

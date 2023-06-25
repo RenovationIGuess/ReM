@@ -19,6 +19,8 @@ import { GiftList } from './features/gift/GiftList'
 import Create from './features/households/Create'
 import Prefetch from './features/auth/Prefetch'
 import SplitHousehold from './features/households/Split'
+import ItemList from './features/gift/ItemList'
+import EditDuocNhanThuong from './features/gift/EditDuocNhanThuong'
 
 function App() {
   return (
@@ -55,16 +57,19 @@ function App() {
               <Route index element={<Temporary />} />
             </Route>
 
-            <Route path="tang-qua">
-              <Route index element={<EventList />} />
-            </Route>
-
             <Route path="su-kien">
+              <Route index element={<EventList />} />
               <Route path=":id" index element={<ChildrenList />} />
               <Route path="thong-ke-ho-khau/:id" index element={<StatisticList />} />
               <Route path="phan-qua/:id" index element={<GiftList />} />
-              <Route path="them-be/:id" />
-              <Route path="them-qua/:id" />
+            </Route>
+
+            <Route path='danh-sach-phan-qua'>
+              <Route index element={<ItemList />} />
+            </Route>
+
+            <Route path="duoc-nhan-qua">
+              <Route path="chinh-sua/:id" index element={<EditDuocNhanThuong />} />
             </Route>
 
             <Route path="thong-tin">
