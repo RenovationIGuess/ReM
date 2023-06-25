@@ -19,11 +19,11 @@ class ThanhVienHo extends Model
 
     public function nhanKhau()
     {
-        return $this->belongsTo(NhanKhau::class, 'idNhanKhau');
+        return $this->belongsTo(NhanKhau::class, 'idNhanKhau', 'id');
     }
 
     public function hoKhau()
     {
-        return $this->belongsTo(HoKhau::class, 'idHoKhau');
+        return $this->belongsTo(HoKhau::class, 'idHoKhau', 'id');
     }
 }

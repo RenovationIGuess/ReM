@@ -227,11 +227,14 @@ class HoKhauController extends Controller
                 // Neu input chuan -> Tao ho khau moi dua tren input
                 $hoKhauMoi = HoKhau::create($data);
 
+                dd($hoKhauMoi);
+
                 // Gan id ho khau moi cho nhan khau duoc chon
                 $nhanKhauMois->each(
                     function (NhanKhau $nhanKhauMoi) use ($hoKhauMoi) {
-                        $nhanKhauMoi->thanhVienHo->idHoKhau = $hoKhauMoi->id;
-                        $nhanKhauMoi->thanhVienHo->save();
+                        // $nhanKhauMoi->thanhVienHo->idHoKhau = $hoKhauMoi->id;
+                        // $nhanKhauMoi->thanhVienHo->save();
+                        $nhanKhauMoi->thanhVienHo()->update(["idHoKhau" => $hoKhauMoi->id]);
                     }
                 );
 
