@@ -29,7 +29,15 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        return $this->respondWithToken($token);
+        // return $this->respondWithToken($token);
+        return response()->json([
+            'message' => 'Successfully logged in',
+            'data' => [
+                'accessToken' => $token,
+                'expiresIn' => auth()->factory()->getTTL() * 60,
+                'user' => Auth::user()
+            ]
+        ], 200);
     }
 
     /**

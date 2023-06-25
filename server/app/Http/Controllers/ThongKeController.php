@@ -54,19 +54,17 @@ class ThongKeController extends Controller
     public function thongKeTheoGioiTinh()
     {
         try {
-            $males = NhanKhau::where('gioiTinh','=', GioiTinh::MALE)
+            $males = NhanKhau::where('gioiTinh', '=', GioiTinh::MALE)
                 ->get();
             $females = NhanKhau::where('gioiTinh', '=', GioiTinh::FEMALE)
                 ->get();
-            
+
             return response()->json([
                 'data' => ['namGioi' => $males, 'nuGioi' => $females],
                 'success' => true,
                 'message' => 'success',
             ], 200);
-        }
-        catch (Exception $exception)
-        {
+        } catch (Exception $exception) {
             return response()->json([
                 'message' => $exception->getMessage(),
                 'success' => false,
@@ -83,15 +81,14 @@ class ThongKeController extends Controller
 
         $validator = Validator::make($request->all(), $rules);
 
-        if ($validator->fails())
-        {
+        if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'message' => $validator->errors(),
             ], 403);
         }
         try {
-            $statisticsByAges = NhanKhau::all()->filter( function (NhanKhau $nhanKhau, int $key) use ($request) {
+            $statisticsByAges = NhanKhau::all()->filter(function (NhanKhau $nhanKhau, int $key) use ($request) {
                 return $nhanKhau->age >= intval($request->tuTuoi) && $nhanKhau->age <= intval($request->denTuoi);
             });
 
@@ -100,8 +97,7 @@ class ThongKeController extends Controller
                 'success' => true,
                 'message' => 'success',
             ]);
-        } catch(Exception $exception)
-        {
+        } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),

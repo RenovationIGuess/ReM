@@ -1,7 +1,7 @@
 const achiveType = [
     {
-        enum: 0,
-        text: "null"
+        enum: null,
+        text: null
     },
     {
         enum: 1,

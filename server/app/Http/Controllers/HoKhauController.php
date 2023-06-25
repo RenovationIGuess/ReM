@@ -92,6 +92,7 @@ class HoKhauController extends Controller
         }
 
         try {
+            // Tao ho khau moi
             $hoKhau = HoKhau::create([
                 'maHoKhau' => $request->maHoKhau,
                 'idChuHo' => $request->idChuHo,
@@ -103,7 +104,7 @@ class HoKhauController extends Controller
             ]);
 
             if ($hoKhau) {
-                // Tim cac nhan khau moi
+                // Tim cac nhan khau
                 $nhanKhaus = collect($request->get('nhanKhaus'))->map(
                     function ($nhanKhau) {
                         return NhanKhau::find($nhanKhau['id']);
@@ -112,11 +113,13 @@ class HoKhauController extends Controller
 
                 // Kiem tra cac nhan khau co thuoc ho khau nao khong -> neu khong thi cho phep vao
                 // ho khau dang tao
-                if ($nhanKhaus->every(
-                    function (NhanKhau $nhanKhau) {
-                        return $nhanKhau->thanhVienHo->idHoKhau == null;
-                    }
-                )) {
+                if (
+                    $nhanKhaus->every(
+                        function (NhanKhau $nhanKhau) {
+                            return $nhanKhau->thanhVienHo->idHoKhau == null;
+                        }
+                    )
+                ) {
                     foreach ($nhanKhaus as $nhanKhau) {
                         $nhanKhau->thanhVienHo()->create([
                             'idHoKhau' => $hoKhau->id,
@@ -162,7 +165,6 @@ class HoKhauController extends Controller
                 'ngayChuyenDi' => '',
                 'lyDoChuyen' => '',
             ]);
-
         } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
@@ -203,60 +205,65 @@ class HoKhauController extends Controller
         $data = request()->validate([
             'maHoKhau' => 'string|required',
             'idChuHo' => 'numeric|required',
-            'maKhuVuc' => 'string|required',
+            'maKhuVuc' => 'string',
             'diaChi' => 'string|required',
-            'ngayLap' => 'date|required',
-            'ngayChuyenDi' => 'date|required',
+            'ngayLap' => 'date',
+            'ngayChuyenDi' => 'date',
             'lyDoChuyenDi' => 'string|required',
         ]);
 
         try {
-            // Tim cac nhan khau moi
-            $nhanKhauMois = collect($request->get('nhanKhauMois'))->map(
-                function ($nhanKhauMoi) {
-                    return NhanKhau::find($nhanKhauMoi);
-                }
-            );
+            $hoKhauCu = HoKhau::find($idHoKhau);
 
-            // Kiem tra cac nhan khau moi day co trong ho khau muon tach ko -> validate
-            if ($nhanKhauMois->every(
-                function (NhanKhau $nhanKhauMoi) use ($idHoKhau) {
-                    return $nhanKhauMoi->thanhVienHo->idHoKhau == $idHoKhau;
-                }
-            )) {
-                // Neu input chuan -> Tao ho khau moi dua tren input
-                $hoKhauMoi = HoKhau::create($data);
-
-                dd($hoKhauMoi);
-
-                // Gan id ho khau moi cho nhan khau duoc chon
-                $nhanKhauMois->each(
-                    function (NhanKhau $nhanKhauMoi) use ($hoKhauMoi) {
-                        // $nhanKhauMoi->thanhVienHo->idHoKhau = $hoKhauMoi->id;
-                        // $nhanKhauMoi->thanhVienHo->save();
-                        $nhanKhauMoi->thanhVienHo()->update(["idHoKhau" => $hoKhauMoi->id]);
+            if ($hoKhauCu) {
+                // Tim cac nhan khau moi
+                $nhanKhauMois = collect($request->get('nhanKhauMois'))->map(
+                    function ($nhanKhauMoi) {
+                        return NhanKhau::find($nhanKhauMoi);
                     }
                 );
 
-                // Them vao dinh chinh
-                DinhChinh::create([
-                    'idHoKhau' => $idHoKhau,
-                    'thongTinThayDoi' => "Tách hộ khẩu",
-                    'thayDoiTu' => '',
-                    'thayDoiThanh' => '',
-                    'ngayThayDoi' => Carbon::now(),
-                    'idNguoiThayDoi' => auth()->user()->id,
-                ]);
+                // Kiem tra cac nhan khau moi day co trong ho khau muon tach ko -> validate
+                if (
+                    $nhanKhauMois->every(
+                        function (NhanKhau $nhanKhauMoi) use ($idHoKhau) {
+                            return $nhanKhauMoi->thanhVienHo->idHoKhau == $idHoKhau;
+                        }
+                    )
+                ) {
+                    // Neu input chuan -> Tao ho khau moi dua tren input
+                    $hoKhauMoi = HoKhau::create($data);
 
-                return response()->json([
-                    'data' => $hoKhauMoi,
-                    'success' => true,
-                    'message' => 'Tách hộ khẩu thành công!',
-                ], 201);
-            } else return response()->json([
-                'success' => false,
-                'message' => 'Mã nhân khẩu không hợp lệ!',
-            ]);
+                    // Gan id ho khau moi cho nhan khau duoc chon
+                    $nhanKhauMois->each(
+                        function (NhanKhau $nhanKhauMoi) use ($hoKhauMoi) {
+                            // $nhanKhauMoi->thanhVienHo->idHoKhau = $hoKhauMoi->id;
+                            // $nhanKhauMoi->thanhVienHo->save();
+                            $nhanKhauMoi->thanhVienHo()->update(["idHoKhau" => $hoKhauMoi->id]);
+                        }
+                    );
+
+                    // Them vao dinh chinh
+                    // DinhChinh::create([
+                    //     'idHoKhau' => $idHoKhau,
+                    //     'thongTinThayDoi' => "Tách hộ khẩu",
+                    //     'thayDoiTu' => '',
+                    //     'thayDoiThanh' => '',
+                    //     'ngayThayDoi' => Carbon::now(),
+                    //     'idNguoiThayDoi' => auth()->user()->id,
+                    // ]);
+
+                    return response()->json([
+                        'data' => $hoKhauMoi,
+                        'success' => true,
+                        'message' => 'Tách hộ khẩu thành công!',
+                    ], 201);
+                } else
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Mã nhân khẩu không hợp lệ!',
+                    ]);
+            }
 
             return response()->json([
                 'success' => false,

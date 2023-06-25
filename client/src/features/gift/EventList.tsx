@@ -1,274 +1,16 @@
+<<<<<<< HEAD
 import React, { useEffect, useState } from 'react'
 import Event from './Event'
 import HomeLayout from '~/components/Layout/HomeLayout'
-import { Row, Pagination, Input, Button, Form, Modal, InputNumber, DatePicker, Select, Typography, Space } from 'antd'
-import TabList from '~/components/Layout/TabList'
+import { Row, Pagination, Input, Button, Typography } from 'antd'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useAppDispatch } from '~/hooks/useRedux'
 import { useGetEventsByPageQuery } from './api/events.slice'
-import GiftFormItem from './GiftFormItem'
-import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
-import { useEventStore } from '~/app/eventStore'
 import axiosClient from '~/app/axiosClient'
 import moment from 'moment'
-import types from './enums/types'
-import achiveType from './enums/achieveType'
-import capHocType from './enums/capHocType'
+import TabListEvent from '~/components/Layout/TabListEvent'
+import CreateEventFormModal from './modals/CreateEventFormModal'
 
 const { Title } = Typography;
-
-
-interface Values {
-    name: string;
-    ngayBatDau: Date;
-    type: number,
-    phan_thuongs: {
-        itemId: number,
-        soLuong: number
-    },
-    phan_thuong: {
-        itemId: number,
-        soLuong: number
-    }
-}
-
-interface CollectionCreateFormProps {
-    open: boolean;
-    onCreate: (values: Values) => void;
-    onCancel: () => void;
-}
-const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
-    open,
-    onCreate,
-    onCancel,
-}) => {
-    const [form] = Form.useForm();
-    const [typeEvent, setTypeEvent] = useState(0);
-    const [itemsList, getItemsList] = useEventStore(state => [
-        state.items,
-        state.getItems
-    ])
-    useEffect(() => {
-        getItemsList()
-    }, [])
-    return (
-        <Modal
-            open={open}
-            title="Tạo sự kiện"
-            okText="Create"
-            cancelText="Cancel"
-            onCancel={onCancel}
-            onOk={() => {
-                form
-                    .validateFields()
-                    .then((values) => {
-                        form.resetFields();
-                        //dispatch(addGift({ key: '6', id: '6', name: nameValue, price: priceValue }))
-                        onCreate(values);
-                    })
-                    .catch((info) => {
-                        console.log('Validate Failed:', info);
-                    });
-            }}
-        >
-            <Form
-                form={form}
-                layout="vertical"
-                name="form_in_modal"
-                title="Thêm sự kiện"
-                initialValues={{ modifier: 'public' }}
-                className="grid auto-rows-max grid-cols-8"
-            >
-                <div className="col-span-6 col-start-1">
-
-                    <Form.Item
-                        name="name"
-                        label="Tên sự kiện"
-                        labelCol={{ span: 8 }}
-                        rules={[{ required: true, message: 'Hãy ghi tên của sự kiện' }]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        name="ngayBatDau"
-                        label="Ngày bắt đầu"
-                        labelCol={{ span: 8 }}
-                        rules={[{ required: true, message: 'Hãy chọn ngày bắt đầu của sự kiện', type: 'date' }]}
-                    >
-                        <DatePicker
-                            picker="date"
-                        />
-                    </Form.Item>
-
-                    <Form.Item
-                        name="type"
-                        label="Loại sự kiện"
-                        labelCol={{ span: 8 }}
-                        rules={[{ required: true, message: 'Hãy chọn loại sự kiện' }]}
-                    >
-                        <Select
-                            value={typeEvent}
-                            onChange={(e: number) => {
-                                setTypeEvent(e)
-                                console.log(typeEvent)
-                            }}>
-                            {types.map((type) => <Select.Option value={type.enum} key={type.enum} id={type.enum}>{type.text}</Select.Option>)}
-                        </Select>
-                    </Form.Item>
-                    {typeEvent ? (
-                        <>
-                            <Title level={3}>Các phần quà cho sự kiện</Title>
-                            <Form.List name="phan_thuongs">
-                                {(fields, { add, remove }) => (
-                                    <>
-                                        {fields.map(({ key, name, ...restField }) => (
-                                            <>
-                                                <Form.Item key={key}>
-                                                    <Form.Item
-                                                        {...restField}
-                                                        label="Thành tích học tập"
-                                                        name={[name, 'thanhTichHocTap']}
-                                                        rules={[
-                                                            {
-                                                                required: true,
-                                                                message: 'Hãy nhập thành tích',
-                                                            },
-                                                        ]}
-                                                    >
-                                                        <Select>
-                                                            {achiveType.map((item) => <Select.Option value={item.enum} key={item.enum} id={item.enum}>{item.text}</Select.Option>)}
-                                                        </Select>
-                                                    </Form.Item>
-                                                    <Form.Item
-                                                        {...restField}
-                                                        label="Cấp học"
-                                                        name={[name, 'capHoc']}
-                                                        rules={[
-                                                            {
-                                                                required: true,
-                                                                message: 'Hãy nhập cấp học',
-                                                            },
-                                                        ]}
-                                                    >
-                                                        <Select>
-                                                            {capHocType.map((item) => <Select.Option value={item.enum} key={item.enum} id={item.enum}>{item.text}</Select.Option>)}
-                                                        </Select>
-                                                    </Form.Item>
-                                                    <MinusCircleOutlined onClick={() => remove(name)} />
-                                                </Form.Item>
-                                                <Title level={5}>Thêm các vật phẩm:</Title>
-                                                <Form.List name={[name, 'items']}>
-                                                    {(items, { add, remove }) => {
-                                                        return (
-                                                            <div>
-                                                                {items.map(({ key, name, ...restField }) =>
-                                                                (
-                                                                    <Space key={key} align="start">
-                                                                        <Form.Item
-                                                                            {...restField}
-                                                                            name={[name, 'idItem']}
-                                                                            rules={[{ required: true, message: 'Missing item name' }]}
-                                                                        >
-                                                                            <Select>
-                                                                                {itemsList.map((item) => <Select.Option value={item.id} key={item.id} id={item.id}>{item.name}</Select.Option>)}
-                                                                            </Select>
-                                                                        </Form.Item>
-                                                                        <Form.Item
-                                                                            {...restField}
-                                                                            name={[name, 'soLuong']}
-                                                                            rules={[{ required: true, message: 'Missing item name' }]}
-                                                                        >
-                                                                            <InputNumber />
-                                                                        </Form.Item>
-
-                                                                        <MinusCircleOutlined
-                                                                            onClick={() => {
-                                                                                remove(name);
-                                                                            }}
-                                                                        />
-                                                                    </Space>
-                                                                ))}
-                                                                <Form.Item>
-                                                                    <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                                                                        Thêm vật phẩm
-                                                                    </Button>
-                                                                </Form.Item>
-                                                            </div>
-                                                        )
-                                                    }}
-                                                </Form.List>
-                                            </>
-                                        ))}
-                                        <Form.Item>
-                                            <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                                                Thêm phần quà
-                                            </Button>
-                                        </Form.Item>
-                                    </>
-                                )}
-                            </Form.List>
-                        </>
-
-                    ) : (
-                        <>
-                            <Title level={5}>Thêm các vật phẩm:</Title>
-                            <Form.List name={["phan_thuong", "items"]}>
-                                {(items, { add, remove }) => {
-                                    return (
-                                        <div>
-                                            {items.map(({ key, name, ...restField }) =>
-                                            (
-                                                <Space key={key} align="start">
-                                                    <Form.Item
-                                                        {...restField}
-                                                        name={[name, 'idItem']}
-                                                        rules={[{ required: true, message: 'Missing item name' }]}
-                                                    >
-                                                        <Select>
-                                                            {itemsList.map((item) => <Select.Option value={item.id} key={item.id} id={item.id}>{item.name}</Select.Option>)}
-                                                        </Select>
-                                                    </Form.Item>
-                                                    <Form.Item
-                                                        {...restField}
-                                                        name={[name, 'soLuong']}
-                                                        rules={[{ required: true, message: 'Missing item name' }]}
-                                                    >
-                                                        <InputNumber />
-                                                    </Form.Item>
-
-                                                    <MinusCircleOutlined
-                                                        onClick={() => {
-                                                            remove(name);
-                                                        }}
-                                                    />
-                                                </Space>
-                                            ))}
-                                            <Form.Item>
-                                                <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                                                    Thêm vật phẩm
-                                                </Button>
-                                            </Form.Item>
-                                        </div>
-                                    )
-                                }}
-                            </Form.List>
-                        </>
-                    )}
-                    {/* <Button
-                        className='bg-primary'
-                        style={{ color: 'white' }}
-                        onClick={handleAddGift}
-                    >
-                        Thêm phần quà
-                    </Button> */}
-                </div>
-            </Form>
-        </Modal >
-    );
-};
-
-
-
 
 
 const EventList = () => {
@@ -286,20 +28,198 @@ const EventList = () => {
             await axiosClient.post(`/su-kien/create`, {
                 name: values.name,
                 ngayBatDau: formattedDate,
-                type: values.type,
+                type: values.type ? 1 : 0,
                 phan_thuongs: values.phan_thuongs
             })
-            console.log("Success")
+            alert("Success")
         } catch (e) {
             const result = (e as Error).message;
             console.log(result)
         }
+=======
+import React, { useState } from 'react'
+import Event from './Event'
+import HomeLayout from '~/components/Layout/HomeLayout'
+import { Row, Pagination, Input, Button, Form, Modal, InputNumber } from 'antd'
+import TabList from '~/components/Layout/TabList'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useAppDispatch } from '~/hooks/useRedux'
+import UploadImage from '~/components/UploadImage'
+
+interface EventType {
+    id: string,
+    title: string
+}
+
+const data: EventType[] = [
+    {
+        id: '1',
+        title: "Su kien cuoi nam 1986"
+    },
+    {
+        id: '2',
+        title: "Su kien tet trung thu 1987"
+    },
+    {
+        id: '3',
+        title: "Su kien tet trung thu 1987"
+    },
+    {
+        id: '4',
+        title: "Su kien tet trung thu 1987"
+    },
+    {
+        id: '5',
+        title: "Su kien tet trung thu 1987"
+    },
+    {
+        id: '6',
+        title: "Su kien tet trung thu 1987"
+    },
+    {
+        id: '7',
+        title: "Su kien tet trung thu 1987"
+    },
+    {
+        id: '8',
+        title: "Su kien tet trung thu 1987"
+    },
+    {
+        id: '9',
+        title: "Su kien tet trung thu 1987"
+    },
+    {
+        id: '10',
+        title: "Su kien tet trung thu 1987"
+    },
+    {
+        id: '11',
+        title: "Su kien tet trung thu 1987"
+    },
+    {
+        id: '12',
+        title: "Su kien tet trung thu 1987"
+    },
+    {
+        id: '13',
+        title: "Su kien tet trung thu 1987"
+    },
+    {
+        id: '14',
+        title: "Su kien tet trung thu 1987"
+    },
+    {
+        id: '15',
+        title: "Su kien tet trung thu 1987"
+    },
+]
+
+const perPage = 6
+const total = data.length
+
+interface Values {
+    name: string;
+    price: string;
+}
+
+interface CollectionCreateFormProps {
+    open: boolean;
+    onCreate: (values: Values) => void;
+    onCancel: () => void;
+}
+
+const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
+    open,
+    onCreate,
+    onCancel,
+}) => {
+    const [form] = Form.useForm();
+    const dispatch = useAppDispatch()
+    const formRef: React.RefObject<any> | null = React.createRef();
+    return (
+        <Modal
+            open={open}
+            title="Create a new collection"
+            okText="Create"
+            cancelText="Cancel"
+            onCancel={onCancel}
+            onOk={() => {
+                form
+                    .validateFields()
+                    .then((values) => {
+                        const nameValue = formRef.current.getFieldValue(`name`);
+                        const desValue = formRef.current.getFieldValue(`description`);
+                        form.resetFields();
+                        //dispatch(addGift({ key: '6', id: '6', name: nameValue, price: priceValue }))
+                        onCreate(values);
+                    })
+                    .catch((info) => {
+                        console.log('Validate Failed:', info);
+                    });
+            }}
+        >
+            <Form
+                form={form}
+                layout="vertical"
+                name="form_in_modal"
+                ref={formRef}
+                initialValues={{ modifier: 'public' }}
+                className="grid auto-rows-max grid-cols-8"
+            >
+                <div className="col-span-6 col-start-1">
+
+                    <Form.Item
+                        name="name"
+                        label="Tên sự kiện"
+                        labelCol={{ span: 8 }}
+                        rules={[{ required: true, message: 'Hãy ghi tên của sự kiện' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        name="description"
+                        label="Mô tả"
+                        labelCol={{ span: 8 }}
+                        rules={[{ required: true, message: 'Hãy ghi mô tả của sự kiện' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+
+                    <Form.Item className="ms-4">
+                        <UploadImage />
+                    </Form.Item>
+                </div>
+            </Form>
+        </Modal>
+    );
+};
+
+
+
+
+const EventList = () => {
+    const [state, setState] = useState({ minValue: 0, maxValue: perPage })
+    const navigate = useNavigate()
+    const handleChange = (value: number) => {
+        setState({
+            minValue: (value - 1) * perPage,
+            maxValue: value * perPage
+        });
+    };
+    const { id } = useParams()
+    const [openCreateEvent, setOpenCreateEvent] = useState(false);
+
+    const onCreate = (values: any) => {
+        console.log('Received values of form: ', values);
+        setOpenCreateEvent(false);
+>>>>>>> 2967e28... gift front end
     };
     return (
         <HomeLayout>
             <div className="mb-2 flex min-h-full flex-col">
                 <div className="flex items-center justify-between">
                     <Input.Search className="w-[25vw]" placeholder="Tìm kiếm gì đó ..." />
+<<<<<<< HEAD
                     <Button
                         type="primary"
                         htmlType="button"
@@ -309,7 +229,11 @@ const EventList = () => {
                     >
                         Thêm sự kiện mới
                     </Button>
+                    <CreateEventFormModal
+=======
+                    <Button onClick={() => setOpenCreateEvent(true)}>Thêm sự kiện mới</Button>
                     <CollectionCreateForm
+>>>>>>> 2967e28... gift front end
                         open={openCreateEvent}
                         onCreate={onCreate}
                         onCancel={() => {
@@ -317,6 +241,8 @@ const EventList = () => {
                         }}
                     />
                 </div>
+<<<<<<< HEAD
+                <TabListEvent defaultActiveKey='1' />
                 <Row gutter={[16, 32]}>
                     {
                         eventsData?.data.data.map((event) => (
@@ -334,6 +260,16 @@ const EventList = () => {
                     onChange={(page, pageSize) => {
                         setPage({ page, offset: pageSize })
                     }} />
+=======
+                <Row gutter={[16, 32]}>
+                    {data &&
+                        data.length > 0 &&
+                        data.slice(state.minValue, state.maxValue).map((event) => (
+                            <Event eventId={event.id} title={event.title} />
+                        ))}
+                </Row>
+                <Pagination style={{ float: 'right' }} defaultCurrent={1} total={total} className='my-16' onChange={handleChange} defaultPageSize={perPage} />
+>>>>>>> 2967e28... gift front end
             </div>
         </HomeLayout>
     )

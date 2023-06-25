@@ -107,8 +107,7 @@ class ItemController extends Controller
 
         $validator = Validator::make($request->all(), $rules);
 
-        if ($validator->fails())
-        {
+        if ($validator->fails()) {
             return response()->json(
                 [
                     'success' => false,

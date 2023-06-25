@@ -3,6 +3,13 @@ import { Card, Col } from 'antd'
 import Meta from 'antd/es/card/Meta'
 import { useNavigate } from 'react-router-dom'
 
+<<<<<<< HEAD
+=======
+interface EventProps {
+
+}
+
+>>>>>>> 2967e28... gift front end
 const gridStyle: React.CSSProperties = {
 	width: '240px',
 	height: '252px',

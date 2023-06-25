@@ -70,14 +70,18 @@ const Sidebar = () => {
         <SideButton
           icon={<UserAddOutlined />}
           activedIcon={<UserAddOutlined />}
-          text="Đăng ký tạm trú"
+          text="Tạm trú tạm vắng"
           href="/tam-tru"
         />
         <SideButton
           icon={<GiftOutlined />}
           activedIcon={<GiftFilled />}
           text="Tặng quà"
+<<<<<<< HEAD
+          href="/su-kien"
+=======
           href="/tang-qua"
+>>>>>>> 23b7b13... feat(client): crud nhan khau
         />
         <Divider className="m-0" />
         <SideButton

@@ -56,7 +56,6 @@ const Death = ({ currnetResident }: PropsType) => {
         onCancel={() => setIsOpen(false)}
         footer={<></>}
       >
-        <>{console.log('==> current user', currentUser)}</>
         <Form form={form} onFinish={onFinish} labelCol={{ span: 6 }}>
           <Form.Item
             label="Số giấy khai tử"
