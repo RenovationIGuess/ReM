@@ -19,7 +19,7 @@ declare type IResident = {
   maNhanKhau: string
   hoTen: string
   biDanh?: string
-  gioiTinh: string
+  gioiTinh: number
   noiSinh: string
   ngaySinh: Date
   nguyenQuan: string
@@ -45,6 +45,11 @@ declare type IResident = {
   ghiChu?: string
   created_at: Date
   updated_at: Date
+  pivot?: {
+    idHoKhau: number
+    idNhanKhau: number
+    quanHeVoiChuHo: string
+  }
 }
 
 declare type IHousehold = {
@@ -56,8 +61,8 @@ declare type IHousehold = {
   diaChi?: string
   ngayChuyenDi?: Date
   lyDoChuyen?: string
-  created_at: Date
-  updated_at: Date
+  created_at?: Date
+  updated_at?: Date
   chu_ho: IResident
   nhan_khaus: IResident[]
 }
