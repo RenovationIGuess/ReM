@@ -37,7 +37,7 @@ class DuocNhanThuongController extends Controller
             if (!$duocNhanThuong) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'DuocNhanThuong not found',
+                    'message' => 'Không tìm thấy danh sách nhận thưởng',
                 ], 404);
             }
 
@@ -82,7 +82,7 @@ class DuocNhanThuongController extends Controller
             if (!$suKien) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Su Kien not found'
+                    'message' => 'Không tìm thấy sự kiện'
                 ], 404);
             }
 
@@ -128,7 +128,7 @@ class DuocNhanThuongController extends Controller
                 $duocNhanThuong = DuocNhanThuong::create([
                     'idSuKien' => $idSuKien,
                     'idNhanKhau' => $request->idNhanKhau,
-                    'idPhanThuong' => $phanThuong->id,
+                    'idPhanThuong' => $phanThuong,
                 ]);
             }
 
@@ -148,6 +148,7 @@ class DuocNhanThuongController extends Controller
 
     public function update(Request $request, $idDuocNhanThuong)
     {
+        //chi cho update danh sach su kien loai lien quan den hoc tap
         $rules = [
             'tenTruong' => 'string',
             'tenLop' => 'string',
@@ -169,7 +170,7 @@ class DuocNhanThuongController extends Controller
             if (!$duocNhanThuong) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Ho Khau not found',
+                    'message' => 'Không tìm thấy danh sách nhận thưởng',
                 ], 404);
             }
 
@@ -197,15 +198,74 @@ class DuocNhanThuongController extends Controller
                 $duocNhanThuong->idPhanThuong = $phanThuong->id;
                 $duocNhanThuong->save();
             } else if ($suKien->type == 0) {
-                // khong co gi de chinh sua
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cannot edit due to SuKien type'
+                ], 400);
             }
 
             return response()->json([
                 'data' => $duocNhanThuong,
                 'success' => true,
-                'message' => "Update DuocNhanThuong successfully"
+                'message' => "Cập nhật danh sách nhận thưởng thành công"
             ], 200);
 
+        } catch (Exception $exception) {
+            return response()->json([
+                'success' => false,
+                'message' => $exception->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function check($idDuocNhanThuong)
+    {
+        try {
+            $duocNhanThuong = DuocNhanThuong::find($idDuocNhanThuong);
+
+            if (!$duocNhanThuong) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Không tìm thấy danh sách nhận thưởng',
+                ], 404);
+            }
+
+            $duocNhanThuong->hasRewarded = true;
+            $duocNhanThuong->save();
+
+            return response()->json([
+                'data' => $duocNhanThuong,
+                'success' => true,
+                'message' => 'Đã đánh dấu đã nhận thưởng thành công',
+            ], 200);
+        } catch (Exception $exception) {
+            return response()->json([
+                'success' => false,
+                'message' => $exception->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function uncheck($idDuocNhanThuong)
+    {
+        try {
+            $duocNhanThuong = DuocNhanThuong::find($idDuocNhanThuong);
+
+            if (!$duocNhanThuong) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Không tìm thấy danh sách nhận thưởng',
+                ], 404);
+            }
+
+            $duocNhanThuong->hasRewarded = false;
+            $duocNhanThuong->save();
+
+            return response()->json([
+                'data' => $duocNhanThuong,
+                'success' => true,
+                'message' => 'Đã bỏ đánh đấu đã nhận thưởng thành công',
+            ], 200);
         } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
@@ -222,7 +282,7 @@ class DuocNhanThuongController extends Controller
             if (!$duocNhanThuong) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Duoc Nhan Thuong not found',
+                    'message' => 'Không tìm thấy danh sách nhận thưởng',
                 ], 404);
             }
 
@@ -230,7 +290,7 @@ class DuocNhanThuongController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Deleted Ho Khau successfully',
+                'message' => 'Đã xóa khỏi danh sách nhận thưởng thành công',
             ], 200);
 
         } catch (Exception $exception) {

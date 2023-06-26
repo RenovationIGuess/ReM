@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Checkbox, Space, Table } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
-import { DeleteOutlined, EditOutlined, WarningFilled } from '@ant-design/icons'
+import { DeleteOutlined, EditOutlined, EyeOutlined, WarningFilled } from '@ant-design/icons'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useEventStore } from '~/app/eventStore'
 import { showDeleteConfirm } from '~/components/ConfirmModal'
@@ -11,7 +11,7 @@ import { PhanThuongDetailModal } from './modals/PhanThuongDetailModal'
 import { render } from 'react-dom'
 
 
-const ChildrenTable = (props: any) => {
+const ChildrenTable = (props: { eventId: string | undefined, event: IEvent }) => {
     const navigate = useNavigate()
     const { eventId, event } = props
 
@@ -28,6 +28,7 @@ const ChildrenTable = (props: any) => {
     }
 
     const total = event.duoc_nhan_thuongs.length
+    const [data, setData] = useState<IDuocNhanThuong[]>([])
     const onDelete = (duocNhanThuongId: number) => {
         showDeleteConfirm({
             title: 'Bạn có chắc chắn muốn xóa bé khỏi sự kiện này không?',
@@ -44,11 +45,33 @@ const ChildrenTable = (props: any) => {
             }
         })
     }
+
+    const handleRewarded = async (record: IDuocNhanThuong) => {
+        const updatedData = data?.map((item) => {
+            return item.id === record.id ? { ...item, hasRewarded: +!item.hasRewarded } : item
+        }
+        );
+        setData(updatedData);
+        try {
+            await axiosClient.patch(`/duoc-nhan-thuong/${record.id}/${record.hasRewarded ? 'uncheck' : 'check'}`)
+            record.hasRewarded ?
+                alert(`Bé có mã được nhận thưởng ${record.id} đã chuyển sang trạng thái chưa nhận`) :
+                alert(`Bé có mã được nhận thưởng ${record.id} đã chuyển sang trạng thái đã nhận`)
+        } catch (err) {
+            console.error(err)
+        } finally {
+
+        }
+    }
+    useEffect(() => {
+        setData(event.duoc_nhan_thuongs)
+    }, [event])
+    console.log(data)
     const columns: ColumnsType<IDuocNhanThuong> = [
         {
-            title: 'Mã nhân khẩu',
-            dataIndex: 'idNhanKhau',
-            key: 'idNhanKhau'
+            title: 'Mã nhận thưởng',
+            dataIndex: 'id',
+            key: 'id'
         },
         {
             title: 'Họ và tên',
@@ -98,12 +121,30 @@ const ChildrenTable = (props: any) => {
             )
         },
         {
+            title: 'Đã nhận',
+            dataIndex: 'hasRewarded',
+            render: (_, record) => (
+                <input
+                    type="checkbox"
+                    checked={record.hasRewarded ? true : false}
+                    onChange={() => handleRewarded(record)}
+                />
+            ),
+        },
+        {
             title: ' ',
             key: 'action',
             render: (_, record) => (
                 <Space size="middle">
+                    {record.anhGiayKhen ? (
+                        <a title='Ảnh giấy khen' target="_blank" href={record.anhGiayKhen}>
+                            <EyeOutlined className="cursor-pointer text-primary" />
+                        </a>
+                    ) :
+                        (<></>)
+                    }
                     <EditOutlined
-                        onClick={() => navigate(`/duoc-nhan-qua/chinh-sua/${record.id}`)}
+                        onClick={() => navigate(`/duoc-nhan-thuong/chinh-sua/${record.id}`)}
                         className="cursor-pointer text-primary"
                     />
                     <DeleteOutlined className="cursor-pointer text-danger" onClick={(e) => onDelete(record.id)} />
@@ -116,7 +157,7 @@ const ChildrenTable = (props: any) => {
         <>
             <Table
                 columns={columns}
-                dataSource={event.duoc_nhan_thuongs}
+                dataSource={data?.length === 0 ? event.duoc_nhan_thuongs : data}
                 pagination={{
                     defaultPageSize: 10,
                     showSizeChanger: true,

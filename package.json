@@ -1,8 +1,12 @@
 {
   "dependencies": {
+<<<<<<< HEAD
     "datejs": "^1.0.0-rc3",
     "jquery": "^3.7.0",
     "moment": "^2.29.4"
+=======
+    "jquery": "^3.7.0"
+>>>>>>> d801227abd55cf21439b71a9314beeda7275341a
   },
   "devDependencies": {
     "@types/jquery": "^3.5.16"

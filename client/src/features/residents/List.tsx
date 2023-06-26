@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Button, Input, Statistic } from 'antd'
 import HomeLayout from '~/components/Layout/HomeLayout'
 import ResidentsTable from './Table'
@@ -8,14 +8,22 @@ import { useResidentsStore } from './residentsStore'
 const List = () => {
   const navigate = useNavigate()
 
-  const [total] = useResidentsStore(state => [state.total])
+  const [total, searchResidentsByName] = useResidentsStore(state => [
+    state.total,
+    state.searchResidentsByName
+  ])
 
   return (
     <HomeLayout>
-      <>{console.log('==> re-render')}</>
       <div className="h-max rounded bg-bgPrimary px-4 py-2 shadow-sm">
         <div className="mb-2 flex items-center justify-between">
-          <Input.Search className="w-[25vw]" placeholder="Tìm kiếm gì đó ..." />
+          <Input.Search
+            className="w-[25vw]"
+            placeholder="Nhập tên nhân khẩu ..."
+            onChange={event => {
+              searchResidentsByName(event.target.value)
+            }}
+          />
           <Button type="primary" ghost onClick={() => navigate('/nhan-khau/them')}>
             Thêm nhân khẩu mới
           </Button>

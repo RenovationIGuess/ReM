@@ -49,7 +49,7 @@ export const useEventStore = create<IEventStore>(set => ({
         nhan_khau: {
             id: 5,
             maNhanKhau: "NK4485464084955438",
-            image: null,
+            image: "",
             hoTen: "Randi Leannon DDS",
             biDanh: "",
             gioiTinh: 2,
@@ -78,6 +78,7 @@ export const useEventStore = create<IEventStore>(set => ({
             ghiChu: "null",
             created_at: new Date("2023-06-25T21:55:55.000000Z"),
             updated_at: new Date("2023-06-25T21:55:55.000000Z"),
+            duoc_khai_tu: null,
             age: 18
         },
         phan_thuong: {} as IPhanThuongThongKe

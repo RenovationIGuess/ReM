@@ -15,10 +15,10 @@ class NhanKhauController extends Controller
     {
         try {
             $limit = $request->has('limit') ? $request->input('limit') : 10;
-            $nhanKhaus = NhanKhau::with('duocKhaiTu', 'chungMinhThu')
+            $nhanKhaus = NhanKhau::with('duocKhaiTu', 'chungMinhThu', 'thanhVienHo.hoKhau')
                 ->where('hoTen', 'like', '%' . $request->hoTen . '%')
                 ->where('maNhanKhau', 'like', $request->maNhanKhau . '%')
-                ->orderBy('id', 'ASC')
+                ->orderBy('created_at', 'DESC')
                 ->paginate($limit);
 
             if ($nhanKhaus) {
@@ -45,7 +45,7 @@ class NhanKhauController extends Controller
     public function show($idNhanKhau): JsonResponse
     {
         try {
-            $nhanKhau = NhanKhau::with('duocKhaiTu', 'chungMinhThu')
+            $nhanKhau = NhanKhau::with('duocKhaiTu', 'chungMinhThu', 'thanhVienHo.hoKhau')
                 ->find($idNhanKhau);
             if ($nhanKhau) {
                 return response()->json([
@@ -72,13 +72,14 @@ class NhanKhauController extends Controller
     {
         $moiSinh = $request->query('moiSinh');
 
-        $data = request()->validate([
+        $data = $request->validate([
             'idHoKhau' => 'required|numeric',
+            'quanHeVoiChuHo' => 'required|string',
             'nhanKhau.maNhanKhau' => 'required|string',
             'nhanKhau.hoTen' => 'required|string',
             'nhanKhau.image' => 'string',
             'nhanKhau.biDanh' => 'string',
-            'nhanKhau.gioiTinh' => 'required|string',
+            'nhanKhau.gioiTinh' => 'required|numeric',
             'nhanKhau.noiSinh' => 'required|string',
             'nhanKhau.ngaySinh' => 'required|before_or_equal:today',
             'nhanKhau.nguyenQuan' => 'required|string',
@@ -94,14 +95,18 @@ class NhanKhauController extends Controller
             //khong can du cac truong
             //'tienAn' => 'string',
             'nhanKhau.ghiChu' => 'string',
-            'cmt.soCMT' => "required|string",
-            'cmt.ngayCap' => "required|date",
-            'cmt.noiCap' => "required|string",
+            'cmt.soCMT' => "string",
+            'cmt.ngayCap' => "date",
+            'cmt.noiCap' => "string",
         ]);
 
         $idHoKhau = $data['idHoKhau'];
+        $quanHeVoiChuHo = $data['quanHeVoiChuHo'];
         $nhanKhauData = $data['nhanKhau'];
-        $cmtData = $data['cmt'];
+        if ($moiSinh == 1)
+            $cmtData = $data['cmt'];
+        else
+            $cmtData = [];
 
         try {
             // Lay ra ho khau duoc chon
@@ -124,15 +129,17 @@ class NhanKhauController extends Controller
                 $nhanKhau->thanhVienHo()->create([
                     'idNhanKhau' => $nhanKhau->id,
                     'idHoKhau' => $hoKhau->id,
-                    'quanHeVoiChuHo' => "",
+                    'quanHeVoiChuHo' => $quanHeVoiChuHo,
                 ]);
 
                 // Tao chung minh thu neu khong phai moi sinh
                 if ($moiSinh == 0) {
-                    $nhanKhau->chungMinhThu()->create(array_merge(
-                        ['idNhanKhau' => $nhanKhau->id],
-                        $cmtData,
-                    ));
+                    $nhanKhau->chungMinhThu()->create(
+                        array_merge(
+                            ['idNhanKhau' => $nhanKhau->id],
+                            $cmtData,
+                        )
+                    );
                 }
 
                 return response()->json([
@@ -194,7 +201,7 @@ class NhanKhauController extends Controller
 
         try {
             $nhanKhau = NhanKhau::find($idNhanKhau);
-        
+
             if (!$nhanKhau) {
                 return response()->json([
                     'success' => false,

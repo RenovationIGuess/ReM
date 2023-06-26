@@ -12,18 +12,18 @@ const List = () => {
 
   return (
     <HomeLayout>
-      <div className="mb-2 flex min-h-full flex-col">
-        <div className="flex items-center justify-between">
+      <div className="h-max rounded bg-bgPrimary px-4 py-2 shadow-sm">
+        <div className="mb-2 flex items-center justify-between">
           <Input.Search className="w-[25vw]" placeholder="Tìm kiếm gì đó ..." />
-          <Button onClick={() => navigate('/ho-khau/them')}>Thêm hộ khẩu mới</Button>
+          <Button type="primary" ghost onClick={() => navigate('/ho-khau/them')}>
+            Thêm hộ khẩu mới
+          </Button>
         </div>
-        <div className="mt-2 grow rounded-lg bg-bgPrimary px-4 py-2 shadow-md">
-          <div className="flex w-full items-center justify-between">
-            <p className="text-2xl font-medium">Danh sách hộ khẩu</p>
-            <Statistic value={householdsTotal} />
-          </div>
-          <HouseholdsTable />
+        <div className="flex w-full items-center justify-between">
+          <p className="text-2xl font-medium">Danh sách hộ khẩu</p>
+          <Statistic value={householdsTotal} />
         </div>
+        <HouseholdsTable />
       </div>
     </HomeLayout>
   )

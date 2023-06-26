@@ -1,5 +1,11 @@
 import { create } from 'zustand'
-import { editResident, getResidentById, getResidentsByPage, searchResident } from '~/lib/residents'
+import {
+  editResident,
+  getResidentById,
+  getResidentsByPage,
+  searchHouseholdLeader,
+  searchResident
+} from '~/lib/residents'
 
 interface IResidentsStore {
   residents: Residents
@@ -8,11 +14,14 @@ interface IResidentsStore {
   currentPage: number
   pageSize: number
   searchResult: IResident[]
+  searchHouseholdLeaderResult: IHousehold[]
   setCurrentPage: (page: Page) => void
-  getResidents: () => void
+  getResidents: (page?: Page) => void
   getResidentById: (id: string) => void
   searchResident: (searchValue: string) => void
   editResident: (resident: IResident) => void
+  searchHouseholdLeader: (searchValue: string) => void
+  searchResidentsByName: (searchValue: string) => void
 }
 
 export const useResidentsStore = create<IResidentsStore>((set, get) => ({
@@ -28,6 +37,8 @@ export const useResidentsStore = create<IResidentsStore>((set, get) => ({
 
   searchResult: [],
 
+  searchHouseholdLeaderResult: [],
+
   setCurrentPage: async ({ page, offset }) => {
     const response = await getResidentsByPage({ page, offset })
 
@@ -35,14 +46,19 @@ export const useResidentsStore = create<IResidentsStore>((set, get) => ({
     set({ currentPage: page, pageSize: offset, residents: response.data, total: response.total })
   },
 
-  getResidents: async () => {
-    const page = get().currentPage
-    const offset = get().pageSize
-    const response = await getResidentsByPage({ page, offset })
+  getResidents: async page => {
+    let currentPage = get().currentPage
+    let offset = get().pageSize
+    if (page) {
+      currentPage = page.page
+      offset = page.offset
+    }
+
+    const response = await getResidentsByPage({ page: currentPage, offset })
 
     if (!response) return
 
-    set({ residents: response.data, total: response.total })
+    set({ residents: response.data, total: response.total, currentPage, pageSize: offset })
   },
 
   getResidentById: async (id: string) => {
@@ -70,5 +86,27 @@ export const useResidentsStore = create<IResidentsStore>((set, get) => ({
     if (!data) return
 
     set({ resident: data })
+  },
+
+  searchHouseholdLeader: async (searchValue: string) => {
+    const data = await searchHouseholdLeader(searchValue)
+
+    if (!data) return
+
+    set({ searchHouseholdLeaderResult: data })
+  },
+
+  searchResidentsByName: async (searchValue: string) => {
+    const data = await searchResident(searchValue)
+
+    if (!data) return
+
+    const residents = data.reduce((acc: Map<string, IResident>, resident: IResident) => {
+      acc.set(resident.id.toString(), resident)
+
+      return acc
+    }, new Map<string, IResident>())
+
+    set({ residents })
   }
 }))

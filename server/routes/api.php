@@ -45,6 +45,8 @@ Route::group(['prefix' => 'ho-khau'], function ($router) {
     Route::post('/{idHoKhau}/edit/tach-ho-khau', [HoKhauController::class, 'tachHoKhau']);
 });
 
+Route::get('chu-ho', [HoKhauController::class, 'searchHouseholdLead']);
+
 Route::group(['prefix' => 'nhan-khau'], function ($router) {
     Route::get('/', [NhanKhauController::class, 'index']);
     Route::get('/{idNhanKhau}', [NhanKhauController::class, 'show']);
@@ -101,6 +103,8 @@ Route::group(['prefix' => 'duoc-nhan-thuong'], function ($router) {
     Route::get('/{idDuocNhanThuong}', [DuocNhanThuongController::class, 'show']);
     Route::put('/{idDuocNhanThuong}/edit', [DuocNhanThuongController::class, 'update']);
     Route::delete('/{idDuocNhanThuong}/delete', [DuocNhanThuongController::class, 'destroy']);
+    Route::patch('/{idDuocNhanThuong}/check', [DuocNhanThuongController::class, 'check']);
+    Route::patch('/{idDuocNhanThuong}/uncheck', [DuocNhanThuongController::class, 'uncheck']);
 });
 
 Route::group(['prefix' => 'items'], function ($router) {

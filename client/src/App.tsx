@@ -21,6 +21,7 @@ import Prefetch from './features/auth/Prefetch'
 import SplitHousehold from './features/households/Split'
 import ItemList from './features/gift/ItemList'
 import EditDuocNhanThuong from './features/gift/EditDuocNhanThuong'
+import CreateDuocNhanThuong from './features/gift/CreateDuocNhanThuong'
 
 function App() {
   return (
@@ -62,13 +63,14 @@ function App() {
               <Route path=":id" index element={<ChildrenList />} />
               <Route path="thong-ke-ho-khau/:id" index element={<StatisticList />} />
               <Route path="phan-qua/:id" index element={<GiftList />} />
+              <Route path="duoc-nhan-thuong/create/:id" index element={<CreateDuocNhanThuong />} />
             </Route>
 
             <Route path='danh-sach-phan-qua'>
               <Route index element={<ItemList />} />
             </Route>
 
-            <Route path="duoc-nhan-qua">
+            <Route path="duoc-nhan-thuong">
               <Route path="chinh-sua/:id" index element={<EditDuocNhanThuong />} />
             </Route>
 
