@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from 'react'
-import { Space, Table } from 'antd'
+import React from 'react'
+import { Table, Tag } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
+import { EditOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import { useResidentsStore } from './residentsStore'
+import { gender } from '~/app/config'
 
 const ResidentsTable = () => {
   const navigate = useNavigate()
-  const [residents, total, setCurrentPage] = useResidentsStore(state => [
+  const [residents, total, currentPage, setCurrentPage] = useResidentsStore(state => [
     state.residents,
     state.total,
+    state.currentPage,
     state.setCurrentPage
   ])
 
@@ -43,7 +45,8 @@ const ResidentsTable = () => {
     {
       title: 'Giới tính',
       dataIndex: 'gioiTinh',
-      key: 'gioiTinh'
+      key: 'gioiTinh',
+      render: (text, record) => <p>{gender[text]}</p>
     },
     {
       title: 'Ngày sinh',
@@ -51,23 +54,36 @@ const ResidentsTable = () => {
       key: 'ngaySinh'
     },
     {
-      title: 'Dân tộc',
-      dataIndex: 'danToc',
-      key: 'danToc'
-    },
-    {
       title: 'Địa chỉ',
       dataIndex: 'diaChiHienTai',
       key: 'diaChiHienTai'
     },
     {
+      title: 'Ghi chú',
+      dataIndex: 'ghiChu',
+      key: 'ghiChu',
+      render: (text, record) => (
+        <>
+          {text === 'Đã qua đời' && <Tag color="volcano">{text}</Tag>}
+          {text === 'Mới sinh' && <Tag color="green">{text}</Tag>}
+          {!text && <p className="text-unknow">Không có</p>}
+        </>
+      )
+    },
+    {
       title: ' ',
       key: 'action',
       render: (_, record) => (
-        <EditOutlined
+        <button
+          disabled={Boolean(record.duoc_khai_tu)}
           onClick={() => navigate(`/nhan-khau/chinh-sua/${record.id}`)}
-          className="cursor-pointer text-primary"
-        />
+        >
+          <EditOutlined
+            className={`cursor-pointer ${
+              Boolean(record.duoc_khai_tu) ? 'text-unknow' : 'text-primary'
+            }`}
+          />
+        </button>
       )
     }
   ]
@@ -80,6 +96,7 @@ const ResidentsTable = () => {
       dataSource={Array.from(residents.values())}
       pagination={{
         defaultPageSize: 10,
+        defaultCurrent: currentPage ?? 1,
         showSizeChanger: true,
         pageSizeOptions: ['10', '15', '20'],
         total: total,

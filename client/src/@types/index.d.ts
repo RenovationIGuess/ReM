@@ -17,6 +17,7 @@ declare type Page = {
 declare type IResident = {
   id: int
   maNhanKhau: string
+  image?: string
   hoTen: string
   biDanh?: string
   gioiTinh: number
@@ -50,6 +51,20 @@ declare type IResident = {
     idNhanKhau: number
     quanHeVoiChuHo: string
   }
+  duoc_khai_tu: Death | null
+  chung_minh_thu?: IdentificationType
+  thanh_vien_ho?: ResidentHousehold & { ho_khau: IHousehold }
+}
+
+declare type Death = {
+  id: int
+  idNguoiKhaiTu: int
+  idNguoiTao: int
+  soGiayKhaiTu: string
+  ngayChet: Date
+  lyDoChet: string
+  created_at: Date
+  updated_at: Date
 }
 
 declare type IHousehold = {
@@ -75,4 +90,37 @@ declare type KhaiTuData = {
   lyDoChet: string
   idNguoiTao: number
   idNguoiKhaiTu: number
+}
+
+declare type CredentialsType = {
+  username: string
+  password: string
+}
+
+declare type GenderType = 'Nam' | 'Nữ' | 'Khác'
+
+declare type HouseholdRelationshipType =
+  | 'Vợ'
+  | 'Chồng'
+  | 'Con'
+  | 'Cháu'
+  | 'Ông'
+  | 'Bà'
+  | 'Bố'
+  | 'Mẹ'
+  | 'Anh'
+  | 'Chị'
+  | 'Em'
+  | 'Phức tạp'
+
+declare type IdentificationType = {
+  soCMT: string
+  ngayCap: Date
+  noiCap: string
+}
+
+declare type ResidentHousehold = {
+  idHoKhau: number
+  idNhanKhau?: number
+  quanHeVoiChuHo: HouseholdRelationshipType
 }

@@ -70,7 +70,7 @@ const Sidebar = () => {
         <SideButton
           icon={<UserAddOutlined />}
           activedIcon={<UserAddOutlined />}
-          text="Đăng ký tạm trú"
+          text="Tạm trú tạm vắng"
           href="/tam-tru"
         />
         <SideButton

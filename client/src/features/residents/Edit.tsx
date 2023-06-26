@@ -1,27 +1,37 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Button, DatePicker, Form, Input, Radio, Select, Space } from 'antd'
+import { Button, DatePicker, Divider, Form, Input, Radio, Select, Space } from 'antd'
 import HomeLayout from '~/components/Layout/HomeLayout'
 import SubHeader from '~/components/SubHeader'
 import { showDeleteConfirm } from '~/components/ConfirmModal'
 import { ExclamationCircleFilled, LoadingOutlined } from '@ant-design/icons'
-import UploadImage from '~/components/UploadImage'
+import UploadImage, { UploadFile } from '~/components/UploadImage'
 import { useResidentsStore } from './residentsStore'
 import dayjs from 'dayjs'
 import { toast } from 'react-toastify'
+import { householdRelationship } from '~/app/config'
 
 const Edit = () => {
   const { id } = useParams()
   const navigate = useNavigate()
   const [form] = Form.useForm()
 
-  const [resident, getResidentById, editResident] = useResidentsStore(state => [
+  const [
+    resident,
+    searchHouseholdLeaderResult,
+    getResidentById,
+    editResident,
+    searchHouseholdLeader
+  ] = useResidentsStore(state => [
     state.resident,
+    state.searchHouseholdLeaderResult,
     state.getResidentById,
-    state.editResident
+    state.editResident,
+    state.searchHouseholdLeader
   ])
 
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [image, setImage] = useState<UploadFile | null>(null)
 
   const onFinish = (values: IResident) => {
     try {
@@ -70,7 +80,15 @@ const Edit = () => {
               soHoChieu: resident.soHoChieu ?? '',
               trinhDoHocVan: resident.trinhDoHocVan,
               ngheNghiep: resident.ngheNghiep ?? '',
-              noiLamViec: resident.noiLamViec ?? ''
+              noiLamViec: resident.noiLamViec ?? '',
+              soCMT: resident.chung_minh_thu?.soCMT,
+              ngayCap: dayjs(resident.chung_minh_thu?.ngayCap),
+              noiCap: resident.chung_minh_thu?.noiCap,
+              quanHeVoiChuHo: resident.thanh_vien_ho?.quanHeVoiChuHo,
+              idHoKhau: {
+                value: resident.thanh_vien_ho?.idHoKhau,
+                label: `${resident.thanh_vien_ho?.ho_khau.chu_ho.hoTen} - ${resident.thanh_vien_ho?.ho_khau.maHoKhau}`
+              }
             }}
             name="editResident"
             autoComplete="off"
@@ -101,7 +119,7 @@ const Edit = () => {
             </div>
 
             <Form.Item className="ms-4">
-              <UploadImage />
+              <UploadImage image={image} setImage={setImage} />
             </Form.Item>
 
             <Form.Item
@@ -127,10 +145,94 @@ const Edit = () => {
               className="col-span-4"
               rules={[{ required: true, message: 'Giới tính không được để trống' }]}
             >
-              <Radio.Group value={0}>
-                <Radio value="Nam">Nam</Radio>
-                <Radio value="Nữ">Nữ</Radio>
+              <Radio.Group>
+                <Radio value={1}>Nam</Radio>
+                <Radio value={2}>Nữ</Radio>
               </Radio.Group>
+            </Form.Item>
+
+            <Divider className="col-span-4 col-start-3 m-0 pb-4">
+              Thông tin căn cước công dân
+            </Divider>
+
+            <Form.Item
+              label="Số CCCD"
+              name="soCMT"
+              labelCol={{ span: 6 }}
+              className="col-span-4 col-start-3"
+              rules={[{ required: true, message: 'Số CCCD không được để trống' }]}
+            >
+              <Input placeholder="Nhập số CCCD" />
+            </Form.Item>
+
+            <Form.Item
+              label="Ngày cấp"
+              name="ngayCap"
+              labelCol={{ span: 6 }}
+              className="col-span-4 col-start-3"
+              rules={[{ required: true, message: 'Ngày cấp không được để trống' }]}
+            >
+              <DatePicker
+                placeholder="Ngày cấp"
+                format={'YYYY-MM-DD'}
+                disabledDate={current => {
+                  return current && current > dayjs().endOf('day')
+                }}
+                className="w-full"
+              />
+            </Form.Item>
+
+            <Form.Item
+              label="Nơi cấp"
+              name="noiCap"
+              labelCol={{ span: 6 }}
+              className="col-span-4 col-start-3"
+              rules={[{ required: true, message: 'Nơi cấp không được để trống' }]}
+            >
+              <Input placeholder="Nhập nơi cấp" />
+            </Form.Item>
+
+            <Divider className="col-span-4 col-start-3 m-0 pb-4">Thông tin nơi ở</Divider>
+
+            <Form.Item
+              label="Thành viên hộ khẩu"
+              name="idHoKhau"
+              labelCol={{ span: 6 }}
+              className="col-span-4 col-start-3"
+              rules={[{ required: true, message: 'Thành viên hộ khẩu không được để trống' }]}
+            >
+              <Select
+                showSearch
+                placeholder="Nhập họ tên người chủ hộ"
+                options={Array.from(searchHouseholdLeaderResult)
+                  .filter(resident => !resident.chu_ho.duoc_khai_tu)
+                  .map(resident => ({
+                    label: `${resident.chu_ho.hoTen} - ${resident.maHoKhau}`,
+                    value: resident.id
+                  }))}
+                onSearch={(value: string) => searchHouseholdLeader(value)}
+                filterOption={(input, option) =>
+                  (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                }
+              />
+            </Form.Item>
+
+            <Form.Item
+              label="Quan hệ với chủ hộ"
+              name="quanHeVoiChuHo"
+              labelCol={{ span: 6 }}
+              className="col-span-4 col-start-3"
+              rules={[{ required: true, message: 'Quan hệ với chủ hộ không được để trống' }]}
+            >
+              <Select
+                className="w-2/5"
+                placeholder="Quan hệ với chủ hộ"
+                showSearch
+                options={Object.values(householdRelationship).map(each => ({
+                  value: each,
+                  label: each
+                }))}
+              />
             </Form.Item>
 
             <Form.Item
@@ -152,6 +254,70 @@ const Edit = () => {
             >
               <Input.TextArea placeholder="Nhập nguyên quán" />
             </Form.Item>
+
+            <Form.Item
+              label="Địa chỉ thường trú"
+              name="diaChiThuongTru"
+              labelCol={{ span: 6 }}
+              className="col-span-4 col-start-3"
+              rules={[{ required: true, message: 'Địa chỉ thường chú không được để trống' }]}
+            >
+              <Input.TextArea placeholder="Nhập địa chỉ thường chú" />
+            </Form.Item>
+
+            <Form.Item
+              label="Địa chỉ hiện tại"
+              name="diaChiHienTai"
+              labelCol={{ span: 6 }}
+              className="col-span-4 col-start-3"
+              rules={[{ required: true, message: 'Địa chỉ hiện tại không được để trống' }]}
+            >
+              <Input.TextArea placeholder="Nhập địa chỉ hiện tại" />
+            </Form.Item>
+
+            <Divider className="col-span-4 col-start-3 m-0 pb-4">Thông tin công việc</Divider>
+
+            <Form.Item
+              label="Trình độ học vấn"
+              name="trinhDoHocVan"
+              labelCol={{ span: 12 }}
+              className="col-span-2 col-start-3"
+            >
+              <Select
+                showSearch
+                placeholder="Trình độ học vấn"
+                optionFilterProp="children"
+                options={[
+                  {
+                    value: 'Cấp 3',
+                    label: 'Cấp 3'
+                  },
+                  {
+                    value: 'Đai học',
+                    label: 'Đại học'
+                  },
+                  {
+                    value: 'Cao học',
+                    label: 'Cao học'
+                  }
+                ]}
+              />
+            </Form.Item>
+
+            <Form.Item label="Nghề nghiệp" name="ngheNghiep" className="col-span-2 ms-2">
+              <Input placeholder="Nhập nghề nghiệp" />
+            </Form.Item>
+
+            <Form.Item
+              label="Nơi làm việc"
+              name="noiLamViec"
+              labelCol={{ span: 6 }}
+              className="col-span-4 col-start-3"
+            >
+              <Input.TextArea placeholder="Nhập nơi làm việc" />
+            </Form.Item>
+
+            <Divider className="col-span-4 col-start-3 m-0 pb-4">Thông tin khác</Divider>
 
             <Form.Item
               label="Dân tộc"
@@ -203,26 +369,6 @@ const Edit = () => {
             </Form.Item>
 
             <Form.Item
-              label="Địa chỉ thường trú"
-              name="diaChiThuongTru"
-              labelCol={{ span: 6 }}
-              className="col-span-4 col-start-3"
-              rules={[{ required: true, message: 'Địa chỉ thường chú không được để trống' }]}
-            >
-              <Input.TextArea placeholder="Nhập địa chỉ thường chú" />
-            </Form.Item>
-
-            <Form.Item
-              label="Địa chỉ hiện tại"
-              name="diaChiHienTai"
-              labelCol={{ span: 6 }}
-              className="col-span-4 col-start-3"
-              rules={[{ required: true, message: 'Địa chỉ hiện tại không được để trống' }]}
-            >
-              <Input.TextArea placeholder="Nhập địa chỉ hiện tại" />
-            </Form.Item>
-
-            <Form.Item
               label="Quốc tịch"
               name="quocTich"
               labelCol={{ span: 12 }}
@@ -251,46 +397,6 @@ const Edit = () => {
 
             <Form.Item label="Số hộ chiếu" name="soHoChieu" className="col-span-2 ms-2">
               <Input placeholder="Nhập số hộ chiếu" />
-            </Form.Item>
-
-            <Form.Item
-              label="Trình độ học vấn"
-              name="trinhDoHocVan"
-              labelCol={{ span: 12 }}
-              className="col-span-2 col-start-3"
-            >
-              <Select
-                showSearch
-                placeholder="Trình độ học vấn"
-                optionFilterProp="children"
-                options={[
-                  {
-                    value: 'Cấp 3',
-                    label: 'Cấp 3'
-                  },
-                  {
-                    value: 'Đai học',
-                    label: 'Đại học'
-                  },
-                  {
-                    value: 'Cao học',
-                    label: 'Cao học'
-                  }
-                ]}
-              />
-            </Form.Item>
-
-            <Form.Item label="Nghề nghiệp" name="ngheNghiep" className="col-span-2 ms-2">
-              <Input placeholder="Nhập nghề nghiệp" />
-            </Form.Item>
-
-            <Form.Item
-              label="Nơi làm việc"
-              name="noiLamViec"
-              labelCol={{ span: 6 }}
-              className="col-span-4 col-start-3"
-            >
-              <Input.TextArea placeholder="Nhập nơi làm việc" />
             </Form.Item>
 
             <Form.Item className="col-span-8 col-start-6 ms-32">

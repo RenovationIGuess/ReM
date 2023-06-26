@@ -47,4 +47,9 @@ class HoKhau extends Model
     {
         return $this->hasMany(DinhChinh::class, 'idHoKhau', 'id');
     }
+
+    public function isChuHo()
+    {
+        return $this->belongsTo(NhanKhau::class, 'idChuHo', 'id');
+    }
 }

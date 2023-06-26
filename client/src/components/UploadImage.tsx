@@ -5,15 +5,21 @@ import type { RcFile } from 'antd/es/upload/interface'
 import { useHover } from 'usehooks-ts'
 import { motion } from 'framer-motion'
 
+type PropsType = {
+  image: UploadFile | null
+  setImage: React.Dispatch<React.SetStateAction<UploadFile | null>>
+}
+
+export type UploadFile = RcFile & { preview: string }
+
 const backDropVariants = {
   hidden: { opacity: 0 },
   enter: { opacity: 1 },
   exit: { opacity: 0 }
 }
 
-const UploadImage = () => {
+const UploadImage = ({ image, setImage }: PropsType) => {
   const [loading, setLoading] = useState(false)
-  const [imageUrl, setImageUrl] = useState<string>()
   const imageRef = useRef(null)
   const isHover = useHover(imageRef)
 
@@ -29,7 +35,10 @@ const UploadImage = () => {
     }
 
     if (isJpgOrPng && isLt2M) {
-      setImageUrl(URL.createObjectURL(file))
+      const uploadFile = file as UploadFile
+      const previewUrl = URL.createObjectURL(uploadFile)
+      uploadFile.preview = previewUrl
+      setImage(uploadFile)
     }
 
     setLoading(false)
@@ -46,9 +55,9 @@ const UploadImage = () => {
           border-2 border-dotted border-borderDefault bg-bgDefault transition-all hover:border-primary"
         >
           <>
-            {imageUrl ? (
+            {image && image.preview ? (
               <img
-                src={imageUrl}
+                src={image.preview}
                 alt="avatar"
                 className="h-full w-full rounded-full object-cover"
               />
@@ -56,21 +65,22 @@ const UploadImage = () => {
               <>{loading ? <LoadingOutlined /> : <PlusOutlined />} Thêm ảnh</>
             )}
           </>
-          {isHover && imageUrl && (
-            <motion.div
-              className="absolute top-0 flex h-full w-full items-center 
-              justify-center rounded-full bg-backDrop"
-              variants={backDropVariants}
-              initial="hidden"
-              animate="enter"
-              exit="exit"
-              transition={{ duration: 0.2, type: 'easeOut' }}
-            >
+          {isHover && image && (
+            <>
+              <motion.div
+                className="absolute top-0 flex h-full w-full items-center 
+                  justify-center rounded-full bg-backDrop"
+                variants={backDropVariants}
+                initial="hidden"
+                animate="enter"
+                exit="exit"
+                transition={{ duration: 0.2, type: 'easeOut' }}
+              ></motion.div>
               <DeleteOutlined
-                className="z-20 text-xl text-danger transition-all hover:scale-125"
-                onClick={() => setImageUrl('')}
+                className="absolute z-20 text-xl text-danger transition-all hover:scale-125"
+                onClick={() => setImage(null)}
               />
-            </motion.div>
+            </>
           )}
         </div>
       </Upload>

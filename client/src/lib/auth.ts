@@ -5,3 +5,10 @@ export const getCurrentUser = async () => {
 
   return result.data
 }
+
+export const login = async (credentials: CredentialsType) => {
+  const result = await axiosClient.post('/auth/login', credentials)
+  if (!result) return
+
+  return result.data
+}
