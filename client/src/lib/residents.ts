@@ -24,8 +24,30 @@ export const getResidentById = async (id: string) => {
   return response.data
 }
 
-export const createResident = async (resident: IResident) => {
-  const response = await axiosClient.post('/nhan-khau/create', resident)
+export const createResident = async (
+  resident: IResident,
+  residentHousehold: ResidentHousehold,
+  cmt: IdentificationType,
+  isMoiSinh?: boolean
+) => {
+  let queryString = '/nhan-khau/create'
+  let ghiChu = resident.ghiChu
+  if (isMoiSinh) {
+    queryString = '/nhan-khau/create?moiSinh=true'
+    ghiChu = 'Mới sinh'
+  }
+
+  const response = await axiosClient.post('/nhan-khau/create', {
+    idHoKhau: residentHousehold.idHoKhau,
+    quanHeVoiChuHo: residentHousehold.quanHeVoiChuHo,
+    nhanKhau: {
+      ...resident,
+      ghiChu
+    },
+    cmt: {
+      ...cmt
+    }
+  })
 
   if (!response) return
 
@@ -54,4 +76,12 @@ export const editResident = async (resident: IResident) => {
   if (!response) return
 
   return response.data
+}
+
+export const searchHouseholdLeader = async (searchValue: string) => {
+  const response = await axiosClient.get(`/chu-ho?hoTen=${searchValue}`)
+
+  if (!response) return
+
+  return response.data as IHousehold[]
 }

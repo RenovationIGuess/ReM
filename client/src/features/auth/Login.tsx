@@ -1,20 +1,23 @@
-import React from 'react'
+import React, { useState } from 'react'
 import DefaultLayout from '~/components/Layout/DefaultLayout'
 import { LoadingOutlined, LockOutlined, UserOutlined } from '@ant-design/icons'
 import { Button, Checkbox, Form, Input } from 'antd'
 import { CredentialsType, useLoginMutation } from './authApiSlice'
 import { useNavigate } from 'react-router-dom'
+import { useAuthStore } from './authStore'
 
 const Login = () => {
   const navigate = useNavigate()
   const [form] = Form.useForm()
-  const [login, { isLoading }] = useLoginMutation()
+  const [login] = useAuthStore(state => [state.login])
 
-  const onFinish = async (values: CredentialsType) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+
+  const onFinish = (values: CredentialsType) => {
     try {
+      setIsLoading(true)
       const { username, password } = values
-      const { accessToken } = await login({ username, password }).unwrap()
-      localStorage.setItem('accessToken', accessToken)
+      login({ username, password })
       form.resetFields()
       navigate('/')
     } catch (error) {
@@ -22,6 +25,8 @@ const Login = () => {
       if (apiError.status === 401) {
         alert('Tên đăng nhập hoặc mật khẩu không đúng.')
       }
+    } finally {
+      setIsLoading(false)
     }
   }
 

@@ -4,8 +4,9 @@ import HomeLayout from '~/components/Layout/HomeLayout'
 import SubHeader from '~/components/SubHeader'
 import { useResidentsStore } from './residentsStore'
 import { ApiOutlined, EditOutlined, LoadingOutlined, UserOutlined } from '@ant-design/icons'
-import { Avatar, Button } from 'antd'
+import { Avatar, Button, Tag } from 'antd'
 import Death from './Death'
+import { gender } from '~/app/config'
 
 type ResidentInfoItemProps = {
   label: string
@@ -81,13 +82,14 @@ const Detail = () => {
               <div className="flex items-center justify-start gap-8">
                 <Avatar
                   className="flex items-center justify-center"
+                  src={resident.image ?? null}
                   size={128}
                   icon={<UserOutlined />}
                 />
 
                 <div className="grid h-full grow grid-cols-3 gap-4">
                   <ResidentInfoItem label="Họ và tên" value={resident.hoTen} />
-                  <ResidentInfoItem label="Giới tính" value={resident.gioiTinh} />
+                  <ResidentInfoItem label="Giới tính" value={gender[resident.gioiTinh]} />
                   <ResidentInfoItem
                     label="Ngày sinh"
                     value={
@@ -103,7 +105,16 @@ const Detail = () => {
                   {resident.ghiChu && (
                     <ResidentInfoItem
                       label="Ghi chú"
-                      value={<span className="font-semibold text-danger">{resident.ghiChu}</span>}
+                      value={
+                        <>
+                          {resident.ghiChu === 'Đã qua đời' && (
+                            <Tag color="volcano">{resident.ghiChu}</Tag>
+                          )}
+                          {resident.ghiChu === 'Mới sinh' && (
+                            <Tag color="green">{resident.ghiChu}</Tag>
+                          )}
+                        </>
+                      }
                     />
                   )}
                 </div>
@@ -116,6 +127,27 @@ const Detail = () => {
                 <ResidentInfoItem label="Nguyên quán" value={resident.nguyenQuan} />
                 <ResidentInfoItem label="Địa chỉ thường trú" value={resident.diaChiThuongTru} />
                 <ResidentInfoItem label="Địa chỉ hiện tại" value={resident.diaChiHienTai} />
+              </div>
+            </EachResidentInfoDiv>
+
+            <EachResidentInfoDiv label="Thông tin căn cước công dân">
+              <div className="grid grid-cols-3 gap-4">
+                <ResidentInfoItem
+                  label="Số căn cước công dân"
+                  value={resident.chung_minh_thu?.soCMT}
+                />
+                <ResidentInfoItem
+                  label="Ngày cấp"
+                  value={
+                    resident.chung_minh_thu?.ngayCap &&
+                    new Intl.DateTimeFormat('vi-GB', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    }).format(new Date(resident.chung_minh_thu.ngayCap))
+                  }
+                />
+                <ResidentInfoItem label="Nơi cấp" value={resident.chung_minh_thu?.noiCap} />
               </div>
             </EachResidentInfoDiv>
 
