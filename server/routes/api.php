@@ -102,6 +102,8 @@ Route::group(['prefix' => 'su-kien'], function ($router) {
 Route::group(['prefix' => 'duoc-nhan-thuong'], function ($router) {
     Route::put('/{idDuocNhanThuong}/edit', [DuocNhanThuongController::class, 'update']);
     Route::delete('/{idDuocNhanThuong}/delete', [DuocNhanThuongController::class, 'destroy']);
+    Route::patch('/{idDuocNhanThuong}/check', [DuocNhanThuongController::class, 'check']);
+    Route::patch('/{idDuocNhanThuong}/uncheck', [DuocNhanThuongController::class, 'uncheck']);
 });
 
 Route::group(['prefix' => 'items'], function($router) {
