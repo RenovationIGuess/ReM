@@ -8,6 +8,7 @@ use App\Models\HoKhau;
 use App\Models\NhanKhau;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class HoKhauController extends Controller
@@ -37,7 +38,7 @@ class HoKhauController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
-            ]);
+            ], 400);
         }
     }
 
@@ -62,7 +63,7 @@ class HoKhauController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
-            ]);
+            ], 400);
         }
     }
 
@@ -107,7 +108,7 @@ class HoKhauController extends Controller
                 // Tim cac nhan khau
                 $nhanKhaus = collect($request->get('nhanKhaus'))->map(
                     function ($nhanKhau) {
-                        return NhanKhau::find($nhanKhau['id']);
+                        return NhanKhau::find($nhanKhau);
                     }
                 );
 
@@ -120,14 +121,6 @@ class HoKhauController extends Controller
                 //         }
                 //     )
                 // ) {
-                    // foreach ($nhanKhaus as $nhanKhau) {
-                    //     $nhanKhau->thanhVienHo()->create([
-                    //         'idHoKhau' => $hoKhau->id,
-                    //         'idNhanKhau' => $nhanKhau->id,
-                    //         'quanHeVoiChuHo' => '',
-                    //     ]);
-                    // }
-
                     // Gan id ho khau moi cho nhan khau duoc chon
                     $nhanKhaus->each(
                         function (NhanKhau $nhanKhau) use ($hoKhau) {
@@ -140,13 +133,13 @@ class HoKhauController extends Controller
                         'success' => true,
                         'message' => 'Tạo hộ khẩu mới thành công!',
                     ], 201);
-                } else {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Nhân khẩu đã chọn không hợp lệ!',
-                    ], 400);
-                }
-            // }
+                // } else {
+                //     return response()->json([
+                //         'success' => false,
+                //         'message' => 'Nhân khẩu đã chọn không hợp lệ!',
+                //     ], 400);
+                // }
+            }
 
             return response()->json([
                 'success' => false,
@@ -164,19 +157,75 @@ class HoKhauController extends Controller
     {
         try {
             $data = request()->validate([
-                'maHoKhau' => '',
-                'idChuHo' => '',
-                'maKhuVuc' => '',
-                'diaChi' => '',
-                'ngayLap' => '',
-                'ngayChuyenDi' => '',
-                'lyDoChuyen' => '',
+                'maHoKhau' => 'string',
+                'idChuHo' => 'numeric',
+                'maKhuVuc' => 'string',
+                'diaChi' => 'string',
+                'ngayLap' => 'date',
+                'ngayChuyenDi' => 'date',
+                'lyDoChuyen' => 'string',
             ]);
+
+            // Lay ra ho khau
+            $hoKhau = DB::table('ho_khau')->find($idHoKhau);
+
+            // Lay ra mang cac gia tri hien tai
+            $originalData = [
+                'maHoKhau' => $hoKhau->maHoKhau,
+                'idChuHo' => $hoKhau->idChuHo,
+                'maKhuVuc' => $hoKhau->maKhuVuc,
+                'diaChi' => $hoKhau->diaChi,
+                'ngayLap' => $hoKhau->ngayLap,
+                'ngayChuyenDi' => $hoKhau->ngayChuyenDi,
+                'lyDoChuyen' => $hoKhau->lyDoChuyen,
+            ];
+
+            // Lay ra cac gia tri da thay doi
+            $changes = array_diff($data, $originalData);
+
+            // Gia tri thay doi tu
+            $originalValue = '';
+            // Gia tri thay doi thanh
+            $changeValue = '';
+            // Thong tin thay doi
+            $changedFields = '';
+            
+            foreach($changes as $key => $value) {
+                $changedFields = $changedFields . $key . ',';
+                $originalValue = $originalValue . ',' . $key . ': ' . $originalData[$key];
+                $changeValue = $changeValue . ',' . $key . ': ' . $value;
+            }
+            // Luc xu li o front end chi can split(",") la duoc
+
+            // Tao record moi cho dinh chinh
+            if ($request->user_id) {
+                DinhChinh::create([
+                    'idHoKhau' => $idHoKhau,
+                    'thongTinThayDoi' => substr_replace($changedFields ,"", -1),
+                    'thayDoiTu' => $originalValue,
+                    'thayDoiThanh' => $changeValue,
+                    'ngayThayDoi' => Carbon::now(),
+                    'idNguoiThayDoi' => $request->user_id,
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User Authorized!',
+                ], 401);
+            }
+
+            $hoKhau->update($data);
+
+            return response()->json([
+                'data' => $hoKhau,
+                'success' => true,
+                'message' => 'Thay đổi thành công!',
+            ], 200);
         } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
-            ]);
+            ], 400);
         }
     }
 
@@ -220,7 +269,10 @@ class HoKhauController extends Controller
         ]);
 
         try {
+            // Lay ho khau cu
             $hoKhauCu = HoKhau::find($idHoKhau);
+            // Lay danh sach nhan khau truoc thay doi 
+            $nhanKhauCu = $hoKhauCu->nhanKhaus;
 
             if ($hoKhauCu) {
                 // Tim cac nhan khau moi
@@ -241,24 +293,40 @@ class HoKhauController extends Controller
                     // Neu input chuan -> Tao ho khau moi dua tren input
                     $hoKhauMoi = HoKhau::create($data);
 
+                    // Gia tri thay doi tu
+                    $changeFrom = '';
+                    // Gia tri thay doi thanh
+                    $changeTo = '';
+
+                    // Setup gia tri thay doi tu
+                    foreach($nhanKhauCu as $nhanKhau) {
+                        $changeFrom = $changeFrom . $nhanKhau->hoTen . ',';
+                    }
+
                     // Gan id ho khau moi cho nhan khau duoc chon
                     $nhanKhauMois->each(
-                        function (NhanKhau $nhanKhauMoi) use ($hoKhauMoi) {
-                            // $nhanKhauMoi->thanhVienHo->idHoKhau = $hoKhauMoi->id;
-                            // $nhanKhauMoi->thanhVienHo->save();
+                        function (NhanKhau $nhanKhauMoi) use ($hoKhauMoi, $changeTo) {
+                            $changeTo = $changeTo . $nhanKhauMoi->hoTen . ',';
                             $nhanKhauMoi->thanhVienHo()->update(["idHoKhau" => $hoKhauMoi->id]);
                         }
                     );
 
-                    // Them vao dinh chinh
-                    // DinhChinh::create([
-                    //     'idHoKhau' => $idHoKhau,
-                    //     'thongTinThayDoi' => "Tách hộ khẩu",
-                    //     'thayDoiTu' => '',
-                    //     'thayDoiThanh' => '',
-                    //     'ngayThayDoi' => Carbon::now(),
-                    //     'idNguoiThayDoi' => auth()->user()->id,
-                    // ]);
+                    // Tao record moi cho dinh chinh
+                    if ($request->user_id) {
+                        DinhChinh::create([
+                            'idHoKhau' => $idHoKhau,
+                            'thongTinThayDoi' => "Tách hộ khẩu",
+                            'thayDoiTu' => substr_replace($changeFrom ,"", -1),
+                            'thayDoiThanh' => substr_replace($changeTo ,"", -1),
+                            'ngayThayDoi' => Carbon::now(),
+                            'idNguoiThayDoi' => $request->user_id,
+                        ]);
+                    } else {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'User Authorized!',
+                        ], 401);
+                    }
 
                     return response()->json([
                         'data' => $hoKhauMoi,
