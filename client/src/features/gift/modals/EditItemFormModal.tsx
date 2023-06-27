@@ -1,6 +1,7 @@
 import { DatePicker, Form, Input, InputNumber, Modal } from 'antd';
 import { AxiosResponse } from 'axios';
 import React, { FC, useEffect, useState } from 'react'
+import { ToastContainer, toast } from 'react-toastify';
 import axiosClient from '~/app/axiosClient';
 
 interface EditItemFormModalProps {
@@ -73,6 +74,7 @@ const EditItemFormModal: FC<EditItemFormModalProps> = ({ open, onCreate, onCance
                     </Form.Item>
                 </div>
             </Form>
+            <ToastContainer />
         </Modal>
     )
 }

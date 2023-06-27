@@ -8,6 +8,7 @@ import TabListEvent from '~/components/Layout/TabListEvent'
 import Item from './Item'
 import CreateItemFormModal from './modals/CreateItemFormModal'
 import EditItemFormModal from './modals/EditItemFormModal'
+import { ToastContainer, toast } from 'react-toastify'
 
 const { Title } = Typography;
 
@@ -28,24 +29,23 @@ const ItemList = () => {
         console.log('Received values of form:', values);
         try {
             await axiosClient.post(`/items/create`, values)
-            alert("Success")
             setOpenCreateItem(false)
+            toast.success('Tạo vật phẩm thành công', {
+                position: toast.POSITION.TOP_RIGHT
+            })
+            setTimeout(() => {
+                window.location.reload()
+            }, 5000)
         } catch (e) {
             const result = (e as Error).message;
             console.log(result)
         }
     };
 
-    const onEditItem = async (values: IItem) => {
-        try {
-            await axiosClient.put(`/su-kien/${id}/edit`, values)
-            alert("Update user successfully")
-        } catch (err) {
-            console.error(err)
-        }
-        console.log('Received values of form: ', values);
-        setOpenEditItem(false)
-    };
+    useEffect(() => {
+        getItems()
+    }, [])
+
     return (
         <HomeLayout>
             <div className="mb-2 flex min-h-full flex-col">
@@ -67,14 +67,9 @@ const ItemList = () => {
                             setOpenCreateItem(false);
                         }}
                     />
-                    {/* <EditItemFormModal
-                        open={openEditItem}
-                        onCreate={onEditItem}
-                        onCancel={() => { setOpenEditItem(false) }}
-                    /> */}
                 </div>
                 <TabListEvent defaultActiveKey='2' />
-                <Row gutter={[16, 32]}>
+                <Row gutter={[16, 32]} className='mb-10'>
                     {
                         items.map((item) => (
                             <Item key={item.id} itemId={item.id} title={item.name} cost={item.unit_price} />
@@ -84,14 +79,14 @@ const ItemList = () => {
                     defaultPageSize={10}
                     showSizeChanger={true}
                     pageSizeOptions={['10', '15', '20']}
-                    style={{ float: 'right' }}
+                    style={{ float: 'right', marginTop: '70px' }}
                     defaultCurrent={1}
                     total={total}
-                    className='my-16'
                     onChange={(page, pageSize) => {
                         setPage({ page, offset: pageSize })
                     }} />
             </div>
+            <ToastContainer />
         </HomeLayout>
     )
 }

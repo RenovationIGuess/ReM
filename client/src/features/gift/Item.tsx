@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { EditOutlined } from '@ant-design/icons';
 import EditItemFormModal from './modals/EditItemFormModal';
 import axiosClient from '~/app/axiosClient';
+import { ToastContainer, toast } from 'react-toastify';
 
 const gridStyle: React.CSSProperties = {
     width: '240px',
@@ -21,7 +22,13 @@ const Item = (props: any) => {
     const onEditItem = async (values: IItem) => {
         try {
             await axiosClient.put(`/items/${itemId}/edit`, values)
-            alert("Update user successfully")
+            toast.success('Cập nhật vật phẩm thành công', {
+                position: toast.POSITION.TOP_RIGHT
+            })
+            setTimeout(() => {
+                window.location.reload()
+            }, 1000)
+            window.location.reload()
         } catch (err) {
             console.error(err)
         }
@@ -43,10 +50,11 @@ const Item = (props: any) => {
             >
                 <Meta title={`Tên vật phẩm: ${title}`} />
                 <Meta title={`Đơn giá: ${cost}`} />
-                <Button type="primary" ghost color="#40A9FF" icon={<EditOutlined />} onClick={e => onEdit(itemId)}>
+                <Button type="primary" className='mt-2' ghost color="#40A9FF" icon={<EditOutlined />} onClick={e => onEdit(itemId)}>
                     Chỉnh sửa
                 </Button>
             </Card>
+            <ToastContainer />
         </Col>
 
     )

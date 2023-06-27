@@ -14,37 +14,13 @@ declare type Page = {
   offset: number
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-declare type PageGiftEvent = {
-  page: number
-  offset: number
-  eventId: string | undefined
-}
-
-=======
->>>>>>> 2967e28... gift front end
-=======
->>>>>>> 7753122... create household CRUD ui
 declare type IResident = {
   id: int
   maNhanKhau: string
   image?: string
   hoTen: string
   biDanh?: string
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   gioiTinh: number
-=======
-  gioiTinh: string
->>>>>>> 2967e28... gift front end
-=======
-  gioiTinh: string
->>>>>>> 7753122... create household CRUD ui
-=======
-  gioiTinh: number
->>>>>>> 6218c52... household crud feature
   noiSinh: string
   ngaySinh: Date
   nguyenQuan: string
@@ -70,28 +46,15 @@ declare type IResident = {
   ghiChu?: string
   created_at: Date
   updated_at: Date
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 6218c52... household crud feature
   pivot?: {
     idHoKhau: number
     idNhanKhau: number
     quanHeVoiChuHo: string
   }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 2967e28... gift front end
-=======
->>>>>>> 7753122... create household CRUD ui
-=======
->>>>>>> 6218c52... household crud feature
-=======
   duoc_khai_tu: Death | null
   chung_minh_thu?: IdentificationType
   thanh_vien_ho?: ResidentHousehold & { ho_khau: IHousehold }
+  age: number
 }
 
 declare type Death = {
@@ -103,7 +66,6 @@ declare type Death = {
   lyDoChet: string
   created_at: Date
   updated_at: Date
->>>>>>> f274461... fix(client): update crud nhan-khau
 }
 
 declare type IHousehold = {
@@ -115,9 +77,6 @@ declare type IHousehold = {
   diaChi?: string
   ngayChuyenDi?: Date
   lyDoChuyen?: string
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
   created_at?: Date
   updated_at?: Date
   chu_ho: IResident
@@ -212,23 +171,7 @@ declare type KhaiTuData = {
   lyDoChet: string
   idNguoiTao: number
   idNguoiKhaiTu: number
-=======
-=======
->>>>>>> 7753122... create household CRUD ui
-  created_at: Date
-  updated_at: Date
-=======
-  created_at?: Date
-  updated_at?: Date
->>>>>>> 6218c52... household crud feature
-  chu_ho: IResident
-  nhan_khaus: IResident[]
-<<<<<<< HEAD
->>>>>>> 2967e28... gift front end
-=======
->>>>>>> 7753122... create household CRUD ui
 }
-
 declare type Residents = Map<string, IResident>
 
 declare type KhaiTuData = {

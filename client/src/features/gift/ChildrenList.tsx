@@ -1,29 +1,15 @@
-import { Button, DatePicker, Form, Input, InputNumber, Modal, Select, Space, Statistic } from 'antd'
+import { Button, Space } from 'antd'
 import React, { useEffect, useState } from 'react'
 import HomeLayout from '~/components/Layout/HomeLayout'
 import { useNavigate, useParams } from 'react-router-dom'
 import ChildrenTable from './ChildrenTable'
 import TabList from '~/components/Layout/TabList'
-import { ArrowLeftOutlined, DeleteOutlined, EditOutlined, MinusCircleOutlined, PlusOutlined, WarningFilled } from '@ant-design/icons'
-import { useSelector } from 'react-redux'
-import { getGiftsChildrenSelector, addGift, emptyGift } from './giftsChildren.slice'
+import { EditOutlined, WarningFilled, DeleteOutlined } from '@ant-design/icons'
 import { useAppDispatch } from '~/hooks/useRedux'
-import { getAddGiftDisabledSelector, setDisabled } from './disableAddGift.slice'
-import { GiftType } from './giftsChildren.slice'
-import { openSelector, setOpen } from './open.slice'
-import { getGiftsSelector } from './gifts.slice'
-import UploadImage from '~/components/UploadImage'
 import { useEventStore } from '~/app/eventStore'
-import GiftFormItem from './GiftFormItem'
 import axiosClient from '~/app/axiosClient'
 import { showDeleteConfirm } from '~/components/ConfirmModal'
-import { AxiosResponse } from 'axios'
-import types from './enums/types'
-import Title from 'antd/es/typography/Title'
-import achiveType from './enums/achieveType'
-import capHocType from './enums/capHocType'
 import moment from 'moment'
-import CreateChildrenFormModal from './modals/CreateChildrenFormModal'
 import EditFormModal from './modals/EditFormModal'
 import { EventSubHeader } from '~/components/Layout/EventSubHeader'
 
@@ -50,18 +36,6 @@ export const ChildrenList = () => {
         getEventById(id ? id : '1')
     }, [])
     console.log(event, id)
-    const onCreateChildren = async (values: IDuocNhanThuong) => {
-        console.log('Received values of form: ', values);
-        dispatch(setOpen(false));
-        try {
-            await axiosClient.post(`/su-kien/${id}/duoc-nhan-thuong/create`, {
-
-            })
-            console.log("Success")
-        } catch (error) {
-            console.error(error)
-        }
-    };
 
     const onEditEvent = async (values: IEvent) => {
         const inputDate = new Date(values.ngayBatDau);
@@ -72,7 +46,7 @@ export const ChildrenList = () => {
                 ngayBatDau: formattedDate
             }
             await axiosClient.put(`/su-kien/${id}/edit`, updatedEvent)
-            alert("Update user successfully")
+            alert("Update successfully")
         } catch (err) {
             console.error(err)
         }
@@ -82,7 +56,7 @@ export const ChildrenList = () => {
 
     const onDelete = () => {
         showDeleteConfirm({
-            title: 'Bạn có chắc chắn muốn xóa hộ khẩu này không?',
+            title: 'Bạn có chắc chắn muốn sự kiện khẩu này không?',
             icon: <WarningFilled />,
             onOk: async () => {
                 try {
@@ -117,7 +91,7 @@ export const ChildrenList = () => {
                                 Xóa
                             </Button>
                             <Button onClick={() => {
-                                setOpenCreateChildren(true)
+                                navigate(`/su-kien/duoc-nhan-thuong/create/${event.id}`)
                             }}>Thêm bé mới</Button>
                         </Space>
                     </span>
@@ -127,14 +101,6 @@ export const ChildrenList = () => {
                         onCancel={() => {
                             setOpenEditEvent(false)
                         }}
-                    />
-                    <CreateChildrenFormModal
-                        open={openCreateChildren}
-                        onCreate={onCreateChildren}
-                        onCancel={() => {
-                            setOpenCreateChildren(false)
-                        }}
-                        event={event}
                     />
                 </div>
                 <TabList defaultActiveKey='1' eventId={id} />

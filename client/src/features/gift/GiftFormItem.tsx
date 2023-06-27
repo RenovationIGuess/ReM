@@ -1,5 +1,3 @@
-import { useSelector } from "react-redux"
-import { getGiftsSelector } from "./gifts.slice"
 import { Form, Input, InputNumber, Select, Typography } from "antd"
 import { useEventStore } from "~/app/eventStore"
 import { useEffect } from "react"
