@@ -79,9 +79,8 @@ const ResidentsTable = () => {
           onClick={() => navigate(`/nhan-khau/chinh-sua/${record.id}`)}
         >
           <EditOutlined
-            className={`cursor-pointer ${
-              Boolean(record.duoc_khai_tu) ? 'text-unknow' : 'text-primary'
-            }`}
+            className={`cursor-pointer ${Boolean(record.duoc_khai_tu) ? 'text-unknow' : 'text-primary'
+              }`}
           />
         </button>
       )

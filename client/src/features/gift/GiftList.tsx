@@ -1,15 +1,12 @@
-import React, { FC, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import HomeLayout from '~/components/Layout/HomeLayout'
-import StatisticTable from './StatisticTable'
 import { Button, Form, Input, InputNumber, Modal, Pagination, Row, Statistic } from 'antd'
 import TabList from '~/components/Layout/TabList'
 import { useNavigate, useParams } from 'react-router-dom'
-import { GiftTable } from './GiftTable'
 import { ArrowLeftOutlined } from '@ant-design/icons'
-import { addGift, getGiftsSelector } from './gifts.slice'
-import { useAppDispatch } from '~/hooks/useRedux'
-import { useSelector } from 'react-redux'
 import { GiftCard } from './GiftCard'
+import { useEventStore } from '~/app/eventStore'
+import { PageGiftEvent, useGetGiftsByPageQuery } from './api/gifts.slice'
 
 interface Values {
     name: string;
@@ -28,7 +25,6 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
     onCancel,
 }) => {
     const [form] = Form.useForm();
-    const dispatch = useAppDispatch()
     const formRef: React.RefObject<any> | null = React.createRef();
     return (
         <Modal
@@ -44,7 +40,6 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
                         const nameValue = formRef.current.getFieldValue(`name`);
                         const priceValue = formRef.current.getFieldValue(`price`);
                         form.resetFields();
-                        dispatch(addGift({ key: '6', id: '6', name: nameValue, price: priceValue, imageUrl: "" }))
                         onCreate(values);
                     })
                     .catch((info) => {
@@ -75,21 +70,26 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
 };
 
 export const GiftList = () => {
-    const gifts = useSelector(getGiftsSelector)
-    const perPage = 6
-    const total = gifts.length
 
     const { id } = useParams()
     const navigate = useNavigate()
     const [openCreateGift, setOpenCreateGift] = useState(false);
-    const [state, setState] = useState({ minValue: 0, maxValue: perPage })
-    const handleChange = (value: number) => {
-        setState({
-            minValue: (value - 1) * perPage,
-            maxValue: value * perPage
-        });
-    };
+    const [page, setPage] = useState<PageGiftEvent>({ page: 1, offset: 10, event_id: id })
+    const { data: eventsData } = useGetGiftsByPageQuery(page)
+    const [event, gifts, getEventById, getGiftsEventByEventId] = useEventStore(state => [
+        state.event,
+        state.gifts,
+        state.getEventById,
+        state.getGiftsEventByEventId
+    ])
 
+    const total = gifts.length
+
+    useEffect(() => {
+        getEventById(id ? id : '1')
+        getGiftsEventByEventId(id)
+    }, [])
+    // const { data: giftsData } = useGetGiftsByPageQuery(page)
     const onCreate = (values: any) => {
         console.log('Received values of form: ', values);
         setOpenCreateGift(false);
@@ -99,9 +99,10 @@ export const GiftList = () => {
             <div className="mb-2 flex min-h-full flex-col">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center justify-between">
-                        <ArrowLeftOutlined className='me-4 mb-2' onClick={() => navigate('/tang-qua')} />
+                        <ArrowLeftOutlined className='me-4 mb-2' onClick={() => navigate(-1)} />
                         <Input.Search className="w-[25vw]" placeholder="Tìm kiếm gì đó ..." />
                     </div>
+                    {/* <EventSubHeader /> */}
                     <Button onClick={() => setOpenCreateGift(true)}>Thêm quà mới</Button>
                     <CollectionCreateForm
                         open={openCreateGift}
@@ -114,21 +115,35 @@ export const GiftList = () => {
                 <TabList defaultActiveKey='3' eventId={id} />
                 <div className="mt-2 h-full grow rounded-lg bg-bgPrimary px-4 py-2 shadow-md">
                     <div className="flex w-full items-center justify-between">
-                        <p className="text-2xl font-medium">Tết trung thu 1987 - Danh sách phần quà</p>
-                        <Statistic value={112893} />
+                        <p className="text-2xl font-medium">{`${event.name}`}- Danh sách phần quà</p>
+                        <Statistic value={`Số vật phẩm trong sự kiện: ${gifts.length}`} />
                     </div>
                     {/* <GiftTable /> */}
                     <Row gutter={[16, 32]}>
-                        {gifts &&
-                            gifts.length > 0 &&
-                            gifts.slice(state.minValue, state.maxValue).map((gift) => (
-                                <GiftCard giftId={gift.id} giftName={gift.name} price={gift.price} imgUrl={gift.imageUrl} />
-                            ))}
+                        {
+                            gifts.map((gift) => {
+                                console.log(gift.id, gift.name)
+                                return (
+                                    <GiftCard giftId={gift.id} giftName={gift.name} price={gift.unit_price} quantity={gift.totalQuantity} cost={gift.totalCost} />
+                                )
+                            })}
                     </Row>
-                    <Pagination style={{ float: 'right' }} defaultCurrent={1} total={total} className='my-16' onChange={handleChange} defaultPageSize={perPage} />
+                    <Pagination
+                        defaultPageSize={10}
+                        showSizeChanger={true}
+                        pageSizeOptions={['10', '15', '20']}
+                        style={{ float: 'right' }}
+                        defaultCurrent={1}
+                        total={total}
+                        className='my-16'
+                        onChange={(page, pageSize) => {
+                            setPage({ page, offset: pageSize, event_id: id })
+                        }} />
 
                 </div>
             </div>
         </HomeLayout>
     )
 }
+
+export default GiftList

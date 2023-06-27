@@ -21,8 +21,7 @@ class DuocNhanThuongController extends Controller
                 'success' => true,
                 'message' => 'Get all DuocNhanThuong successfully',
             ], 200);
-        } catch(Exception $exception)
-        {
+        } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
@@ -66,8 +65,7 @@ class DuocNhanThuongController extends Controller
 
         $validator = Validator::make($request->all(), $rules);
 
-        if ($validator->fails())
-        {
+        if ($validator->fails()) {
             return response()->json(
                 [
                     'data' => $validator->errors(),
@@ -98,17 +96,15 @@ class DuocNhanThuongController extends Controller
                     'message' => 'Đã có nhân khẩu này trong danh sách được nhận quà',
                 ], 403);
             }
-            
-            $duocNhanThuong = null;
-            if ($suKien->type == 1)
-            {
-                $phanThuong = PhanThuong::where('idSuKien', $idSuKien)
-                ->where('thanhTichHocTap', $request->thanhTichHocTap)
-                ->where('capHoc', $request->capHoc)
-                ->first();
 
-                if (!$phanThuong)
-                {
+            $duocNhanThuong = null;
+            if ($suKien->type == 1) {
+                $phanThuong = PhanThuong::where('idSuKien', $idSuKien)
+                    ->where('thanhTichHocTap', $request->thanhTichHocTap)
+                    ->where('capHoc', $request->capHoc)
+                    ->first();
+
+                if (!$phanThuong) {
                     return response()->json([
                         'success' => false,
                         'message' => 'Không có phần thưởng nào phù hợp với thành tích học tập và cấp học đấy',
@@ -125,15 +121,14 @@ class DuocNhanThuongController extends Controller
                     'anhGiayKhen' => $request->anhGiayKhen,
                     'idPhanThuong' => $phanThuong->id,
                 ]);
-            } else if ($suKien->type == 0)
-            {
+            } else if ($suKien->type == 0) {
                 $phanThuong = PhanThuong::where('idSuKien', $idSuKien)
                     ->first();
 
                 $duocNhanThuong = DuocNhanThuong::create([
                     'idSuKien' => $idSuKien,
                     'idNhanKhau' => $request->idNhanKhau,
-                    'idPhanThuong' => $phanThuong,
+                    'idPhanThuong' => $phanThuong->id,
                 ]);
             }
 
@@ -162,8 +157,7 @@ class DuocNhanThuongController extends Controller
 
         $validator = Validator::make($request->all(), $rules);
 
-        if ($validator->fails())
-        {
+        if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'message' => $validator->errors(),
@@ -172,7 +166,7 @@ class DuocNhanThuongController extends Controller
 
         try {
             $duocNhanThuong = DuocNhanThuong::find($idDuocNhanThuong);
-            
+
             if (!$duocNhanThuong) {
                 return response()->json([
                     'success' => false,
@@ -185,12 +179,11 @@ class DuocNhanThuongController extends Controller
             if ($suKien->type == 1) {
 
                 $phanThuong = $suKien->phanThuongs()
-                ->where('thanhTichHocTap', $request->thanhTichHocTap)
-                ->where('capHoc', $request->capHoc)
-                ->first();
+                    ->where('thanhTichHocTap', $request->thanhTichHocTap)
+                    ->where('capHoc', $request->capHoc)
+                    ->first();
 
-                if (!$phanThuong)
-                {
+                if (!$phanThuong) {
                     return response()->json([
                         'success' => false,
                         'message' => 'Không có phần thưởng nào phù hợp với thành tích học tập và cấp học đấy',
@@ -204,8 +197,7 @@ class DuocNhanThuongController extends Controller
                 $duocNhanThuong->anhGiayKhen = $request->anhGiayKhen;
                 $duocNhanThuong->idPhanThuong = $phanThuong->id;
                 $duocNhanThuong->save();
-            } else if ($suKien->type == 0)
-            {
+            } else if ($suKien->type == 0) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Cannot edit due to SuKien type'
@@ -230,7 +222,7 @@ class DuocNhanThuongController extends Controller
     {
         try {
             $duocNhanThuong = DuocNhanThuong::find($idDuocNhanThuong);
-            
+
             if (!$duocNhanThuong) {
                 return response()->json([
                     'success' => false,
@@ -246,8 +238,7 @@ class DuocNhanThuongController extends Controller
                 'success' => true,
                 'message' => 'Đã đánh dấu đã nhận thưởng thành công',
             ], 200);
-        } catch (Exception $exception)
-        {
+        } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
@@ -259,7 +250,7 @@ class DuocNhanThuongController extends Controller
     {
         try {
             $duocNhanThuong = DuocNhanThuong::find($idDuocNhanThuong);
-            
+
             if (!$duocNhanThuong) {
                 return response()->json([
                     'success' => false,
@@ -275,8 +266,7 @@ class DuocNhanThuongController extends Controller
                 'success' => true,
                 'message' => 'Đã bỏ đánh đấu đã nhận thưởng thành công',
             ], 200);
-        } catch (Exception $exception)
-        {
+        } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
@@ -302,7 +292,7 @@ class DuocNhanThuongController extends Controller
                 'success' => true,
                 'message' => 'Đã xóa khỏi danh sách nhận thưởng thành công',
             ], 200);
-            
+
         } catch (Exception $exception) {
             return response()->json([
                 'success' => false,

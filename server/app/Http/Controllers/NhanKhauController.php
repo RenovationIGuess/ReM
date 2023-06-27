@@ -103,9 +103,9 @@ class NhanKhauController extends Controller
         $idHoKhau = $data['idHoKhau'];
         $quanHeVoiChuHo = $data['quanHeVoiChuHo'];
         $nhanKhauData = $data['nhanKhau'];
-        if($moiSinh == 1)
+        if ($moiSinh == 1)
             $cmtData = $data['cmt'];
-        else 
+        else
             $cmtData = [];
 
         try {
@@ -134,10 +134,12 @@ class NhanKhauController extends Controller
 
                 // Tao chung minh thu neu khong phai moi sinh
                 if ($moiSinh == 0) {
-                    $nhanKhau->chungMinhThu()->create(array_merge(
-                        ['idNhanKhau' => $nhanKhau->id],
-                        $cmtData,
-                    ));
+                    $nhanKhau->chungMinhThu()->create(
+                        array_merge(
+                            ['idNhanKhau' => $nhanKhau->id],
+                            $cmtData,
+                        )
+                    );
                 }
 
                 return response()->json([
@@ -199,7 +201,6 @@ class NhanKhauController extends Controller
 
         try {
             $nhanKhau = NhanKhau::find($idNhanKhau);
-        
             if (!$nhanKhau) {
                 return response()->json([
                     'success' => false,

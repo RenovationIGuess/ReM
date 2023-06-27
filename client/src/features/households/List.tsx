@@ -1,4 +1,3 @@
-import React from 'react'
 import { Button, Input, Statistic } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import HomeLayout from '~/components/Layout/HomeLayout'

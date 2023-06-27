@@ -113,11 +113,13 @@ class HoKhauController extends Controller
 
                 // Kiem tra cac nhan khau co thuoc ho khau nao khong -> neu khong thi cho phep vao
                 // ho khau dang tao
-                if ($nhanKhaus->every(
-                    function (NhanKhau $nhanKhau) {
-                        return $nhanKhau->thanhVienHo->idHoKhau == null;
-                    }
-                )) {
+                if (
+                    $nhanKhaus->every(
+                        function (NhanKhau $nhanKhau) {
+                            return $nhanKhau->thanhVienHo->idHoKhau == null;
+                        }
+                    )
+                ) {
                     foreach ($nhanKhaus as $nhanKhau) {
                         $nhanKhau->thanhVienHo()->create([
                             'idHoKhau' => $hoKhau->id,
@@ -222,11 +224,13 @@ class HoKhauController extends Controller
                 );
 
                 // Kiem tra cac nhan khau moi day co trong ho khau muon tach ko -> validate
-                if ($nhanKhauMois->every(
-                    function (NhanKhau $nhanKhauMoi) use ($idHoKhau) {
-                        return $nhanKhauMoi->thanhVienHo->idHoKhau == $idHoKhau;
-                    }
-                )) {
+                if (
+                    $nhanKhauMois->every(
+                        function (NhanKhau $nhanKhauMoi) use ($idHoKhau) {
+                            return $nhanKhauMoi->thanhVienHo->idHoKhau == $idHoKhau;
+                        }
+                    )
+                ) {
                     // Neu input chuan -> Tao ho khau moi dua tren input
                     $hoKhauMoi = HoKhau::create($data);
 
@@ -254,10 +258,11 @@ class HoKhauController extends Controller
                         'success' => true,
                         'message' => 'Tách hộ khẩu thành công!',
                     ], 201);
-                } else return response()->json([
-                    'success' => false,
-                    'message' => 'Mã nhân khẩu không hợp lệ!',
-                ]);
+                } else
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Mã nhân khẩu không hợp lệ!',
+                    ]);
             }
 
             return response()->json([
@@ -302,13 +307,14 @@ class HoKhauController extends Controller
     }
 
 
-    public function searchHouseholdLead(Request $request) {
+    public function searchHouseholdLead(Request $request)
+    {
         $tenChuHo = $request->hoTen;
 
         $hoKhau = HoKhau::whereHas('isChuHo', function ($query) use ($tenChuHo) {
             $query->where('hoTen', 'like', '%' . $tenChuHo . '%');
         })->get();
-        
+
         if ($hoKhau) {
             return response()->json([
                 'data' => $hoKhau,

@@ -1,41 +1,51 @@
 import React, { useEffect, useState } from 'react'
-import Event from './Event'
 import HomeLayout from '~/components/Layout/HomeLayout'
-import { Row, Pagination, Input, Button, Typography } from 'antd'
+import { Row, Pagination, Input, Button, Form, Modal, InputNumber, DatePicker, Select, Typography, Space } from 'antd'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useGetEventsByPageQuery } from './api/events.slice'
+import { useEventStore } from '~/app/eventStore'
 import axiosClient from '~/app/axiosClient'
-import moment from 'moment'
 import TabListEvent from '~/components/Layout/TabListEvent'
-import CreateEventFormModal from './modals/CreateEventFormModal'
+import Item from './Item'
+import CreateItemFormModal from './modals/CreateItemFormModal'
+import EditItemFormModal from './modals/EditItemFormModal'
+import { ToastContainer, toast } from 'react-toastify'
 
 const { Title } = Typography;
 
 
-const EventList = () => {
+const ItemList = () => {
     const [page, setPage] = useState<Page>({ page: 1, offset: 10 })
-    const { data: eventsData } = useGetEventsByPageQuery(page)
+    const [items, getItems] = useEventStore(state => [
+        state.items,
+        state.getItems
+    ])
+    const total = items.length
     const navigate = useNavigate()
     const { id } = useParams()
-    const [openCreateEvent, setOpenCreateEvent] = useState(false);
+    const [openCreateItem, setOpenCreateItem] = useState(false);
+    const [openEditItem, setOpenEditItem] = useState(false)
 
     const onCreate = async (values: any) => {
         console.log('Received values of form:', values);
-        const inputDate = new Date(values.ngayBatDau);
-        const formattedDate = moment(inputDate).format('YYYY-MM-DD');
         try {
-            await axiosClient.post(`/su-kien/create`, {
-                name: values.name,
-                ngayBatDau: formattedDate,
-                type: values.type ? 1 : 0,
-                phan_thuongs: values.phan_thuongs
+            await axiosClient.post(`/items/create`, values)
+            setOpenCreateItem(false)
+            toast.success('Tạo vật phẩm thành công', {
+                position: toast.POSITION.TOP_RIGHT
             })
-            alert("Success")
+            setTimeout(() => {
+                window.location.reload()
+            }, 5000)
         } catch (e) {
             const result = (e as Error).message;
             console.log(result)
         }
     };
+
+    useEffect(() => {
+        getItems()
+    }, [])
+
     return (
         <HomeLayout>
             <div className="mb-2 flex min-h-full flex-col">
@@ -46,39 +56,39 @@ const EventList = () => {
                         htmlType="button"
                         className='bg-primary'
                         style={{ color: 'white' }}
-                        onClick={() => setOpenCreateEvent(true)}
+                        onClick={() => setOpenCreateItem(true)}
                     >
-                        Thêm sự kiện mới
+                        Thêm vật phẩm mới
                     </Button>
-                    <CreateEventFormModal
-                        open={openCreateEvent}
+                    <CreateItemFormModal
+                        open={openCreateItem}
                         onCreate={onCreate}
                         onCancel={() => {
-                            setOpenCreateEvent(false);
+                            setOpenCreateItem(false);
                         }}
                     />
                 </div>
-                <TabListEvent defaultActiveKey='1' />
-                <Row gutter={[16, 32]}>
+                <TabListEvent defaultActiveKey='2' />
+                <Row gutter={[16, 32]} className='mb-10'>
                     {
-                        eventsData?.data.data.map((event) => (
-                            <Event key={event.id} eventId={event.id} title={event.name} />
+                        items.map((item) => (
+                            <Item key={item.id} itemId={item.id} title={item.name} cost={item.unit_price} />
                         ))}
                 </Row>
                 <Pagination
                     defaultPageSize={10}
                     showSizeChanger={true}
                     pageSizeOptions={['10', '15', '20']}
-                    style={{ float: 'right' }}
+                    style={{ float: 'right', marginTop: '70px' }}
                     defaultCurrent={1}
-                    total={eventsData?.data.total}
-                    className='my-16'
+                    total={total}
                     onChange={(page, pageSize) => {
                         setPage({ page, offset: pageSize })
                     }} />
             </div>
+            <ToastContainer />
         </HomeLayout>
     )
 }
 
-export default EventList
+export default ItemList

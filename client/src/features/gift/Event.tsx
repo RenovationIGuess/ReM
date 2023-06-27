@@ -3,10 +3,6 @@ import { Card, Col } from 'antd'
 import Meta from 'antd/es/card/Meta'
 import { useNavigate } from 'react-router-dom'
 
-interface EventProps {
-
-}
-
 const gridStyle: React.CSSProperties = {
 	width: '240px',
 	height: '252px',

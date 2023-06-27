@@ -63,7 +63,7 @@ Route::group(['prefix' => 'nhan-khau'], function ($router) {
     Route::post('/{idNhanKhau}/chung-minh-thu/create', [ChungMinhThuController::class, 'store']);
 
     Route::delete('/{idNhanKhau}/delete', [NhanKhauController::class, 'destroy']);
-    
+
 });
 
 Route::group(['prefix' => 'khai-tu'], function ($router) {
@@ -76,9 +76,9 @@ Route::group(['prefix' => 'tam-tru'], function ($router) {
     Route::delete('/{idTamTru}', [TamTruController::class, 'destroy']);
 });
 
-Route::group(['prefix'=> 'tam-vang'], function ($router) {
+Route::group(['prefix' => 'tam-vang'], function ($router) {
     Route::get('/', [TamVangController::class, 'index']);
-    Route::delete('/{idTamVang}',[TamVangController::class, 'destroy']);
+    Route::delete('/{idTamVang}', [TamVangController::class, 'destroy']);
 });
 
 Route::group(['prefix' => 'thong-ke'], function ($router) {
@@ -100,13 +100,14 @@ Route::group(['prefix' => 'su-kien'], function ($router) {
 });
 
 Route::group(['prefix' => 'duoc-nhan-thuong'], function ($router) {
+    Route::get('/{idDuocNhanThuong}', [DuocNhanThuongController::class, 'show']);
     Route::put('/{idDuocNhanThuong}/edit', [DuocNhanThuongController::class, 'update']);
     Route::delete('/{idDuocNhanThuong}/delete', [DuocNhanThuongController::class, 'destroy']);
     Route::patch('/{idDuocNhanThuong}/check', [DuocNhanThuongController::class, 'check']);
     Route::patch('/{idDuocNhanThuong}/uncheck', [DuocNhanThuongController::class, 'uncheck']);
 });
 
-Route::group(['prefix' => 'items'], function($router) {
+Route::group(['prefix' => 'items'], function ($router) {
     Route::get('/', [ItemController::class, 'index']);
     Route::get('/{idItem}', [ItemController::class, 'show']);
     Route::post('/create', [ItemController::class, 'store']);
