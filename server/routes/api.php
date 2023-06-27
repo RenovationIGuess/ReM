@@ -43,6 +43,7 @@ Route::group(['prefix' => 'ho-khau'], function ($router) {
     Route::get('/', [HoKhauController::class, 'index']);
     Route::get('/{idHoKhau}', [HoKhauController::class, 'show']);
     Route::post('/{idHoKhau}/edit/tach-ho-khau', [HoKhauController::class, 'tachHoKhau']);
+    Route::post('/create', [HoKhauController::class, 'store']);
 });
 
 Route::get('chu-ho', [HoKhauController::class, 'searchHouseholdLead']);

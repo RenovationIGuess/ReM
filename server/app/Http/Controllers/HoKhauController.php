@@ -113,20 +113,27 @@ class HoKhauController extends Controller
 
                 // Kiem tra cac nhan khau co thuoc ho khau nao khong -> neu khong thi cho phep vao
                 // ho khau dang tao
-                if (
-                    $nhanKhaus->every(
-                        function (NhanKhau $nhanKhau) {
-                            return $nhanKhau->thanhVienHo->idHoKhau == null;
+                // if (
+                //     $nhanKhaus->every(
+                //         function (NhanKhau $nhanKhau) {
+                //             return $nhanKhau->thanhVienHo->idHoKhau == null;
+                //         }
+                //     )
+                // ) {
+                    // foreach ($nhanKhaus as $nhanKhau) {
+                    //     $nhanKhau->thanhVienHo()->create([
+                    //         'idHoKhau' => $hoKhau->id,
+                    //         'idNhanKhau' => $nhanKhau->id,
+                    //         'quanHeVoiChuHo' => '',
+                    //     ]);
+                    // }
+
+                    // Gan id ho khau moi cho nhan khau duoc chon
+                    $nhanKhaus->each(
+                        function (NhanKhau $nhanKhau) use ($hoKhau) {
+                            $nhanKhau->thanhVienHo()->update(["idHoKhau" => $hoKhau->id]);
                         }
-                    )
-                ) {
-                    foreach ($nhanKhaus as $nhanKhau) {
-                        $nhanKhau->thanhVienHo()->create([
-                            'idHoKhau' => $hoKhau->id,
-                            'idNhanKhau' => $nhanKhau->id,
-                            'quanHeVoiChuHo' => '',
-                        ]);
-                    }
+                    );
 
                     return response()->json([
                         'data' => $hoKhau,
@@ -137,9 +144,9 @@ class HoKhauController extends Controller
                     return response()->json([
                         'success' => false,
                         'message' => 'Nhân khẩu đã chọn không hợp lệ!',
-                    ]);
+                    ], 400);
                 }
-            }
+            // }
 
             return response()->json([
                 'success' => false,
@@ -149,7 +156,7 @@ class HoKhauController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
-            ]);
+            ], 400);
         }
     }
 
@@ -262,7 +269,7 @@ class HoKhauController extends Controller
                     return response()->json([
                         'success' => false,
                         'message' => 'Mã nhân khẩu không hợp lệ!',
-                    ]);
+                    ], 400);
             }
 
             return response()->json([
@@ -273,7 +280,7 @@ class HoKhauController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
-            ]);
+            ], 400);
         }
     }
 
@@ -291,18 +298,18 @@ class HoKhauController extends Controller
                     'data' => $dinhChinhs,
                     'success' => true,
                     'message' => 'success',
-                ]);
+                ], 200);
             }
 
             return response()->json([
                 'success' => false,
                 'message' => 'Không tìm thấy dữ liệu!',
-            ]);
+            ], 400);
         } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
-            ]);
+            ], 400);
         }
     }
 
