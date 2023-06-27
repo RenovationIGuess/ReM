@@ -265,7 +265,7 @@ class HoKhauController extends Controller
             'diaChi' => 'string|required',
             'ngayLap' => 'date',
             'ngayChuyenDi' => 'date',
-            'lyDoChuyenDi' => 'string|required',
+            'lyDoChuyen' => 'string|required',
         ]);
 
         try {

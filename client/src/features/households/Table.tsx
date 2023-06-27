@@ -74,6 +74,7 @@ const HouseholdsTable = () => {
       rowKey={record => record.id}
       dataSource={households}
       columns={columns}
+      scroll={{ y: 450 }}
       pagination={{
         current: currentPage.page,
         defaultPageSize: currentPage.offset,
