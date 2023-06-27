@@ -26,10 +26,15 @@ type GetGiftsRespose = {
     message: string
 }
 
+export type PageGiftEvent = {
+    page: number,
+    offset: number,
+    event_id: string | undefined
+}
 const giftsApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
         getGiftsByPage: builder.query<GetGiftsRespose, PageGiftEvent>({
-            query: ({ page = 1, offset = 0, eventId }) => `/su-kien/${eventId}/thong-ke-phan-qua?page=${page}&limit=${offset}`
+            query: ({ page = 1, offset = 0, event_id }) => `/su-kien/${event_id}/thong-ke-phan-qua?page=${page}&limit=${offset}`
         })
     })
 })

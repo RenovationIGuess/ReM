@@ -18,9 +18,9 @@ return new class extends Migration {
             $table->unsignedBigInteger('idNhanKhau');
             $table->string('tenTruong')->nullable();
             $table->string('tenLop')->nullable();
-            $table->smallInteger('thanhTichHocTap')->default(0)->comment='0:null, 1:tien tien, 2:gioi, 3:other';
-            $table->smallInteger('capHoc')->default(0)->comment='0:null, 1:mau giao, 2:cap 1, 3:cap 2, 4: cap 3';
-            $table->string('anhGiayKhen')->nullable();
+            $table->smallInteger('thanhTichHocTap')->default(0)->comment = '0:null, 1:tien tien, 2:gioi, 3:other';
+            $table->smallInteger('capHoc')->default(0)->comment = '0:null, 1:mau giao, 2:cap 1, 3:cap 2, 4: cap 3';
+            $table->longText('anhGiayKhen')->nullable();
             $table->boolean('hasRewarded')->default(false);
             $table->unsignedBigInteger('idPhanThuong');
             $table->timestamps();

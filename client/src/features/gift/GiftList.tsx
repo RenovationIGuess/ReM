@@ -1,18 +1,12 @@
 import React, { FC, useEffect, useState } from 'react'
 import HomeLayout from '~/components/Layout/HomeLayout'
-import StatisticTable from './StatisticTable'
 import { Button, Form, Input, InputNumber, Modal, Pagination, Row, Statistic } from 'antd'
 import TabList from '~/components/Layout/TabList'
 import { useNavigate, useParams } from 'react-router-dom'
-import { GiftTable } from './GiftTable'
 import { ArrowLeftOutlined } from '@ant-design/icons'
-import { addGift, getGiftsSelector } from './gifts.slice'
-import { useAppDispatch } from '~/hooks/useRedux'
-import { useSelector } from 'react-redux'
 import { GiftCard } from './GiftCard'
 import { useEventStore } from '~/app/eventStore'
-import { useGetGiftsByPageQuery } from './api/gifts.slice'
-import { EventSubHeader } from '~/components/Layout/EventSubHeader'
+import { PageGiftEvent, useGetGiftsByPageQuery } from './api/gifts.slice'
 
 interface Values {
     name: string;
@@ -31,7 +25,6 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
     onCancel,
 }) => {
     const [form] = Form.useForm();
-    const dispatch = useAppDispatch()
     const formRef: React.RefObject<any> | null = React.createRef();
     return (
         <Modal
@@ -47,7 +40,6 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
                         const nameValue = formRef.current.getFieldValue(`name`);
                         const priceValue = formRef.current.getFieldValue(`price`);
                         form.resetFields();
-                        dispatch(addGift({ key: '6', id: '6', name: nameValue, price: priceValue, imageUrl: "" }))
                         onCreate(values);
                     })
                     .catch((info) => {
@@ -82,12 +74,16 @@ export const GiftList = () => {
     const { id } = useParams()
     const navigate = useNavigate()
     const [openCreateGift, setOpenCreateGift] = useState(false);
+    const [page, setPage] = useState<PageGiftEvent>({ page: 1, offset: 10, event_id: id })
+    const { data: eventsData } = useGetGiftsByPageQuery(page)
     const [event, gifts, getEventById, getGiftsEventByEventId] = useEventStore(state => [
         state.event,
         state.gifts,
         state.getEventById,
         state.getGiftsEventByEventId
     ])
+
+    const total = gifts.length
 
     useEffect(() => {
         getEventById(id ? id : '1')
@@ -132,20 +128,22 @@ export const GiftList = () => {
                                 )
                             })}
                     </Row>
-                    {/* <Pagination
+                    <Pagination
                         defaultPageSize={10}
                         showSizeChanger={true}
                         pageSizeOptions={['10', '15', '20']}
                         style={{ float: 'right' }}
                         defaultCurrent={1}
-                        total={2}
+                        total={total}
                         className='my-16'
                         onChange={(page, pageSize) => {
-                            setPage({ page, offset: pageSize, eventId: id })
-                        }} /> */}
+                            setPage({ page, offset: pageSize, event_id: id })
+                        }} />
 
                 </div>
             </div>
         </HomeLayout>
     )
 }
+
+export default GiftList

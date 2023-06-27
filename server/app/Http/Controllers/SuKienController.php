@@ -142,6 +142,45 @@ class SuKienController extends Controller
 
             $suKien->phanThuongs;
 
+            if ($request->type == 1) {
+                $phan_thuongs = $request->phan_thuongs;
+                foreach ($phan_thuongs as $phan_thuong) {
+                    $phanThuong = PhanThuong::create([
+                        'thanhTichHocTap' => $phan_thuong['thanhTichHocTap'],
+                        'capHoc' => $phan_thuong['capHoc'],
+                        'type' => 1,
+                        'idSuKien' => $suKien->id,
+                    ]);
+
+                    foreach ($phan_thuong['items'] as $item) {
+                        $phanThuong->items()->attach($item['idItem'], ['soLuong' => $item['soLuong']]);
+                    }
+                }
+            } else if ($request->type == 0) {
+                //Chi them 1 phan thuong
+                $phan_thuongs = $request->phan_thuongs;
+
+                if (count($phan_thuongs) != 1) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Sự kiện loại này được có 1 phần thưởng.'
+                    ], 403);
+                }
+
+                foreach ($phan_thuongs as $phan_thuong) {
+                    $phanThuong = PhanThuong::create([
+                        'type' => 0,
+                        'idSuKien' => $suKien->id,
+                    ]);
+
+                    foreach ($phan_thuong['items'] as $item) {
+                        $phanThuong->items()->attach($item['idItem'], ['soLuong' => $item['soLuong']]);
+                    }
+                }
+            }
+
+            $suKien->phanThuongs;
+
             return response()->json([
                 'data' => $suKien,
                 'success' => true,
@@ -201,7 +240,7 @@ class SuKienController extends Controller
                 foreach ($phan_thuongs as $phan_thuong) {
                     $phanThuong = PhanThuong::find($phan_thuong['id']);
                     if ($phanThuong && $phanThuong->idSuKien == $idSuKien) {
-                        $phanThuong->thanhTichHocTap = $phan_thuong['thanhTichHocTap'];
+                        $phanThuong->thanhTichHocTap = $phan_thuong['ThanhTichHocTap'];
                         $phanThuong->capHoc = $phan_thuong['capHoc'];
                         $phanThuong->type = 1;
 

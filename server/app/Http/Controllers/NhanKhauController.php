@@ -103,9 +103,9 @@ class NhanKhauController extends Controller
         $idHoKhau = $data['idHoKhau'];
         $quanHeVoiChuHo = $data['quanHeVoiChuHo'];
         $nhanKhauData = $data['nhanKhau'];
-        if($moiSinh == 1)
+        if ($moiSinh == 1)
             $cmtData = $data['cmt'];
-        else 
+        else
             $cmtData = [];
 
         try {

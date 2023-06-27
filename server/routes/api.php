@@ -63,7 +63,7 @@ Route::group(['prefix' => 'nhan-khau'], function ($router) {
     Route::post('/{idNhanKhau}/chung-minh-thu/create', [ChungMinhThuController::class, 'store']);
 
     Route::delete('/{idNhanKhau}/delete', [NhanKhauController::class, 'destroy']);
-    
+
 });
 
 Route::group(['prefix' => 'khai-tu'], function ($router) {
@@ -76,8 +76,6 @@ Route::group(['prefix' => 'tam-tru'], function ($router) {
     Route::delete('/{idTamTru}', [TamTruController::class, 'destroy']);
 });
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 Route::group(['prefix' => 'tam-vang'], function ($router) {
     Route::get('/', [TamVangController::class, 'index']);
     Route::delete('/{idTamVang}', [TamVangController::class, 'destroy']);
@@ -88,27 +86,6 @@ Route::group(['prefix' => 'thong-ke'], function ($router) {
     Route::get('/nhan-khau/age-range', [ThongKeController::class, 'thongKeTheoTuoi']);
     Route::get('/nhan-khau/gioi-tinh', [ThongKeController::class, 'thongKeTheoGioiTinh']);
     Route::get('/nhan-khau/tam-tru-tam-vang', [ThongKeController::class, 'thongKeTamVangTamTru']);
-=======
-Route::group(['prefix' => 'thong-ke'], function ($router) {
-    Route::get('/nhan-khau/tuoi', [ThongKeController::class, 'thongKeTheoTuoi']);
-    Route::get('/nhan-khau/gioi-tinh', function () { });
-<<<<<<< HEAD
-    Route::get('/nhan-khau/tam-tru-tam-vang', function () { });
->>>>>>> 2967e28... gift front end
-=======
-=======
-Route::group(['prefix'=> 'tam-vang'], function ($router) {
-    Route::get('/', [TamVangController::class, 'index']);
-    Route::delete('/{idTamVang}',[TamVangController::class, 'destroy']);
-});
-
-Route::group(['prefix' => 'thong-ke'], function ($router) {
-    Route::get('/nhan-khau/tuoi', [ThongKeController::class, 'thongKeTheoDoTuoi']);
-    Route::get('/nhan-khau/age-range', [ThongKeController::class, 'thongKeTheoTuoi']);
-    Route::get('/nhan-khau/gioi-tinh', [ThongKeController::class, 'thongKeTheoGioiTinh']);
->>>>>>> b70007d... change gioi tinh field and api thong ke
-    Route::get('/nhan-khau/tam-tru-tam-vang', [ThongKeController::class, 'thongKeTamVangTamTru']);
->>>>>>> c7948eb... feat(api): finish gift management apis
 });
 
 Route::group(['prefix' => 'su-kien'], function ($router) {
@@ -122,47 +99,17 @@ Route::group(['prefix' => 'su-kien'], function ($router) {
     Route::delete('/{idSuKien}/delete', [SuKienController::class, 'destroy']); //DONE
 });
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 Route::group(['prefix' => 'duoc-nhan-thuong'], function ($router) {
     Route::get('/{idDuocNhanThuong}', [DuocNhanThuongController::class, 'show']);
-=======
-Route::group(['prefix' => 'nhan-thuong'], function ($router) {
->>>>>>> 2967e28... gift front end
-=======
-Route::group(['prefix' => 'duoc-nhan-thuong'], function ($router) {
->>>>>>> c7948eb... feat(api): finish gift management apis
     Route::put('/{idDuocNhanThuong}/edit', [DuocNhanThuongController::class, 'update']);
     Route::delete('/{idDuocNhanThuong}/delete', [DuocNhanThuongController::class, 'destroy']);
     Route::patch('/{idDuocNhanThuong}/check', [DuocNhanThuongController::class, 'check']);
     Route::patch('/{idDuocNhanThuong}/uncheck', [DuocNhanThuongController::class, 'uncheck']);
 });
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 Route::group(['prefix' => 'items'], function ($router) {
     Route::get('/', [ItemController::class, 'index']);
     Route::get('/{idItem}', [ItemController::class, 'show']);
     Route::post('/create', [ItemController::class, 'store']);
     Route::put('/{idItem}/edit', [ItemController::class, 'update']);
 });
-=======
-// Route::group(['prefix' => 'phan-qua'], function($router) {
-//     Route::get('/', [PhanQuaController::class, 'index']);
-//     Route::get('/{idPhanQua}', [PhanQuaController::class, 'show']);
-//     Route::get('/create', [PhanQuaController::class, 'store']);
-//     Route::get('/edit', [PhanQuaController::class, 'update']);
-// });
->>>>>>> 2967e28... gift front end
-=======
-Route::group(['prefix' => 'items'], function($router) {
-    Route::get('/', [ItemController::class, 'index']);
-    Route::get('/{idItem}', [ItemController::class, 'show']);
-    Route::post('/create', [ItemController::class, 'store']);
-    Route::put('/{idItem}/edit', [ItemController::class, 'update']);
-<<<<<<< HEAD
-});
->>>>>>> c7948eb... feat(api): finish gift management apis
-=======
-});
->>>>>>> f274461... fix(client): update crud nhan-khau

@@ -28,6 +28,7 @@ const EditFormModal: React.FC<CollectionCEditFormProps> = ({
     const [type, setType] = useState<number | undefined>(0)
     const [gifts, setGifts] = useState<IPhanThuongThongKe[]>([])
     const [event, setEvent] = useState<IEvent>()
+    const [initPhanThuong, setInitPhanThuong] = useState<IPhanThuongThongKe[]>()
     let duoc_nhan_thuongs: IDuocNhanThuong[] = []
     const [form] = Form.useForm();
     const [itemsList, getItemsList] = useEventStore(state => [
@@ -52,6 +53,7 @@ const EditFormModal: React.FC<CollectionCEditFormProps> = ({
     useEffect(() => {
         fetchEvent(id)
         getItemsList()
+        setInitPhanThuong(event?.type ? gifts : [gifts[0]])
     }, [])
     return (
         <Modal
@@ -112,20 +114,13 @@ const EditFormModal: React.FC<CollectionCEditFormProps> = ({
                         valuePropName="checked"
                         rules={[{ required: true, message: 'Hãy chọn loại sự kiện', type: 'number' }]}
                     >
-                        <Checkbox value={type} checked={type ? true : false} onChange={(e) => {
-                            const type = e.target.checked ? 1 : 0
-                            setType(type)
-                            console.log(type)
-                        }}>Có liên quan đến học tập</Checkbox>
-                        {/* <Select
-                            value={type}
-                            te
-                            onChange={(e: number) => {
-                                setType(e)
-                                console.log(type)
-                            }}>
-                            {types.map((type) => <Select.Option value={type.enum} key={type.enum} id={type.enum}>{type.text}</Select.Option>)}
-                        </Select> */}
+                        <Checkbox
+                            disabled
+                            defaultChecked={event?.type ? true : false}
+                            checked={type ? true : false}
+                        >
+                            Có liên quan đến học tập
+                        </Checkbox>
                     </Form.Item>
                     {type ? (
                         <>
@@ -135,6 +130,12 @@ const EditFormModal: React.FC<CollectionCEditFormProps> = ({
                                     <>
                                         {fields.map(({ key, name, ...restField }) => (
                                             <>
+                                                <hr style={{
+                                                    background: 'lime',
+                                                    color: 'lime',
+                                                    borderColor: 'lime',
+                                                    height: '3px',
+                                                }} />
                                                 <Form.Item key={key}>
                                                     <Form.Item
                                                         {...restField}
@@ -147,9 +148,6 @@ const EditFormModal: React.FC<CollectionCEditFormProps> = ({
                                                             },
                                                         ]}
                                                     >
-                                                        {/* <Select>
-                                                            {achiveType.map((item) => <Select.Option value={item.enum} key={item.enum} id={item.enum}>{item.text}</Select.Option>)}
-                                                        </Select> */}
                                                         <Radio.Group>
                                                             {achiveType.map((item) => <Radio value={item.enum} key={item.enum}>{item.text ? item.text : "null"}</Radio>)}
                                                         </Radio.Group>
@@ -165,9 +163,6 @@ const EditFormModal: React.FC<CollectionCEditFormProps> = ({
                                                             },
                                                         ]}
                                                     >
-                                                        {/* <Select>
-                                                            {capHocType.map((item) => <Select.Option value={item.enum} key={item.enum} id={item.enum}>{item.text}</Select.Option>)}
-                                                        </Select> */}
                                                         <Radio.Group>
                                                             {capHocType.map((item) => <Radio value={item.enum} key={item.enum}>{item.text ? item.text : "null"}</Radio>)}
                                                         </Radio.Group>
@@ -222,6 +217,12 @@ const EditFormModal: React.FC<CollectionCEditFormProps> = ({
                                                 Thêm phần quà
                                             </Button>
                                         </Form.Item>
+                                        <hr style={{
+                                            background: 'lime',
+                                            color: 'lime',
+                                            borderColor: 'lime',
+                                            height: '3px',
+                                        }} />
                                     </>
                                 )}
                             </Form.List>
@@ -232,9 +233,9 @@ const EditFormModal: React.FC<CollectionCEditFormProps> = ({
                             <Form.List name="phan_thuongs">
                                 {(fields, { add, remove }) => (
                                     <>
+                                        <Title level={5}>Thêm các vật phẩm:</Title>
                                         {fields.map(({ key, name, ...restField }) => (
                                             <>
-                                                <Title level={5}>Thêm các vật phẩm:</Title>
                                                 <Form.Item key={key}>
                                                     <Form.List name={[name, 'items']}>
                                                         {(items, { add, remove }) => {
@@ -281,7 +282,7 @@ const EditFormModal: React.FC<CollectionCEditFormProps> = ({
                                             </>
                                         ))}
                                         <Form.Item>
-                                            <Button disabled={fields.length >= 2} type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                                            <Button disabled={fields.length >= 1} type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
                                                 Thêm phần quà
                                             </Button>
                                         </Form.Item>

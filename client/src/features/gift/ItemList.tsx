@@ -74,7 +74,7 @@ const ItemList = () => {
                     /> */}
                 </div>
                 <TabListEvent defaultActiveKey='2' />
-                <Row gutter={[16, 32]}>
+                <Row gutter={[16, 32]} className='mb-10'>
                     {
                         items.map((item) => (
                             <Item key={item.id} itemId={item.id} title={item.name} cost={item.unit_price} />
@@ -87,7 +87,7 @@ const ItemList = () => {
                     style={{ float: 'right' }}
                     defaultCurrent={1}
                     total={total}
-                    className='my-16'
+                    className='mt-10'
                     onChange={(page, pageSize) => {
                         setPage({ page, offset: pageSize })
                     }} />

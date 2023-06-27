@@ -305,4 +305,27 @@ class HoKhauController extends Controller
             ]);
         }
     }
+
+
+    public function searchHouseholdLead(Request $request)
+    {
+        $tenChuHo = $request->hoTen;
+
+        $hoKhau = HoKhau::whereHas('isChuHo', function ($query) use ($tenChuHo) {
+            $query->where('hoTen', 'like', '%' . $tenChuHo . '%');
+        })->get();
+
+        if ($hoKhau) {
+            return response()->json([
+                'data' => $hoKhau,
+                'success' => true,
+                'message' => 'success',
+            ], 200);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'No data',
+        ], 404);
+    }
 }

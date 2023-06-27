@@ -77,11 +77,7 @@ const Sidebar = () => {
           icon={<GiftOutlined />}
           activedIcon={<GiftFilled />}
           text="Tặng quà"
-<<<<<<< HEAD
           href="/su-kien"
-=======
-          href="/tang-qua"
->>>>>>> 23b7b13... feat(client): crud nhan khau
         />
         <Divider className="m-0" />
         <SideButton
