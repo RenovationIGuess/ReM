@@ -112,4 +112,5 @@ Route::group(['prefix' => 'items'], function ($router) {
     Route::get('/{idItem}', [ItemController::class, 'show']);
     Route::post('/create', [ItemController::class, 'store']);
     Route::put('/{idItem}/edit', [ItemController::class, 'update']);
+    Route::delete('/{idItem}/delete', [ItemController::class, 'destroy']);
 });

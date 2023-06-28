@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import Event from './Event'
 import HomeLayout from '~/components/Layout/HomeLayout'
-import { Row, Pagination, Input, Button, Typography } from 'antd'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Row, Pagination, Input, Button, Typography, Select } from 'antd'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useGetEventsByPageQuery } from './api/events.slice'
 import axiosClient from '~/app/axiosClient'
 import moment from 'moment'
@@ -18,6 +18,22 @@ const EventList = () => {
     const navigate = useNavigate()
     const { id } = useParams()
     const [openCreateEvent, setOpenCreateEvent] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filteredOptions, setFilteredOptions] = useState<IEvent[] | undefined>([]);
+
+    const handleSearch = (value: string) => {
+        setSearchQuery(value);
+
+        const filteredList = eventsData?.data.data.filter(obj =>
+            obj.name?.toLowerCase().includes(value.toLowerCase())
+        );
+
+        setFilteredOptions(filteredList);
+    };
+
+    const handleSelectChange = (value: string) => {
+        setSearchQuery(value);
+    };
 
     const onCreate = async (values: any) => {
         console.log('Received values of form:', values);
@@ -40,7 +56,22 @@ const EventList = () => {
         <HomeLayout>
             <div className="mb-2 flex min-h-full flex-col">
                 <div className="flex items-center justify-between">
-                    <Input.Search className="w-[25vw]" placeholder="Tìm kiếm gì đó ..." />
+                    <Select
+                        mode="multiple"
+                        style={{ width: '500px' }}
+                        value={searchQuery}
+                        placeholder="Tìm kiếm sự kiện"
+                        onChange={handleSelectChange}
+                        onSearch={handleSearch}
+                        filterOption={false}
+                        notFoundContent={null}
+                    >
+                        {filteredOptions?.map(obj => (
+                            <Select.Option key={obj.name} value={obj.name}>
+                                <Link to={`/su-kien/${obj.id}`}>{obj.name}</Link>
+                            </Select.Option>
+                        ))}
+                    </Select>
                     <Button
                         type="primary"
                         htmlType="button"
@@ -61,7 +92,7 @@ const EventList = () => {
                 <TabListEvent defaultActiveKey='1' />
                 <Row gutter={[16, 32]}>
                     {
-                        eventsData?.data.data.map((event) => (
+                        eventsData?.data.data.map((event: IEvent) => (
                             <Event key={event.id} eventId={event.id} title={event.name} />
                         ))}
                 </Row>

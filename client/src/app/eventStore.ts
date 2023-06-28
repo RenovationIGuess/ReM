@@ -1,17 +1,19 @@
 import { create } from 'zustand'
-import { getEventById, getEventByPage, getGiftsEventByEventId, getChildrenById, getItems, getStatisticById } from '~/lib/event'
+import { getEventById, getEventByPage, getGiftsEventByEventId, getChildrenById, getItems, getStatisticById, getItemById } from '~/lib/event'
 
 interface IEventStore {
     events: IEvent[]
     event: IEvent
     gifts: IPhanThuong[]
     items: IItem[]
+    item: IItem
     children: IDuocNhanThuong
     statistics: IThongKeSuKien[]
     getEventByPage: (page: Page) => void
     getEventById: (id: string | undefined) => void
     getGiftsEventByEventId: (id: string | undefined) => void
     getItems: () => void
+    getItemById: (id: string | undefined) => void
     getStatisticById: (id: string | undefined) => void
     getChildrenById: (id: string | undefined) => void
 }
@@ -32,6 +34,18 @@ export const useEventStore = create<IEventStore>(set => ({
     },
     gifts: [],
     items: [],
+    item: {
+        "id": 1,
+        "name": "Bánh Choco Pie",
+        "unit_price": 15000,
+        created_at: new Date("2023-06-25T21:55:55.000000Z"),
+        updated_at: new Date("2023-06-25T21:55:55.000000Z"),
+        pivot: {
+            "idPhanThuong": 1,
+            "idItem": 2,
+            "soLuong": 5
+        }
+    },
     statistics: [],
     children: {
         id: 33,
@@ -106,5 +120,9 @@ export const useEventStore = create<IEventStore>(set => ({
     getChildrenById: async (id: string | undefined) => {
         const data = await getChildrenById(id)
         set({ children: data })
+    },
+    getItemById: async (id: string | undefined) => {
+        const data = await getItemById(id)
+        set({ item: data })
     }
 }))

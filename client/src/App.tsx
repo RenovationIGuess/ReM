@@ -22,6 +22,7 @@ import SplitHousehold from './features/households/Split'
 import ItemList from './features/gift/ItemList'
 import EditDuocNhanThuong from './features/gift/EditDuocNhanThuong'
 import CreateDuocNhanThuong from './features/gift/CreateDuocNhanThuong'
+import { EditItemForm } from './features/gift/EditItemForm'
 
 function App() {
   return (
@@ -66,8 +67,9 @@ function App() {
               <Route path="duoc-nhan-thuong/create/:id" index element={<CreateDuocNhanThuong />} />
             </Route>
 
-            <Route path='danh-sach-phan-qua'>
+            <Route path='items'>
               <Route index element={<ItemList />} />
+              <Route path='chinh-sua/:id' index element={<EditItemForm />} />
             </Route>
 
             <Route path="duoc-nhan-thuong">

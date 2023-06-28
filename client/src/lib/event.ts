@@ -32,8 +32,15 @@ export const getGiftsEventByEventId = async (id: string | undefined) => {
 export const getItems = async () => {
     const response = await axiosClient.get(`/items`)
     if (!response) return
-    console.log('Call api get items successfully', response.data)
+    console.log('Call api get items successfully', response.data.data)
     return response.data.data
+}
+
+export const getItemById = async (id: string | undefined) => {
+    const response = await axiosClient.get(`/items/${id}`)
+    if (!response) return
+    console.log('Call api get item by id successfully', response.data)
+    return response.data
 }
 
 export const getStatisticById = async (id: string | undefined) => {

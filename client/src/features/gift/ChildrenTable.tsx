@@ -9,6 +9,7 @@ import axiosClient from '~/app/axiosClient'
 import Title from 'antd/es/typography/Title'
 import { PhanThuongDetailModal } from './modals/PhanThuongDetailModal'
 import { render } from 'react-dom'
+import { ToastContainer, toast } from 'react-toastify'
 
 
 const ChildrenTable = (props: { eventId: string | undefined, event: IEvent }) => {
@@ -36,11 +37,16 @@ const ChildrenTable = (props: { eventId: string | undefined, event: IEvent }) =>
             onOk: async () => {
                 try {
                     await axiosClient.delete(`/duoc-nhan-thuong/${duocNhanThuongId}/delete`)
+                    toast.success('Xóa bé thành công', {
+                        position: toast.POSITION.TOP_RIGHT
+                    })
                     navigate(-1)
                 } catch (e) {
                     const err = e as Error
                     console.log(err.message)
-                    alert(err.message)
+                    toast.error((err as Error).message, {
+                        position: toast.POSITION.TOP_RIGHT
+                    })
                 }
             }
         })
@@ -55,10 +61,16 @@ const ChildrenTable = (props: { eventId: string | undefined, event: IEvent }) =>
         try {
             await axiosClient.patch(`/duoc-nhan-thuong/${record.id}/${record.hasRewarded ? 'uncheck' : 'check'}`)
             record.hasRewarded ?
-                alert(`Bé có mã được nhận thưởng ${record.id} đã chuyển sang trạng thái chưa nhận`) :
-                alert(`Bé có mã được nhận thưởng ${record.id} đã chuyển sang trạng thái đã nhận`)
+                toast.success(`Bé có mã được nhận thưởng ${record.id} đã chuyển sang trạng thái chưa nhận`, {
+                    position: toast.POSITION.TOP_RIGHT
+                }) :
+                toast.success(`Bé có mã được nhận thưởng ${record.id} đã chuyển sang trạng thái đã nhận`, {
+                    position: toast.POSITION.TOP_RIGHT
+                })
         } catch (err) {
-            console.error(err)
+            toast.error((err as Error).message, {
+                position: toast.POSITION.TOP_RIGHT
+            })
         } finally {
 
         }
@@ -144,7 +156,12 @@ const ChildrenTable = (props: { eventId: string | undefined, event: IEvent }) =>
                         (<></>)
                     }
                     <EditOutlined
-                        onClick={() => navigate(`/duoc-nhan-thuong/chinh-sua/${record.id}`)}
+                        onClick={() => {
+                            event.type ? navigate(`/duoc-nhan-thuong/chinh-sua/${record.id}`) :
+                                toast.error('Đây là sự kiênj không liên quan đến học tập nên không thể chỉnh sửa.', {
+                                    position: toast.POSITION.TOP_RIGHT
+                                })
+                        }}
                         className="cursor-pointer text-primary"
                     />
                     <DeleteOutlined className="cursor-pointer text-danger" onClick={(e) => onDelete(record.id)} />
@@ -177,6 +194,7 @@ const ChildrenTable = (props: { eventId: string | undefined, event: IEvent }) =>
                     setOpenPhanThuongDetail(false)
                 }}
                 phan_thuong={phanThuong} />
+            <ToastContainer />
         </>
     )
 }
