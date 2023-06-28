@@ -74,7 +74,7 @@ class HoKhauController extends Controller
             'idChuHo' => 'required|numeric',
             'maKhuVuc' => 'string',
             'diaChi' => 'required|string',
-            'ngayLap' => 'required|date',
+            // 'ngayLap' => 'required|date',
             'ngayChuyenDi' => 'date',
             'lyDoChuyen' => 'string',
         ];
@@ -92,6 +92,13 @@ class HoKhauController extends Controller
             );
         }
 
+        if (!$request->nhanKhaus) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Thiếu thông tin nhân khẩu!',
+            ], 400);
+        }
+
         try {
             // Tao ho khau moi
             $hoKhau = HoKhau::create([
@@ -99,7 +106,7 @@ class HoKhauController extends Controller
                 'idChuHo' => $request->idChuHo,
                 'maKhuVuc' => $request->maKhuVuc,
                 'diaChi' => $request->diaChi,
-                'ngayLap' => $request->ngayLap,
+                'ngayLap' => Carbon::now()->toDateTimeString(),
                 'ngayChuyenDi' => $request->ngayChuyenDi,
                 'lyDoChuyen' => $request->lyDoChuyen,
             ]);
@@ -108,9 +115,15 @@ class HoKhauController extends Controller
                 // Tim cac nhan khau
                 $nhanKhaus = collect($request->get('nhanKhaus'))->map(
                     function ($nhanKhau) {
-                        return NhanKhau::find($nhanKhau);
+                        return NhanKhau::find($nhanKhau['id']);
                     }
                 );
+
+                // Lay ra cac quan he chu ho
+                $quanHeVoiChuHos = [];
+                foreach ($request->nhanKhaus as $payload) {
+                    $quanHeVoiChuHos[$payload['id']] = $payload['quanHeVoiChuHo'];
+                }
 
                 // Kiem tra cac nhan khau co thuoc ho khau nao khong -> neu khong thi cho phep vao
                 // ho khau dang tao
@@ -121,18 +134,21 @@ class HoKhauController extends Controller
                 //         }
                 //     )
                 // ) {
-                    // Gan id ho khau moi cho nhan khau duoc chon
-                    $nhanKhaus->each(
-                        function (NhanKhau $nhanKhau) use ($hoKhau) {
-                            $nhanKhau->thanhVienHo()->update(["idHoKhau" => $hoKhau->id]);
-                        }
-                    );
+                // Gan id ho khau moi cho nhan khau duoc chon
+                $nhanKhaus->each(
+                    function (NhanKhau $nhanKhau) use ($hoKhau, $quanHeVoiChuHos) {
+                        $nhanKhau->thanhVienHo()->update([
+                            "idHoKhau" => $hoKhau->id,
+                            "quanHeVoiChuHo" => $quanHeVoiChuHos[$nhanKhau->id],
+                        ]);
+                    }
+                );
 
-                    return response()->json([
-                        'data' => $hoKhau,
-                        'success' => true,
-                        'message' => 'Tạo hộ khẩu mới thành công!',
-                    ], 201);
+                return response()->json([
+                    'data' => $hoKhau,
+                    'success' => true,
+                    'message' => 'Tạo hộ khẩu mới thành công!',
+                ], 201);
                 // } else {
                 //     return response()->json([
                 //         'success' => false,
@@ -189,8 +205,8 @@ class HoKhauController extends Controller
             $changeValue = '';
             // Thong tin thay doi
             $changedFields = '';
-            
-            foreach($changes as $key => $value) {
+
+            foreach ($changes as $key => $value) {
                 $changedFields = $changedFields . $key . ',';
                 $originalValue = $originalValue . ',' . $key . ': ' . $originalData[$key];
                 $changeValue = $changeValue . ',' . $key . ': ' . $value;
@@ -201,10 +217,10 @@ class HoKhauController extends Controller
             if ($request->user_id) {
                 DinhChinh::create([
                     'idHoKhau' => $idHoKhau,
-                    'thongTinThayDoi' => substr_replace($changedFields ,"", -1),
+                    'thongTinThayDoi' => substr_replace($changedFields, "", -1),
                     'thayDoiTu' => $originalValue,
                     'thayDoiThanh' => $changeValue,
-                    'ngayThayDoi' => Carbon::now(),
+                    'ngayThayDoi' => Carbon::now()->toDateTimeString(),
                     'idNguoiThayDoi' => $request->user_id,
                 ]);
             } else {
@@ -299,7 +315,7 @@ class HoKhauController extends Controller
                     $changeTo = '';
 
                     // Setup gia tri thay doi tu
-                    foreach($nhanKhauCu as $nhanKhau) {
+                    foreach ($nhanKhauCu as $nhanKhau) {
                         $changeFrom = $changeFrom . $nhanKhau->hoTen . ',';
                     }
 
@@ -316,9 +332,9 @@ class HoKhauController extends Controller
                         DinhChinh::create([
                             'idHoKhau' => $idHoKhau,
                             'thongTinThayDoi' => "Tách hộ khẩu",
-                            'thayDoiTu' => substr_replace($changeFrom ,"", -1),
-                            'thayDoiThanh' => substr_replace($changeTo ,"", -1),
-                            'ngayThayDoi' => Carbon::now(),
+                            'thayDoiTu' => substr_replace($changeFrom, "", -1),
+                            'thayDoiThanh' => substr_replace($changeTo, "", -1),
+                            'ngayThayDoi' => Carbon::now()->toDateTimeString(),
                             'idNguoiThayDoi' => $request->user_id,
                         ]);
                     } else {

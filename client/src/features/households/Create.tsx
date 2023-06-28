@@ -48,19 +48,14 @@ const Create = () => {
         let quanHe = form.getFieldValue(`quanHe-${resident}`)
         data.nhanKhaus.push({ id: resident, quanHeVoiChuHo: quanHe })
       })
-      // await createHousehold({
-      //   maHoKhau,
-      //   idChuHo,
-      //   maKhuVuc,
-      //   diaChi,
-      //   nhanKhaus: [...nhanKhaus, idChuHo],
-      //   ngayLap: new Date().toISOString().split('T')[0]
-      // })
-      // setNewHousehold({ nhan_khaus: [] as IResident[] } as IHousehold)
-      // toast.success('Thêm hộ khẩu thành công', {
-      //   toastId: 'create-household-successfully',
-      //   icon: '👏'
-      // })
+      await createHousehold({
+        ...data,
+      })
+      setNewHousehold({ nhan_khaus: [] as IResident[] } as IHousehold)
+      toast.success('Thêm hộ khẩu thành công', {
+        toastId: 'create-household-successfully',
+        icon: '👏'
+      })
       console.log(data)
     } catch (error) {
       console.log('Them ho khau loi r be oi :_(', error)
