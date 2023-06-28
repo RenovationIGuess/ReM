@@ -14,11 +14,11 @@ import SubHeader from '~/components/SubHeader'
 import UploadImage from '~/components/UploadImage'
 import uploadFile from '~/firebase/uploadFile'
 
-interface EditItemFormProps {
+interface CreateFormFormProps {
 
 }
 type UploadFile = RcFile & { preview: string }
-export const EditItemForm: FC<EditItemFormProps> = ({ }) => {
+export const CreateItemForm: FC<CreateFormFormProps> = ({ }) => {
     const { id } = useParams()
 
     const navigate = useNavigate()
@@ -28,33 +28,19 @@ export const EditItemForm: FC<EditItemFormProps> = ({ }) => {
     const [loading, setLoading] = useState(false)
     const [image, setImage] = useState<UploadFile | null>(null)
 
-    const [item, getItemById] = useEventStore(state => [
-        state.item,
-        state.getItemById
-    ])
-
-    useEffect(() => {
-        form.setFieldsValue(item)
-    }, [item, form])
-
-    useEffectOnce(() => {
-        getItemById(id)
-    })
-
     const onFinish = async (values: IItem) => {
         try {
             setLoading(true)
             let imageUrl: string | undefined = undefined
             if (image) imageUrl = await uploadFile(image)
-            const { name, unit_price, image_url } = values
-            const editedItem = {
-                ...item,
+            const { name, unit_price } = values
+            const newItem = {
                 name,
                 unit_price,
                 image_url: imageUrl
             }
-            await axiosClient.put(`/items/${item.id}/edit`, editedItem)
-            toast.success(`Thông tin vật phẩm mã ${item.id} đã được chỉnh sửa`, {
+            await axiosClient.post(`/items/create`, newItem)
+            toast.success(`Đã thêm vật phẩm`, {
                 position: toast.POSITION.TOP_RIGHT
             })
         } catch (error) {
@@ -68,14 +54,14 @@ export const EditItemForm: FC<EditItemFormProps> = ({ }) => {
     return (
         <HomeLayout>
             <div className="min-h-full w-full rounded-lg bg-bgPrimary px-4 py-2 shadow-md">
-                <SubHeader title={`Chỉnh sửa vật phẩm mã ${item.id}`} type="create" />
+                <SubHeader title={`Thêm vật phẩm mới`} type="create" />
                 <Form
                     form={form}
                     layout="vertical"
                     onFinish={onFinish}
                     name="form_in_modal"
                     title="Thêm sự kiện"
-                    initialValues={{ modifier: 'public', item }}
+                    initialValues={{ modifier: 'public' }}
                     className="grid auto-rows-max grid-cols-8"
                 >
                     <div className="col-span-6 col-start-1">
@@ -121,7 +107,7 @@ export const EditItemForm: FC<EditItemFormProps> = ({ }) => {
                                     Hủy
                                 </Button>
                                 <Button disabled={loading} type="primary" htmlType="submit" ghost>
-                                    {loading ? <LoadingOutlined /> : 'Sửa'}
+                                    {loading ? <LoadingOutlined /> : 'Tạo'}
                                 </Button>
                             </Space>
                         </Form.Item>
@@ -132,3 +118,5 @@ export const EditItemForm: FC<EditItemFormProps> = ({ }) => {
         </HomeLayout>
     )
 }
+
+export default CreateItemForm

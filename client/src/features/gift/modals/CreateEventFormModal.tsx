@@ -6,6 +6,7 @@ import achiveType from "../enums/achieveType";
 import capHocType from "../enums/capHocType";
 import types from "../enums/types";
 import Title from "antd/es/typography/Title";
+import { IEvent } from "~/@types";
 
 interface CreateEventFormModalProps {
     open: boolean;

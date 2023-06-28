@@ -1,4 +1,5 @@
 import exp from 'constants'
+import { Page } from '~/@types'
 import axiosClient from '~/app/axiosClient'
 
 export const getEventByPage = async (page: Page) => {
