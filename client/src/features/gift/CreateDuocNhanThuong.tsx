@@ -14,7 +14,7 @@ import UploadImage from '~/components/UploadImage'
 import uploadFile from '~/firebase/uploadFile'
 import { set } from 'immer/dist/internal'
 import { RcFile } from 'antd/es/upload'
-
+import { toast, ToastContainer } from 'react-toastify'
 type UploadFile = RcFile & { preview: string }
 
 const CreateDuocNhanThuong = () => {
@@ -50,7 +50,9 @@ const CreateDuocNhanThuong = () => {
                 tenTruong: values.tenTruong,
                 tenLop: values.tenLop
             })
-            alert("Create Success")
+            toast.success(`Thêm bé thành công`, {
+                position: toast.POSITION.TOP_RIGHT
+            })
             navigate(`/su-kien/${event.id}`)
         } catch (error) {
             console.error(error)
@@ -191,6 +193,7 @@ const CreateDuocNhanThuong = () => {
                     </div>
                 </Form>
             </div>
+            <ToastContainer />
         </HomeLayout>
     )
 }

@@ -12,7 +12,7 @@ class ItemController extends Controller
     public function index(Request $request)
     {
         try {
-            $limit = $request->has('limit') ? $request->input() : 10;
+            $limit = $request->has('limit') ? $request->input('limit') : 10;
 
             $items = Item::where('name', 'like', '%' . $request->name . '%')
                 ->orderBy('id', 'ASC')

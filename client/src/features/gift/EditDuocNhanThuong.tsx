@@ -5,7 +5,6 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { showDeleteConfirm } from '~/components/ConfirmModal'
 import HomeLayout from '~/components/Layout/HomeLayout'
 import SubHeader from '~/components/SubHeader'
-import { useHouseholdStore } from '~/app/householdStore'
 import { useEventStore } from '~/app/eventStore'
 import axiosClient from '~/app/axiosClient'
 import achiveType from './enums/achieveType'
@@ -14,6 +13,7 @@ import UploadImage from '~/components/UploadImage'
 import uploadFile from '~/firebase/uploadFile'
 import { set } from 'immer/dist/internal'
 import { RcFile } from 'antd/es/upload'
+import { ToastContainer, toast } from 'react-toastify'
 
 type UploadFile = RcFile & { preview: string }
 
@@ -46,8 +46,6 @@ const EditDuocNhanThuong = () => {
                 let imageUrl: string | undefined = undefined
                 if (image) imageUrl = await uploadFile(image)
                 const { tenTruong, tenLop, thanhTichHocTap, capHoc, anhGiayKhen } = values
-                // await updateHousehold({ id, idChuHo, maKhuVuc, diaChi }).unwrap()
-                // navigate(`/ho-khau/${id}`)
                 const editedChildren = {
                     ...children,
                     tenTruong,
@@ -57,9 +55,14 @@ const EditDuocNhanThuong = () => {
                     anhGiayKhen: imageUrl
                 }
                 await axiosClient.put(`/duoc-nhan-thuong/${children.id}/edit`, editedChildren)
+                toast.success(`Thông tin mã được nhận thưởng ${children.id} đã được chỉnh sửa`, {
+                    position: toast.POSITION.TOP_RIGHT
+                })
                 console.log(editedChildren)
             } catch (error) {
-                console.error(error)
+                toast.error((error as Error).message, {
+                    position: toast.POSITION.TOP_RIGHT
+                })
             } finally {
                 setLoading(false)
             }
@@ -166,6 +169,7 @@ const EditDuocNhanThuong = () => {
                     </div>
                 </Form>
             </div>
+            <ToastContainer />
         </HomeLayout>
     )
 }

@@ -212,17 +212,18 @@ const EditFormModal: React.FC<CollectionCEditFormProps> = ({
                                                 </Form.List>
                                             </>
                                         ))}
-                                        <Form.Item>
-                                            <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                                                Thêm phần quà
-                                            </Button>
-                                        </Form.Item>
                                         <hr style={{
                                             background: 'lime',
                                             color: 'lime',
                                             borderColor: 'lime',
                                             height: '3px',
+                                            marginBottom: '30px'
                                         }} />
+                                        <Form.Item>
+                                            <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                                                Thêm phần quà
+                                            </Button>
+                                        </Form.Item>
                                     </>
                                 )}
                             </Form.List>

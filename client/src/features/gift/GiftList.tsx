@@ -103,7 +103,6 @@ export const GiftList = () => {
                         <Input.Search className="w-[25vw]" placeholder="Tìm kiếm gì đó ..." />
                     </div>
                     {/* <EventSubHeader /> */}
-                    <Button onClick={() => setOpenCreateGift(true)}>Thêm quà mới</Button>
                     <CollectionCreateForm
                         open={openCreateGift}
                         onCreate={onCreate}
@@ -115,8 +114,8 @@ export const GiftList = () => {
                 <TabList defaultActiveKey='3' eventId={id} />
                 <div className="mt-2 h-full grow rounded-lg bg-bgPrimary px-4 py-2 shadow-md">
                     <div className="flex w-full items-center justify-between">
-                        <p className="text-2xl font-medium">{`${event.name}`}- Danh sách phần quà</p>
-                        <Statistic value={`Số vật phẩm trong sự kiện: ${gifts.length}`} />
+                        <p className="text-2x1 font-medium">{`${event.name}`}- Danh sách phần quà</p>
+                        <p className="text-2x1 font-medium">{`Số vật phẩm trong sự kiện: ${gifts.length}`}</p>
                     </div>
                     {/* <GiftTable /> */}
                     <Row gutter={[16, 32]}>

@@ -1,10 +1,10 @@
-import { Button, Space } from 'antd'
+import { Button, Select, Space } from 'antd'
 import React, { useEffect, useState } from 'react'
 import HomeLayout from '~/components/Layout/HomeLayout'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import ChildrenTable from './ChildrenTable'
 import TabList from '~/components/Layout/TabList'
-import { EditOutlined, WarningFilled, DeleteOutlined } from '@ant-design/icons'
+import { EditOutlined, WarningFilled, DeleteOutlined, ArrowLeftOutlined } from '@ant-design/icons'
 import { useAppDispatch } from '~/hooks/useRedux'
 import { useEventStore } from '~/app/eventStore'
 import axiosClient from '~/app/axiosClient'
@@ -12,6 +12,7 @@ import { showDeleteConfirm } from '~/components/ConfirmModal'
 import moment from 'moment'
 import EditFormModal from './modals/EditFormModal'
 import { EventSubHeader } from '~/components/Layout/EventSubHeader'
+import { ToastContainer, toast } from 'react-toastify'
 
 
 interface Values {
@@ -26,6 +27,22 @@ export const ChildrenList = () => {
     const [openCreateChildren, setOpenCreateChildren] = useState(false);
     const [openEditEvent, setOpenEditEvent] = useState(false);
     //const openCreateChildren: boolean = useSelector(openSelector)
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filteredOptions, setFilteredOptions] = useState<IDuocNhanThuong[] | undefined>([]);
+
+    const handleSearch = (value: string) => {
+        setSearchQuery(value);
+
+        const filteredList = event.duoc_nhan_thuongs.filter(obj =>
+            obj.nhan_khau.hoTen.toLowerCase().includes(value.toLowerCase())
+        );
+
+        setFilteredOptions(filteredList);
+    };
+
+    const handleSelectChange = (value: string) => {
+        setSearchQuery(value);
+    };
 
     const [event, getEventById] = useEventStore(state => [
         state.event,
@@ -46,9 +63,13 @@ export const ChildrenList = () => {
                 ngayBatDau: formattedDate
             }
             await axiosClient.put(`/su-kien/${id}/edit`, updatedEvent)
-            alert("Update successfully")
+            toast.success('Cập nhật sự kiện thành công', {
+                position: toast.POSITION.TOP_RIGHT
+            })
         } catch (err) {
-            console.error(err)
+            toast.error((err as Error).message, {
+                position: toast.POSITION.TOP_RIGHT
+            })
         }
         console.log('Received values of form: ', values);
         setOpenEditEvent(false)
@@ -61,7 +82,10 @@ export const ChildrenList = () => {
             onOk: async () => {
                 try {
                     await axiosClient.delete(`/su-kien/${id}/delete`)
-                    navigate(`/tang-qua`)
+                    toast.success('Xóa sự kiện thành công', {
+                        position: toast.POSITION.TOP_RIGHT
+                    })
+                    navigate(`/su-kien/${event.id}`)
                 } catch (e) {
                     const err = e as Error
                     console.log(err.message)
@@ -77,11 +101,25 @@ export const ChildrenList = () => {
         <HomeLayout>
             <div className="mb-2 flex min-h-full flex-col">
                 <div className="flex items-center justify-between">
-                    {/* <div className="flex items-center justify-between">
-                        <ArrowLeftOutlined className='me-4 mb-2' onClick={() => navigate('/tang-qua')} />
-                        <Input.Search className="w-[25vw]" placeholder="Tìm kiếm gì đó ..." />
-                    </div> */}
-                    <EventSubHeader />
+                    <div className="flex items-center justify-between">
+                        <ArrowLeftOutlined className='me-4 mb-2' onClick={() => navigate(-1)} />
+                        <Select
+                            mode="multiple"
+                            style={{ width: '500px' }}
+                            value={searchQuery}
+                            placeholder="Tìm kiếm bé"
+                            onChange={handleSelectChange}
+                            onSearch={handleSearch}
+                            filterOption={false}
+                            notFoundContent={null}
+                        >
+                            {filteredOptions?.map(obj => (
+                                <Select.Option key={obj.nhan_khau.hoTen} value={obj.nhan_khau.hoTen}>
+                                    <Link to={`/duoc-nhan-thuong/chinh-sua/${obj.id}`}>{obj.nhan_khau.hoTen}</Link>
+                                </Select.Option>
+                            ))}
+                        </Select>
+                    </div>
                     <span>
                         <Space>
                             <Button type="primary" ghost color="#40A9FF" icon={<EditOutlined />} onClick={onEdit}>
@@ -106,13 +144,14 @@ export const ChildrenList = () => {
                 <TabList defaultActiveKey='1' eventId={id} />
                 <div className="mt-2 h-full grow rounded-lg bg-bgPrimary px-4 py-2 shadow-md">
                     <div className="flex w-full items-center justify-between">
-                        <p className="text-2xl font-medium">{`${event.name}`} - Danh sách các bé nhận quà</p>
-                        <p className="text-2xl font-medium"> Ngày bắt đầu: {`${event.ngayBatDau}`}</p>
+                        <p className="text-2x1 font-medium">{`${event.name}`} - Danh sách các bé nhận quà</p>
+                        <p className="text-2x1 font-medium"> Ngày bắt đầu: {`${event.ngayBatDau}`}</p>
                         <p className="text-2x1 font-medium">Tổng số bé: {`${event.duoc_nhan_thuongs.length}`}</p>
                     </div>
                     <ChildrenTable eventId={id} event={event} />
                 </div>
             </div>
+            <ToastContainer />
         </HomeLayout>
     )
 }

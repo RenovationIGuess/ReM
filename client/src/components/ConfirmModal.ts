@@ -10,6 +10,7 @@ type PropsType = {
 
 export const showDeleteConfirm = ({ title, icon, onOk, onCancel }: PropsType) => {
   Modal.confirm({
+    width: '600px',
     title,
     icon,
     okText: 'Xác nhận',
@@ -17,6 +18,6 @@ export const showDeleteConfirm = ({ title, icon, onOk, onCancel }: PropsType) =>
     cancelText: 'Hủy',
     centered: true,
     onOk,
-    onCancel
+    onCancel,
   })
 }

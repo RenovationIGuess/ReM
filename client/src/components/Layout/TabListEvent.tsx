@@ -23,7 +23,7 @@ const TabList = (props: any) => {
                 navigate(`/su-kien`)
                 break
             case '2':
-                navigate(`/danh-sach-phan-qua`)
+                navigate(`/items`)
                 break
         }
     }

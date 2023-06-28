@@ -7,14 +7,15 @@ import axiosClient from '~/app/axiosClient'
 import TabListEvent from '~/components/Layout/TabListEvent'
 import Item from './Item'
 import CreateItemFormModal from './modals/CreateItemFormModal'
-import EditItemFormModal from './modals/EditItemFormModal'
 import { ToastContainer, toast } from 'react-toastify'
+import { useGetItemsByPageQuery } from './api/items.slice'
 
 const { Title } = Typography;
 
 
 const ItemList = () => {
     const [page, setPage] = useState<Page>({ page: 1, offset: 10 })
+    const { data: giftsData } = useGetItemsByPageQuery(page)
     const [items, getItems] = useEventStore(state => [
         state.items,
         state.getItems
@@ -23,28 +24,31 @@ const ItemList = () => {
     const navigate = useNavigate()
     const { id } = useParams()
     const [openCreateItem, setOpenCreateItem] = useState(false);
-    const [openEditItem, setOpenEditItem] = useState(false)
+    const [displayItem, setDisplayItem] = useState<IItem[]>([])
+    useEffect(() => {
+        getItems()
+        setDisplayItem(items)
+    }, [])
+    console.log(giftsData)
 
     const onCreate = async (values: any) => {
         console.log('Received values of form:', values);
         try {
             await axiosClient.post(`/items/create`, values)
             setOpenCreateItem(false)
+            setDisplayItem(prev => (
+                [...prev, values]
+            ))
             toast.success('Tạo vật phẩm thành công', {
                 position: toast.POSITION.TOP_RIGHT
             })
-            setTimeout(() => {
-                window.location.reload()
-            }, 5000)
         } catch (e) {
             const result = (e as Error).message;
-            console.log(result)
+            toast.error(result, {
+                position: toast.POSITION.TOP_RIGHT
+            })
         }
     };
-
-    useEffect(() => {
-        getItems()
-    }, [])
 
     return (
         <HomeLayout>
@@ -71,8 +75,8 @@ const ItemList = () => {
                 <TabListEvent defaultActiveKey='2' />
                 <Row gutter={[16, 32]} className='mb-10'>
                     {
-                        items.map((item) => (
-                            <Item key={item.id} itemId={item.id} title={item.name} cost={item.unit_price} />
+                        giftsData?.data.data.map((item) => (
+                            <Item items={displayItem} setItem={setDisplayItem} key={item.id} itemId={item.id} title={item.name} cost={item.unit_price} />
                         ))}
                 </Row>
                 <Pagination
@@ -81,7 +85,7 @@ const ItemList = () => {
                     pageSizeOptions={['10', '15', '20']}
                     style={{ float: 'right', marginTop: '70px' }}
                     defaultCurrent={1}
-                    total={total}
+                    total={giftsData?.data.total}
                     onChange={(page, pageSize) => {
                         setPage({ page, offset: pageSize })
                     }} />
