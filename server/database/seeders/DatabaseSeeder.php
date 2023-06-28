@@ -49,7 +49,7 @@ class DatabaseSeeder extends Seeder
             ThanhVienHo::create([
                 'idHoKhau' => $hoKhau->first()->id,
                 'idNhanKhau' => $nhanKhau->id,
-                'quanHeVoiChuHo' => fake()->randomElement(['Con', 'Em', 'Chau', 'Vo', 'Chong']),
+                'quanHeVoiChuHo' => fake()->randomElement(['Con', 'Em', 'Cháu', 'Vợ', 'Chồng', 'Bố', 'Mẹ', 'Anh', 'Chị', 'Ông', 'Bà']),
             ]);
         }
         foreach ($hoKhaus as $hoKhau) {

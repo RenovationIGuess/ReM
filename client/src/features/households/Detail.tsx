@@ -3,12 +3,11 @@ import { useNavigate, useParams } from 'react-router-dom'
 import HomeLayout from '~/components/Layout/HomeLayout'
 import { ArrowLeftOutlined, EditOutlined, LoadingOutlined, UserOutlined } from '@ant-design/icons'
 import { useHouseholdStore } from '~/app/householdStore'
-import { Avatar, Button, Input, Select, Space } from 'antd'
+import { Avatar, Button, Form, Input, Select, Space } from 'antd'
 
 type HouseholdInfoItemProps = {
   label: string
   value?: React.ReactNode
-  type?: 'detail' | 'edit'
 }
 
 type EachHouseholdInfoDivProps = {
@@ -22,33 +21,11 @@ type HouseholdMemberProps = {
   type?: 'detail' | 'edit'
 }
 
-export const HouseholdInfoItem = ({ label, value, type = 'detail' }: HouseholdInfoItemProps) => {
+export const HouseholdInfoItem = ({ label, value }: HouseholdInfoItemProps) => {
   return (
     <div>
       <p className="text-medium text-base text-noneSelected">{label}</p>
-      {type === 'detail' ? (
-        <p className={`text-base`}>{value ?? <span className="text-unknow">Chưa cập nhật</span>}</p>
-      ) : (
-        <Select
-          className="w-full"
-          placeholder="Quan hệ với chủ hộ"
-          showSearch
-          options={[
-            { value: 'Con', label: 'Con' },
-            { value: 'Vợ', label: 'Vợ' },
-            { value: 'Chồng', label: 'Chồng' },
-            { value: 'Bố', label: 'Bố' },
-            { value: 'Mẹ', label: 'Mẹ' },
-            { value: 'Ông', label: 'Ông' },
-            { value: 'Bà', label: 'Bà' },
-            { value: 'Cháu', label: 'Cháu' },
-            { value: 'Anh', label: 'Anh' },
-            { value: 'Chị', label: 'Chị' },
-            { value: 'Em', label: 'Em' },
-            { value: 'Phức tạp', label: 'Phức tạp' }
-          ]}
-        />
-      )}
+      <p className={`text-base`}>{value ?? <span className="text-unknow">Chưa cập nhật</span>}</p>
     </div>
   )
 }
@@ -62,18 +39,18 @@ export const EachHouseholdInfoDiv = ({ label, className, children }: EachHouseho
   )
 }
 
-export const HouseholdMember = ({ resident, type = 'detail' }: HouseholdMemberProps) => {
+export const HouseholdMember = ({ resident }: HouseholdMemberProps) => {
   return (
-    <div className="flex items-center justify-start gap-8">
-      <Avatar className="flex items-center justify-center" size={100} icon={<UserOutlined />} />
+    <div className="flex w-full items-center justify-start gap-8">
+      <Avatar
+        className="flex items-center justify-center"
+        size={{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }}
+        icon={<UserOutlined />}
+      />
 
       <div className="grid gap-2">
         <HouseholdInfoItem label="Họ và tên" value={resident.hoTen} />
-        <HouseholdInfoItem
-          label="Quan hệ với chủ hộ"
-          type={type}
-          value={resident.pivot?.quanHeVoiChuHo}
-        />
+        <HouseholdInfoItem label="Quan hệ với chủ hộ" value={resident.pivot?.quanHeVoiChuHo} />
       </div>
     </div>
   )
@@ -105,22 +82,20 @@ const Detail = () => {
             <p>Trở về</p>
           </button>
 
-          <>
-            <Space>
-              <Button
-                type="primary"
-                ghost
-                color="#40A9FF"
-                icon={<EditOutlined />}
-                onClick={() => navigate(`/ho-khau/chinh-sua/${id}`)}
-              >
-                Chỉnh sửa
-              </Button>
-              <Button type="primary" ghost onClick={() => navigate(`/ho-khau/tach/${id}`)}>
-                Tách hộ khẩu
-              </Button>
-            </Space>
-          </>
+          <Space>
+            <Button
+              type="primary"
+              ghost
+              color="#40A9FF"
+              icon={<EditOutlined />}
+              onClick={() => navigate(`/ho-khau/chinh-sua/${id}`)}
+            >
+              Chỉnh sửa
+            </Button>
+            <Button type="primary" ghost onClick={() => navigate(`/ho-khau/tach/${id}`)}>
+              Tách hộ khẩu
+            </Button>
+          </Space>
         </div>
         {Object.keys(household).length === 0 ? (
           <div className="flex w-full items-center justify-center">
@@ -131,14 +106,17 @@ const Detail = () => {
             <div className="flex justify-between gap-4">
               <EachHouseholdInfoDiv
                 label={`Thông tin hộ khẩu - ${household.maHoKhau}`}
-                className="w-2/4"
+                className="w-2/5"
               >
-                <div className="grid gap-4">
+                <div className={`grid gap-4 ${household.lyDoChuyen ? 'grid-cols-2' : ''}`}>
                   <HouseholdInfoItem label="Địa chỉ" value={household.diaChi} />
+                  {household.lyDoChuyen && (
+                    <HouseholdInfoItem label="Lý do chuyển đi" value={household.lyDoChuyen} />
+                  )}
                   <HouseholdInfoItem label="Mã khu vực" value={household.maKhuVuc} />
                 </div>
               </EachHouseholdInfoDiv>
-              <EachHouseholdInfoDiv label="Chủ hộ" className="w-2/4">
+              <EachHouseholdInfoDiv label="Chủ hộ" className="w-3/5">
                 <div className="flex items-center justify-start gap-8">
                   <Avatar
                     className="flex items-center justify-center"
@@ -146,7 +124,7 @@ const Detail = () => {
                     icon={<UserOutlined />}
                   />
 
-                  <div className="grid h-full grow grid-cols-3 gap-4">
+                  <div className="grid h-full grow grid-cols-2 gap-4">
                     <HouseholdInfoItem label="Họ và tên chủ hộ" value={household.chu_ho?.hoTen} />
                     <HouseholdInfoItem
                       label="Giới tính"
@@ -170,9 +148,11 @@ const Detail = () => {
             </div>
             <EachHouseholdInfoDiv label="Thành viên hộ khẩu">
               <div className="grid grid-cols-4 gap-6">
-                {household.nhan_khaus.map(resident => (
-                  <HouseholdMember resident={resident} />
-                ))}
+                {household.nhan_khaus
+                  .filter(resident => resident.id !== household.chu_ho.id)
+                  .map(resident => (
+                    <HouseholdMember key={resident.id} resident={resident} />
+                  ))}
               </div>
             </EachHouseholdInfoDiv>
           </>
