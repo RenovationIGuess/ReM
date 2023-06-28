@@ -1,4 +1,4 @@
-import { Button, Select, Space } from 'antd'
+import { Button, Checkbox, Select, Space } from 'antd'
 import React, { useEffect, useState } from 'react'
 import HomeLayout from '~/components/Layout/HomeLayout'
 import { Link, useNavigate, useParams } from 'react-router-dom'
@@ -10,9 +10,9 @@ import { useEventStore } from '~/app/eventStore'
 import axiosClient from '~/app/axiosClient'
 import { showDeleteConfirm } from '~/components/ConfirmModal'
 import moment from 'moment'
-import EditFormModal from './modals/EditFormModal'
 import { EventSubHeader } from '~/components/Layout/EventSubHeader'
 import { ToastContainer, toast } from 'react-toastify'
+import { IDuocNhanThuong, IEvent } from '~/@types'
 
 
 interface Values {
@@ -48,10 +48,11 @@ export const ChildrenList = () => {
         state.event,
         state.getEventById
     ])
-
+    const [isDone, setIsDone] = useState(event.isDone ? true : false)
     useEffect(() => {
         getEventById(id ? id : '1')
-    }, [])
+        //setIsDone(event.isDone ? true : false)
+    }, [isDone])
     console.log(event, id)
 
     const onEditEvent = async (values: IEvent) => {
@@ -88,14 +89,32 @@ export const ChildrenList = () => {
                     navigate(`/su-kien/${event.id}`)
                 } catch (e) {
                     const err = e as Error
-                    console.log(err.message)
-                    alert(err.message)
+                    toast.error(err.message, {
+                        position: toast.POSITION.TOP_RIGHT
+                    })
                 }
             }
         })
     }
-    const onEdit = () => {
-        setOpenEditEvent(true)
+
+    const handleIsDone = async (event: IEvent) => {
+        setIsDone(!isDone);
+        try {
+            await axiosClient.patch(`/su-kien/${event.id}/${event.isDone ? 'done-uncheck' : 'done-check'}`)
+            isDone ?
+                toast.success(`Sự kiện đã chuyển sang trạng thái kết thúc`, {
+                    position: toast.POSITION.TOP_RIGHT
+                }) :
+                toast.success(`Sự kiện đã chuyển lại chưa kết thúc`, {
+                    position: toast.POSITION.TOP_RIGHT
+                })
+        } catch (err) {
+            toast.error((err as Error).message, {
+                position: toast.POSITION.TOP_RIGHT
+            })
+        } finally {
+
+        }
     }
     return (
         <HomeLayout>
@@ -122,10 +141,10 @@ export const ChildrenList = () => {
                     </div>
                     <span>
                         <Space>
-                            <Button type="primary" ghost color="#40A9FF" icon={<EditOutlined />} onClick={onEdit}>
+                            <Button type="primary" ghost color="#40A9FF" icon={<EditOutlined />} onClick={e => navigate(`/su-kien/chinh-sua/${event.id}`)}>
                                 Chỉnh sửa
                             </Button>
-                            <Button type="primary" ghost danger icon={<DeleteOutlined />} onClick={onDelete}>
+                            <Button disabled={!isDone} type="primary" ghost danger icon={<DeleteOutlined />} onClick={onDelete}>
                                 Xóa
                             </Button>
                             <Button onClick={() => {
@@ -133,13 +152,6 @@ export const ChildrenList = () => {
                             }}>Thêm bé mới</Button>
                         </Space>
                     </span>
-                    <EditFormModal
-                        open={openEditEvent}
-                        onCreate={onEditEvent}
-                        onCancel={() => {
-                            setOpenEditEvent(false)
-                        }}
-                    />
                 </div>
                 <TabList defaultActiveKey='1' eventId={id} />
                 <div className="mt-2 h-full grow rounded-lg bg-bgPrimary px-4 py-2 shadow-md">
@@ -147,6 +159,17 @@ export const ChildrenList = () => {
                         <p className="text-2x1 font-medium">{`${event.name}`} - Danh sách các bé nhận quà</p>
                         <p className="text-2x1 font-medium"> Ngày bắt đầu: {`${event.ngayBatDau}`}</p>
                         <p className="text-2x1 font-medium">Tổng số bé: {`${event.duoc_nhan_thuongs.length}`}</p>
+                        {/* <input
+                            type="checkbox"
+                            checked={event.isDone ? true : false}
+                            onChange={() => handleIsDone(event)}
+                        >
+                            {event.isDone ? 'Đã kết thúc' : "Cho sự kiện kết thúc"}
+                        </input> */}
+                        <Checkbox checked={isDone ? false : true}
+                            onChange={() => handleIsDone(event)}>
+                            {isDone ? 'Chưa kết thúc. Cho kết thúc' : "Đã kết thúc"}
+                        </Checkbox>
                     </div>
                     <ChildrenTable eventId={id} event={event} />
                 </div>

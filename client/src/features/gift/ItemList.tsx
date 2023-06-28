@@ -6,9 +6,10 @@ import { useEventStore } from '~/app/eventStore'
 import axiosClient from '~/app/axiosClient'
 import TabListEvent from '~/components/Layout/TabListEvent'
 import Item from './Item'
-import CreateItemFormModal from './modals/CreateItemFormModal'
 import { ToastContainer, toast } from 'react-toastify'
 import { useGetItemsByPageQuery } from './api/items.slice'
+import { Page, IItem } from '~/@types'
+import { useEffectOnce } from 'usehooks-ts'
 
 const { Title } = Typography;
 
@@ -25,10 +26,10 @@ const ItemList = () => {
     const { id } = useParams()
     const [openCreateItem, setOpenCreateItem] = useState(false);
     const [displayItem, setDisplayItem] = useState<IItem[]>([])
-    useEffect(() => {
+    useEffectOnce(() => {
         getItems()
         setDisplayItem(items)
-    }, [])
+    })
     console.log(giftsData)
 
     const onCreate = async (values: any) => {
@@ -60,23 +61,16 @@ const ItemList = () => {
                         htmlType="button"
                         className='bg-primary'
                         style={{ color: 'white' }}
-                        onClick={() => setOpenCreateItem(true)}
+                        onClick={(e) => navigate(`/items/create/`)}
                     >
                         Thêm vật phẩm mới
                     </Button>
-                    <CreateItemFormModal
-                        open={openCreateItem}
-                        onCreate={onCreate}
-                        onCancel={() => {
-                            setOpenCreateItem(false);
-                        }}
-                    />
                 </div>
                 <TabListEvent defaultActiveKey='2' />
                 <Row gutter={[16, 32]} className='mb-10'>
                     {
                         giftsData?.data.data.map((item) => (
-                            <Item items={displayItem} setItem={setDisplayItem} key={item.id} itemId={item.id} title={item.name} cost={item.unit_price} />
+                            <Item items={displayItem} setItem={setDisplayItem} key={item.id} itemId={item.id} title={item.name} cost={item.unit_price} image_url={item.image_url} />
                         ))}
                 </Row>
                 <Pagination

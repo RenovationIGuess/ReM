@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { IEvent, IPhanThuong, IItem, IDuocNhanThuong, IThongKeSuKien, Page, IPhanThuongThongKe } from '~/@types'
 import { getEventById, getEventByPage, getGiftsEventByEventId, getChildrenById, getItems, getStatisticById, getItemById } from '~/lib/event'
 
 interface IEventStore {
@@ -34,18 +35,7 @@ export const useEventStore = create<IEventStore>(set => ({
     },
     gifts: [],
     items: [],
-    item: {
-        "id": 1,
-        "name": "Bánh Choco Pie",
-        "unit_price": 15000,
-        created_at: new Date("2023-06-25T21:55:55.000000Z"),
-        updated_at: new Date("2023-06-25T21:55:55.000000Z"),
-        pivot: {
-            "idPhanThuong": 1,
-            "idItem": 2,
-            "soLuong": 5
-        }
-    },
+    item: {} as IItem,
     statistics: [],
     children: {
         id: 33,

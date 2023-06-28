@@ -5,19 +5,18 @@ import { useNavigate } from 'react-router-dom'
 import { DeleteOutlined, EditOutlined, WarningFilled } from '@ant-design/icons';
 import axiosClient from '~/app/axiosClient';
 import { ToastContainer, toast } from 'react-toastify';
-import { useEventStore } from '~/app/eventStore';
 import { showDeleteConfirm } from '~/components/ConfirmModal';
 
 const gridStyle: React.CSSProperties = {
     width: '240px',
-    height: '252px',
+    height: '400px',
 };
 
 
 const Item = (props: any) => {
     const navigate = useNavigate()
     const { displayItem, setItem } = props
-    const { itemId, title, cost } = props
+    const { itemId, title, cost, image_url } = props
     const [openEditItem, setOpenEditItem] = useState(false)
     const onEdit = (itemId: string | undefined) => {
         setOpenEditItem(true)
@@ -48,7 +47,7 @@ const Item = (props: any) => {
             <Card
                 hoverable
                 style={gridStyle}
-                cover={<img alt="example" src="https://media.istockphoto.com/id/628925698/vector/pile-of-hardcover-books.jpg?s=612x612&w=0&k=20&c=UskxzCZAQ4LXrgMhgW3M8Q5jdtWFPZ8WxwosF6h6euI=" />}
+                cover={<img alt="example" style={{ height: '252px' }} src={image_url ? image_url : "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg?20200913095930"} />}
             >
                 <Meta title={`Tên vật phẩm: ${title}`} />
                 <Meta title={`Đơn giá: ${cost}`} />

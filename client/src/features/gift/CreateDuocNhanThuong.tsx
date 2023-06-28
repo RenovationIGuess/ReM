@@ -15,6 +15,7 @@ import uploadFile from '~/firebase/uploadFile'
 import { set } from 'immer/dist/internal'
 import { RcFile } from 'antd/es/upload'
 import { toast, ToastContainer } from 'react-toastify'
+import { IDuocNhanThuong } from '~/@types'
 type UploadFile = RcFile & { preview: string }
 
 const CreateDuocNhanThuong = () => {

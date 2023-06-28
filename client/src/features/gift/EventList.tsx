@@ -8,6 +8,7 @@ import axiosClient from '~/app/axiosClient'
 import moment from 'moment'
 import TabListEvent from '~/components/Layout/TabListEvent'
 import CreateEventFormModal from './modals/CreateEventFormModal'
+import { Page, IEvent } from '~/@types'
 
 const { Title } = Typography;
 

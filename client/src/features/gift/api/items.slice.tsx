@@ -1,3 +1,4 @@
+import { IItem, Page } from '~/@types'
 import apiSlice from '~/app/api/apiSlice'
 
 type link = {

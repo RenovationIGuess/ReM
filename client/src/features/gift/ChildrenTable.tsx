@@ -10,6 +10,7 @@ import Title from 'antd/es/typography/Title'
 import { PhanThuongDetailModal } from './modals/PhanThuongDetailModal'
 import { render } from 'react-dom'
 import { ToastContainer, toast } from 'react-toastify'
+import { IDuocNhanThuong, IEvent, IPhanThuongThongKe, Page } from '~/@types'
 
 
 const ChildrenTable = (props: { eventId: string | undefined, event: IEvent }) => {
@@ -40,7 +41,7 @@ const ChildrenTable = (props: { eventId: string | undefined, event: IEvent }) =>
                     toast.success('Xóa bé thành công', {
                         position: toast.POSITION.TOP_RIGHT
                     })
-                    navigate(-1)
+                    navigate(`/su-kien/${eventId}`)
                 } catch (e) {
                     const err = e as Error
                     console.log(err.message)
@@ -158,7 +159,7 @@ const ChildrenTable = (props: { eventId: string | undefined, event: IEvent }) =>
                     <EditOutlined
                         onClick={() => {
                             event.type ? navigate(`/duoc-nhan-thuong/chinh-sua/${record.id}`) :
-                                toast.error('Đây là sự kiênj không liên quan đến học tập nên không thể chỉnh sửa.', {
+                                toast.error('Đây là sự kiện không liên quan đến học tập nên không thể chỉnh sửa.', {
                                     position: toast.POSITION.TOP_RIGHT
                                 })
                         }}

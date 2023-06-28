@@ -1,3 +1,5 @@
+import { Url } from "url"
+
 declare type ApiErrorType = {
   message: string
   isError: boolean
@@ -104,6 +106,7 @@ declare type IItem = {
   unit_price?: number
   created_at: Date
   updated_at: Date
+  image_url: string | undefined
   pivot: {
     idPhanThuong: number,
     idItem: number,
