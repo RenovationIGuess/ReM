@@ -98,6 +98,8 @@ Route::group(['prefix' => 'su-kien'], function ($router) {
     Route::get('/{idSuKien}/thong-ke-ho-khau', [SuKienController::class, 'thongKeHoKhau']); //DONE
     Route::get('/{idSuKien}/thong-ke-phan-qua', [SuKienController::class, 'thongKeItems']); //DONE
     Route::delete('/{idSuKien}/delete', [SuKienController::class, 'destroy']); //DONE
+    Route::patch('/{idSuKien}/done-check', [SuKienController::class, 'checkIsDone']); //DONE
+    Route::patch('/{idSuKien}/done-uncheck', [SuKienController::class, 'uncheckIsDone']); //DONE
 });
 
 Route::group(['prefix' => 'duoc-nhan-thuong'], function ($router) {

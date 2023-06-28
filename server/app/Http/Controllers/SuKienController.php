@@ -336,6 +336,13 @@ class SuKienController extends Controller
 
             $suKien = SuKien::find($idSuKien);
 
+            if (!$suKien) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Không tìm thấy sự kiện',
+                ], 404);
+            }
+
             foreach ($suKien->duocNhanThuongs as $duocNhanThuong) {
                 $duocNhanThuong['idHoKhau'] = $duocNhanThuong->nhanKhau->thanhVienHo->idHoKhau;
                 $duocNhanThuong->phanThuong;
@@ -356,7 +363,7 @@ class SuKienController extends Controller
                 }
             }
 
-            if ($suKien) {
+            if ($hoKhaus) {
                 return response()->json([
                     'data' => $hoKhaus,
                     'success' => true,
@@ -366,7 +373,7 @@ class SuKienController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Su Kien not found',
+                'message' => 'Không tìm thấy sự kiện',
             ], 404);
 
         } catch (Exception $exception) {
@@ -401,6 +408,13 @@ class SuKienController extends Controller
             $uniqueItemIds = collect();
             $suKien = SuKien::find($idSuKien);
 
+            if (!$suKien) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Không tìm thấy sự kiện',
+                ], 404);
+            }
+
             foreach ($suKien->phanThuongs as $phanThuong) {
                 foreach ($phanThuong->items as $item) {
                     $uniqueItemIds->add($item->id);
@@ -425,9 +439,63 @@ class SuKienController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Su Kien not found',
+                'message' => 'Không tìm thấy sự kiện',
             ], 404);
 
+        } catch (Exception $exception) {
+            return response()->json([
+                'success' => false,
+                'message' => $exception->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function checkIsDone($idSuKien) {
+        try {
+            $suKien = SuKien::find($idSuKien);
+
+            if (!$suKien) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Không tìm thấy sự kiện',
+                ], 404);
+            }
+
+            $suKien->isDone = true;
+            $suKien->save();
+
+            return response()->json([
+                'data' => $suKien,
+                'success' => true,
+                'message' => 'Đánh dấu sự kiện đã cấp phát hết thành công',
+            ], 200);
+        } catch (Exception $exception) {
+            return response()->json([
+                'success' => false,
+                'message' => $exception->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function uncheckIsDone($idSuKien) {
+        try {
+            $suKien = SuKien::find($idSuKien);
+
+            if (!$suKien) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Không tìm thấy sự kiện',
+                ], 404);
+            }
+
+            $suKien->isDone = false;
+            $suKien->save();
+
+            return response()->json([
+                'data' => $suKien,
+                'success' => true,
+                'message' => 'Bỏ đánh dấu sự kiện đã cấp phát hết thành công',
+            ], 200);
         } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
