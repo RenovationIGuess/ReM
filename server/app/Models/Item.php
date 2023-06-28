@@ -16,6 +16,7 @@ class Item extends Model
     protected $fillable = [
         'name',
         'unit_price',
+        'image_url'
     ];
 
     public $timestamps = false;

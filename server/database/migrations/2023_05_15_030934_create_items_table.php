@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->float('unit_price');
+            $table->string('image_url')->nullable();
         });
     }
 

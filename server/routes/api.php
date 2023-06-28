@@ -8,12 +8,12 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HoKhauController;
 use App\Http\Controllers\SuKienController;
 use App\Http\Controllers\TamTruController;
-use App\Http\Controllers\PhanQuaController;
 use App\Http\Controllers\TamVangController;
 use App\Http\Controllers\ThongKeController;
 use App\Http\Controllers\NhanKhauController;
 use App\Http\Controllers\DuocNhanThuongController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\PhanThuongController;
 
 /*
 |--------------------------------------------------------------------------
@@ -108,6 +108,11 @@ Route::group(['prefix' => 'duoc-nhan-thuong'], function ($router) {
     Route::delete('/{idDuocNhanThuong}/delete', [DuocNhanThuongController::class, 'destroy']);
     Route::patch('/{idDuocNhanThuong}/check', [DuocNhanThuongController::class, 'check']);
     Route::patch('/{idDuocNhanThuong}/uncheck', [DuocNhanThuongController::class, 'uncheck']);
+});
+
+Route::group(['prefix' => 'phan-thuong'], function ($router) {
+    Route::get('/', [PhanThuongController::class, 'index']);
+    Route::get('/{id}', [PhanThuongController::class, 'show']);
 });
 
 Route::group(['prefix' => 'items'], function ($router) {

@@ -68,6 +68,7 @@ class ItemController extends Controller
         $rules = [
             'name' => 'string|required',
             'unit_price' => 'numeric|required',
+            'image_url' => 'url',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -83,6 +84,7 @@ class ItemController extends Controller
             $item = Item::create([
                 'name' => $request->name,
                 'unit_price' => $request->unit_price,
+                'image_url' => $request->image_url,
             ]);
 
             return response()->json([
@@ -103,6 +105,7 @@ class ItemController extends Controller
         $rules = [
             'name' => 'required|string',
             'unit_price' => 'required|numeric',
+            'image_url' => 'url',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -128,6 +131,7 @@ class ItemController extends Controller
 
             $item->name = $request->name;
             $item->unit_price = $request->unit_price;
+            $item->image_url = $request->image_url;
             $item->save();
 
             return response()->json([
