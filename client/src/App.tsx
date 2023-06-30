@@ -9,6 +9,7 @@ import ResidentEdit from './features/residents/Edit'
 import HouseHoldsList from './features/households/List'
 import HouseholdDetail from './features/households/Detail'
 import HouseholdEdit from './features/households/Edit'
+import HouseholdChangeLog from './features/households/ChangeLog'
 import Gift from './features/gift'
 import EventList from './features/gift/EventList'
 import Temporary from './features/temporary'
@@ -50,6 +51,7 @@ function App() {
               <Route path="chinh-sua/:id" element={<HouseholdEdit />} />
               <Route path="them" element={<Create />} />
               <Route path="tach/:id" element={<SplitHousehold />} />
+              <Route path="lich-su/:id" element={<HouseholdChangeLog />} />
             </Route>
 
             <Route path="nhan-khau">

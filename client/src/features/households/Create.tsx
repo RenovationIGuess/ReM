@@ -8,6 +8,7 @@ import { useHouseholdStore } from '~/app/householdStore'
 import { useResidentsStore } from '../residents/residentsStore'
 import { EachHouseholdInfoDiv, HouseholdInfoItem, HouseholdMember } from './Detail'
 import { toast } from 'react-toastify'
+import { householdRelationship } from '~/app/config'
 
 const Create = () => {
   const navigate = useNavigate()
@@ -49,7 +50,7 @@ const Create = () => {
         data.nhanKhaus.push({ id: resident, quanHeVoiChuHo: quanHe })
       })
       await createHousehold({
-        ...data,
+        ...data
       })
       setNewHousehold({ nhan_khaus: [] as IResident[] } as IHousehold)
       toast.success('Thêm hộ khẩu thành công', {
@@ -236,20 +237,10 @@ const Create = () => {
                             >
                               <Select
                                 className="w-[168px]"
-                                options={[
-                                  { value: 'Con', label: 'Con' },
-                                  { value: 'Vợ', label: 'Vợ' },
-                                  { value: 'Chồng', label: 'Chồng' },
-                                  { value: 'Bố', label: 'Bố' },
-                                  { value: 'Mẹ', label: 'Mẹ' },
-                                  { value: 'Ông', label: 'Ông' },
-                                  { value: 'Bà', label: 'Bà' },
-                                  { value: 'Cháu', label: 'Cháu' },
-                                  { value: 'Anh', label: 'Anh' },
-                                  { value: 'Chị', label: 'Chị' },
-                                  { value: 'Em', label: 'Em' },
-                                  { value: 'Phức tạp', label: 'Phức tạp' }
-                                ]}
+                                options={Object.values(householdRelationship).map(each => ({
+                                  value: each,
+                                  label: each
+                                }))}
                               />
                             </Form.Item>
                           </>

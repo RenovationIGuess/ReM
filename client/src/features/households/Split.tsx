@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { LoadingOutlined, RightOutlined, UserOutlined } from '@ant-design/icons'
-import { Avatar, Button, Empty, Form, Input, Tooltip } from 'antd'
+import { Avatar, Button, Empty, Form, Input, Select, Tooltip } from 'antd'
 import Table, { ColumnsType } from 'antd/es/table'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useHouseholdStore } from '~/app/householdStore'
@@ -9,12 +9,84 @@ import SubHeader from '~/components/SubHeader'
 import { EachHouseholdInfoDiv, HouseholdInfoItem, HouseholdMember } from './Detail'
 import { getHouseholdByPage, splitHousehold } from '~/lib/household'
 import { toast } from 'react-toastify'
+import { householdRelationship } from '~/app/config'
 
 function SplitHousehold() {
   const { id } = useParams()
 
   const [form] = Form.useForm()
   const navigate = useNavigate()
+
+  const [isError, setIsError] = useState(false)
+
+  const leftColumns: ColumnsType<IResident> = [
+    {
+      title: 'Họ và tên',
+      dataIndex: 'hoTen',
+      key: 'hoTen'
+    },
+    {
+      title: 'Giới tính',
+      dataIndex: 'gioiTinh',
+      key: 'gioiTinh'
+    },
+    {
+      title: 'Ngày sinh',
+      dataIndex: 'ngaySinh',
+      key: 'ngaySinh'
+    },
+    {
+      title: 'Quan hệ với chủ hộ',
+      render: (_, record) => record.pivot?.quanHeVoiChuHo
+    }
+  ]
+
+  const rightColumns: ColumnsType<IResident> = [
+    {
+      title: 'Họ và tên',
+      dataIndex: 'hoTen',
+      key: 'hoTen'
+    },
+    {
+      title: 'Giới tính',
+      dataIndex: 'gioiTinh',
+      key: 'gioiTinh'
+    },
+    {
+      title: 'Ngày sinh',
+      dataIndex: 'ngaySinh',
+      key: 'ngaySinh'
+    },
+    {
+      title: 'Quan hệ với chủ hộ',
+      render: (_, record) => {
+        if (record.id === newHousehold?.idChuHo) return <p>{'Chủ hộ'}</p>
+        return (
+          <Select
+            placeholder="Quan hệ với chủ hộ"
+            className="m-0 w-40"
+            options={Object.values(householdRelationship).map(each => ({
+              value: each,
+              label: each
+            }))}
+            onSelect={value => {
+              setNewHousehold({
+                ...newHousehold,
+                nhan_khaus: newHousehold.nhan_khaus?.map(resident => {
+                  if (resident.id === record.id)
+                    return {
+                      ...resident,
+                      pivot: { ...resident.pivot, quanHeVoiChuHo: value }
+                    } as IResident
+                  return resident
+                })
+              })
+            }}
+          />
+        )
+      }
+    }
+  ]
 
   const [isLoading, setIsLoading] = useState(false)
 
@@ -40,8 +112,12 @@ function SplitHousehold() {
         maKhuVuc,
         diaChi,
         nhanKhauMois: [
-          ...newHousehold.nhan_khaus.map(resident => resident.id),
-          newHousehold.idChuHo
+          ...newHousehold.nhan_khaus
+            .map(resident => ({
+              id: resident.id,
+              quanHeVoiChuHo: resident.pivot?.quanHeVoiChuHo
+            }))
+            .filter(({ id }) => id !== newHousehold.idChuHo)
         ],
         lyDoChuyen
       })
@@ -62,28 +138,6 @@ function SplitHousehold() {
     }
     setIsLoading(false)
   }
-
-  const columns: ColumnsType<IResident> = [
-    {
-      title: 'Họ và tên',
-      dataIndex: 'hoTen',
-      key: 'hoTen'
-    },
-    {
-      title: 'Giới tính',
-      dataIndex: 'gioiTinh',
-      key: 'gioiTinh'
-    },
-    {
-      title: 'Ngày sinh',
-      dataIndex: 'ngaySinh',
-      key: 'ngaySinh'
-    },
-    {
-      title: 'Quan hệ với chủ hộ',
-      render: (_, record) => record.pivot?.quanHeVoiChuHo
-    }
-  ]
 
   return (
     <HomeLayout>
@@ -177,68 +231,70 @@ function SplitHousehold() {
               )}
             </EachHouseholdInfoDiv>
           </div>
-        </Form>
-        <div className="flex justify-between">
-          <div className="w-2/4">
-            <Table
-              bordered
-              rowKey={record => record.id}
-              rowSelection={{
-                type: 'checkbox',
-                onChange: (_, selectedRows) => {
-                  setResidents([...selectedRows])
-                },
-                getCheckboxProps: record => ({
-                  disabled: record.id === household?.idChuHo
-                })
-              }}
-              columns={columns}
-              dataSource={household?.nhan_khaus}
-              pagination={false}
-            />
-          </div>
-          <div className="flex w-1/12 items-center justify-center">
-            <Tooltip placement="bottom" title={'Tách thành viên'} arrow={false}>
-              <Button
-                type="link"
-                icon={<RightOutlined />}
-                onClick={() => {
-                  if (residents.find(resident => resident.id === newHousehold?.idChuHo)) {
-                    setNewHousehold({ ...newHousehold, nhan_khaus: residents })
-                    return
-                  }
-                  setNewHousehold({
-                    ...newHousehold,
-                    idChuHo: undefined,
-                    chu_ho: {} as IResident,
-                    nhan_khaus: residents
+          <div className="flex justify-between">
+            <div className="w-2/4">
+              <Table
+                bordered
+                rowKey={record => record.id}
+                rowSelection={{
+                  type: 'checkbox',
+                  onChange: (_, selectedRows) => {
+                    setResidents([...selectedRows])
+                  },
+                  getCheckboxProps: record => ({
+                    disabled: record.id === household?.idChuHo
                   })
                 }}
+                columns={leftColumns}
+                dataSource={household?.nhan_khaus}
+                pagination={false}
               />
-            </Tooltip>
+            </div>
+            <div className="flex w-1/12 items-center justify-center">
+              <Tooltip placement="bottom" title={'Tách thành viên'} arrow={false}>
+                <Button
+                  type="link"
+                  icon={<RightOutlined />}
+                  onClick={() => {
+                    if (residents.find(resident => resident.id === newHousehold?.idChuHo)) {
+                      setNewHousehold({ ...newHousehold, nhan_khaus: residents })
+                      return
+                    }
+                    setNewHousehold({
+                      ...newHousehold,
+                      idChuHo: undefined,
+                      chu_ho: {} as IResident,
+                      nhan_khaus: residents
+                    })
+                  }}
+                />
+              </Tooltip>
+            </div>
+            <div className="w-2/4">
+              <Table
+                bordered
+                rowSelection={{
+                  type: 'radio',
+                  onChange: selectedRow => {
+                    setNewHousehold({
+                      ...newHousehold,
+                      idChuHo: selectedRow[0],
+                      chu_ho: residents.find(
+                        resident => resident.id === selectedRow[0]
+                      ) as IResident
+                    })
+                    console.log(newHousehold)
+                  },
+                  selectedRowKeys: [newHousehold?.idChuHo]
+                }}
+                rowKey={record => record.id}
+                columns={rightColumns}
+                dataSource={newHousehold.nhan_khaus ?? []}
+                pagination={false}
+              />
+            </div>
           </div>
-          <div className="w-2/4">
-            <Table
-              bordered
-              rowSelection={{
-                type: 'radio',
-                onChange: selectedRow => {
-                  setNewHousehold({
-                    ...newHousehold,
-                    idChuHo: selectedRow[0],
-                    chu_ho: residents.find(resident => resident.id === selectedRow[0]) as IResident
-                  })
-                  console.log(newHousehold)
-                },
-                selectedRowKeys: [newHousehold?.idChuHo]
-              }}
-              rowKey={record => record.id}
-              columns={columns}
-              dataSource={newHousehold.nhan_khaus ?? []}
-              pagination={false}
-            />
-          </div>
-        </div>
+        </Form>
       </div>
     </HomeLayout>
   )
