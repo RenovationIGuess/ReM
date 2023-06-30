@@ -126,8 +126,8 @@ function SplitHousehold() {
         toastId: 'split-household-successfully',
         icon: '👏'
       })
-      form.resetFields()
-      getHouseholdById(id as string)
+      // form.resetFields()
+      // getHouseholdById(id as string)
       // getHouseholdByPage()
     } catch (error) {
       console.log('Tách hộ khẩu lỗi rồi bé ơi :(', error)

@@ -241,3 +241,15 @@ declare type ITamVang = {
 }
 
 declare type TamVangs = Map<string, ITamVang>
+
+declare type ChangeLogType = {
+  idHoKhau: number
+  thongTinThayDoi: string
+  thayDoiTu: string
+  thayDoiThanh: string
+  ngayThayDoi: Date
+  nguoi_thay_doi: {
+    name: string
+    id: number
+  }
+}

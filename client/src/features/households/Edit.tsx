@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { LoadingOutlined, UserOutlined } from '@ant-design/icons'
 import { Avatar, Button, Empty, Form, Input, Select } from 'antd'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import HomeLayout from '~/components/Layout/HomeLayout'
 import SubHeader from '~/components/SubHeader'
 import { useHouseholdStore } from '~/app/householdStore'
@@ -28,6 +28,7 @@ const initialRelation = (household: IHousehold) => {
 const Edit = () => {
   const { id } = useParams()
   const [form] = Form.useForm()
+  const navigate = useNavigate()
 
   const [isLoading, setIsLoading] = useState(false)
 
@@ -49,9 +50,7 @@ const Edit = () => {
     const { maKhuVuc, diaChi, idChuHo } = values
     let obj = { maKhuVuc, diaChi, idChuHo, nhan_khaus: [] as any }
     household.nhan_khaus.forEach(resident => {
-      if (resident.id === idChuHo) {
-        return
-      }
+      if (resident.id === idChuHo) return
       obj.nhan_khaus.push({
         id: resident.id,
         quanHeVoiChuHo: values[`quanHe-${resident.id}`]
@@ -60,8 +59,10 @@ const Edit = () => {
     console.log({ ...householdData, ...obj })
     setIsLoading(true)
     try {
-      await updateHousehold({ ...householdData, ...obj })
-      toast.success('Cập nhật hộ khẩu thành công')
+      updateHousehold({ ...householdData, ...obj }).then(() =>
+        toast.success('Cập nhật hộ khẩu thành công', { toastId: 'update-household-success' })
+      )
+      // navigate(`/ho-khau/${id}`)
     } catch (error) {
       toast.error('Cập nhật hộ khẩu thất bại')
     } finally {
