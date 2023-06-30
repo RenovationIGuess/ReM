@@ -14,6 +14,7 @@ import uploadFile from '~/firebase/uploadFile'
 import { set } from 'immer/dist/internal'
 import { RcFile } from 'antd/es/upload'
 import { ToastContainer, toast } from 'react-toastify'
+import { AxiosError } from 'axios'
 
 type UploadFile = RcFile & { preview: string }
 
@@ -60,7 +61,11 @@ const EditDuocNhanThuong = () => {
                 })
                 console.log(editedChildren)
             } catch (error) {
-                toast.error((error as Error).message, {
+                const axiosError = error as AxiosError;
+                const dataError: { success: boolean, message: string } | unknown = axiosError.response?.data
+                const dataError2 = dataError as { success: boolean, message: string }
+                const messageError = dataError2.message
+                toast.error(messageError ? messageError : (error as Error).message, {
                     position: toast.POSITION.TOP_RIGHT
                 })
             } finally {

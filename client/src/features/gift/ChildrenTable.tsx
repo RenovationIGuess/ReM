@@ -10,8 +10,6 @@ import Title from 'antd/es/typography/Title'
 import { PhanThuongDetailModal } from './modals/PhanThuongDetailModal'
 import { render } from 'react-dom'
 import { ToastContainer, toast } from 'react-toastify'
-import { IDuocNhanThuong, IEvent, IPhanThuongThongKe, Page } from '~/@types'
-
 
 const ChildrenTable = (props: { eventId: string | undefined, event: IEvent }) => {
     const navigate = useNavigate()

@@ -8,7 +8,9 @@ import axiosClient from '~/app/axiosClient'
 import moment from 'moment'
 import TabListEvent from '~/components/Layout/TabListEvent'
 import CreateEventFormModal from './modals/CreateEventFormModal'
-import { Page, IEvent } from '~/@types'
+import { AxiosError } from 'axios'
+import { toast } from 'react-toastify'
+import { time } from 'console'
 
 const { Title } = Typography;
 
@@ -47,10 +49,22 @@ const EventList = () => {
                 type: values.type ? 1 : 0,
                 phan_thuongs: values.phan_thuongs
             })
-            alert("Success")
-        } catch (e) {
-            const result = (e as Error).message;
-            console.log(result)
+            setOpenCreateEvent(false)
+            toast.success(`Đã thêm sự kiện mới`, {
+                position: toast.POSITION.TOP_RIGHT,
+                autoClose: 3000
+            })
+            setTimeout(() => {
+                window.location.reload()
+            }, 3000)
+        } catch (error) {
+            const axiosError = error as AxiosError;
+            const dataError: { success: boolean, message: string } | unknown = axiosError.response?.data
+            const dataError2 = dataError as { success: boolean, message: string }
+            const messageError = dataError2.message
+            toast.error(messageError ? messageError : (error as Error).message, {
+                position: toast.POSITION.TOP_RIGHT
+            })
         }
     };
     return (

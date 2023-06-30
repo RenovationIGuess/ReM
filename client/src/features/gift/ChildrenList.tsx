@@ -12,7 +12,6 @@ import { showDeleteConfirm } from '~/components/ConfirmModal'
 import moment from 'moment'
 import { EventSubHeader } from '~/components/Layout/EventSubHeader'
 import { ToastContainer, toast } from 'react-toastify'
-import { IDuocNhanThuong, IEvent } from '~/@types'
 
 
 interface Values {
@@ -33,7 +32,7 @@ export const ChildrenList = () => {
     const handleSearch = (value: string) => {
         setSearchQuery(value);
 
-        const filteredList = event.duoc_nhan_thuongs.filter(obj =>
+        const filteredList = event.duoc_nhan_thuongs.filter((obj: IDuocNhanThuong) =>
             obj.nhan_khau.hoTen.toLowerCase().includes(value.toLowerCase())
         );
 
@@ -156,6 +155,7 @@ export const ChildrenList = () => {
                 <TabList defaultActiveKey='1' eventId={id} />
                 <div className="mt-2 h-full grow rounded-lg bg-bgPrimary px-4 py-2 shadow-md">
                     <div className="flex w-full items-center justify-between">
+                        <p className="text-2x1 font-medium">Loại sự kiện: {`${event.type}`}</p>
                         <p className="text-2x1 font-medium">{`${event.name}`} - Danh sách các bé nhận quà</p>
                         <p className="text-2x1 font-medium"> Ngày bắt đầu: {`${event.ngayBatDau}`}</p>
                         <p className="text-2x1 font-medium">Tổng số bé: {`${event.duoc_nhan_thuongs.length}`}</p>
