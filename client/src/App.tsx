@@ -25,6 +25,8 @@ import CreateDuocNhanThuong from './features/gift/CreateDuocNhanThuong'
 import { EditItemForm } from './features/gift/EditItemForm'
 import EditEventForm from './features/gift/EditEventForm'
 import CreateItemForm from './features/gift/CreateItemForm'
+import TamTruCreate from './features/temporary/TamTruCreate'
+import TamVangCreate from './features/temporary/TamVangCreate'
 
 function App() {
   return (
@@ -67,13 +69,13 @@ function App() {
               <Route path="thong-ke-ho-khau/:id" index element={<StatisticList />} />
               <Route path="phan-qua/:id" index element={<GiftList />} />
               <Route path="duoc-nhan-thuong/create/:id" index element={<CreateDuocNhanThuong />} />
-              <Route path='chinh-sua/:id' index element={<EditEventForm />} />
+              <Route path="chinh-sua/:id" index element={<EditEventForm />} />
             </Route>
 
-            <Route path='items'>
+            <Route path="items">
               <Route index element={<ItemList />} />
-              <Route path='chinh-sua/:id' index element={<EditItemForm />} />
-              <Route path='create/' index element={<CreateItemForm />} />
+              <Route path="chinh-sua/:id" index element={<EditItemForm />} />
+              <Route path="create/" index element={<CreateItemForm />} />
             </Route>
 
             <Route path="duoc-nhan-thuong">

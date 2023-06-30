@@ -14,7 +14,10 @@ class TamTruController extends Controller
     public function index(Request $request): JsonResponse
     {
         try {
-            $TamTrus = TamTru::all();
+            $limit = $request->has('limit') ? $request->input('limit') : 10;
+            $TamTrus = TamTru::with('nhanKhau')
+                ->orderBy('created_at', 'DESC')
+                ->paginate($limit);
 
             if ($TamTrus) {
                 return response()->json([

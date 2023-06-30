@@ -1,5 +1,3 @@
-import { Url } from "url"
-
 declare type ApiErrorType = {
   message: string
   isError: boolean
@@ -108,62 +106,62 @@ declare type IItem = {
   updated_at: Date
   image_url: string | undefined
   pivot: {
-    idPhanThuong: number,
-    idItem: number,
+    idPhanThuong: number
+    idItem: number
     soLuong: number
   }
 }
 
 declare type IDuocNhanThuong = {
-  id: number,
-  idSuKien: number,
-  idNhanKhau: number,
-  tenTruong: string,
-  tenLop: string,
-  thanhTichHocTap: number,
-  capHoc: number,
-  anhGiayKhen: string,
-  hasRewarded: number,
-  idPhanThuong: number,
-  created_at: Date,
-  updated_at: Date,
-  nhan_khau: IResident,
+  id: number
+  idSuKien: number
+  idNhanKhau: number
+  tenTruong: string
+  tenLop: string
+  thanhTichHocTap: number
+  capHoc: number
+  anhGiayKhen: string
+  hasRewarded: number
+  idPhanThuong: number
+  created_at: Date
+  updated_at: Date
+  nhan_khau: IResident
   phan_thuong: IPhanThuongThongKe
 }
 
 declare type IPhanThuong = {
-  id: number,
-  name: number,
-  unit_price: number,
-  totalQuantity: number,
+  id: number
+  name: number
+  unit_price: number
+  totalQuantity: number
   totalCost: number
 }
 
 declare type IThongKeSuKien = {
-  id: number,
-  maHoKhau: string,
-  idChuHo: number,
-  maKhuVuc: string,
-  diaChi: string,
-  ngayLap: Date,
-  ngayChuyenDi: null,
-  lyDoChuyen: null,
-  created_at: Date,
-  updated_at: Date,
-  duocNhanThuongs: IDuocNhanThuong[],
-  totalCost: number,
-  chuHo: IResident,
+  id: number
+  maHoKhau: string
+  idChuHo: number
+  maKhuVuc: string
+  diaChi: string
+  ngayLap: Date
+  ngayChuyenDi: null
+  lyDoChuyen: null
+  created_at: Date
+  updated_at: Date
+  duocNhanThuongs: IDuocNhanThuong[]
+  totalCost: number
+  chuHo: IResident
 }
 
 declare type IPhanThuongThongKe = {
-  id: number,
-  idSuKien: number,
-  thanhTichHocTap: number,
-  capHocType: number,
-  created_at: Date,
-  updated_at: Date,
-  cost: number,
-  count: number,
+  id: number
+  idSuKien: number
+  thanhTichHocTap: number
+  capHocType: number
+  created_at: Date
+  updated_at: Date
+  cost: number
+  count: number
   items: IItem[]
 }
 declare type Residents = Map<string, IResident>
@@ -217,3 +215,29 @@ declare type ResidentHousehold = {
   idNhanKhau?: number
   quanHeVoiChuHo: HouseholdRelationshipType
 }
+
+declare type ITamTru = {
+  id: number
+  idNhanKhau: number
+  maGiayTamTru: string
+  soDienThoaiDangKy: string
+  tuNgay: Date
+  denNgay: Date
+  lyDo: string
+  nhan_khau: IResident
+}
+
+declare type TamTrus = Map<string, ITamTru>
+
+declare type ITamVang = {
+  id: number
+  idNhanKhau: number
+  maGiayTamVang: string
+  noiTamTru: string
+  tuNgay: Date
+  denNgay: Date
+  lyDo: string
+  nhan_khau: IResident
+}
+
+declare type TamVangs = Map<string, ITamVang>
