@@ -1,11 +1,11 @@
 import { ExclamationCircleFilled, LoadingOutlined } from '@ant-design/icons'
 import { Button, Form, Input, InputNumber, Space } from 'antd'
 import { RcFile } from 'antd/es/upload'
+import { AxiosError } from 'axios'
 import React, { FC, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify'
 import { useEffectOnce } from 'usehooks-ts'
-import { IItem } from '~/@types'
 import axiosClient from '~/app/axiosClient'
 import { useEventStore } from '~/app/eventStore'
 import { showDeleteConfirm } from '~/components/ConfirmModal'
@@ -41,10 +41,18 @@ export const CreateItemForm: FC<CreateFormFormProps> = ({ }) => {
             }
             await axiosClient.post(`/items/create`, newItem)
             toast.success(`Đã thêm vật phẩm`, {
-                position: toast.POSITION.TOP_RIGHT
+                position: toast.POSITION.TOP_RIGHT,
+
             })
+            setTimeout(() => {
+                window.location.assign(`/items`)
+            }, 3000)
         } catch (error) {
-            toast.error((error as Error).message, {
+            const axiosError = error as AxiosError;
+            const dataError: { success: boolean, message: string } | unknown = axiosError.response?.data
+            const dataError2 = dataError as { success: boolean, message: string }
+            const messageError = dataError2.message
+            toast.error(messageError ? messageError : (error as Error).message, {
                 position: toast.POSITION.TOP_RIGHT
             })
         } finally {

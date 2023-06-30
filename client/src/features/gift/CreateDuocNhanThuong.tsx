@@ -15,7 +15,7 @@ import uploadFile from '~/firebase/uploadFile'
 import { set } from 'immer/dist/internal'
 import { RcFile } from 'antd/es/upload'
 import { toast, ToastContainer } from 'react-toastify'
-import { IDuocNhanThuong } from '~/@types'
+import { AxiosError, AxiosResponse } from 'axios'
 type UploadFile = RcFile & { preview: string }
 
 const CreateDuocNhanThuong = () => {
@@ -43,7 +43,7 @@ const CreateDuocNhanThuong = () => {
         try {
             let imageUrl: string | undefined = undefined
             if (image) imageUrl = await uploadFile(image)
-            await axiosClient.post(`/su-kien/${id}/duoc-nhan-thuong/create`, {
+            const response: AxiosResponse = await axiosClient.post(`/su-kien/${id}/duoc-nhan-thuong/create`, {
                 idNhanKhau: values.idNhanKhau,
                 capHoc: values.capHoc,
                 thanhTichHocTap: values.thanhTichHocTap,
@@ -56,8 +56,13 @@ const CreateDuocNhanThuong = () => {
             })
             navigate(`/su-kien/${event.id}`)
         } catch (error) {
-            console.error(error)
-            alert((error as Error).message)
+            const axiosError = error as AxiosError;
+            const dataError: { success: boolean, message: string } | unknown = axiosError.response?.data
+            const dataError2 = dataError as { success: boolean, message: string }
+            const messageError = dataError2.message
+            toast.error(messageError, {
+                position: toast.POSITION.TOP_RIGHT
+            })
         } finally {
             setLoading(false)
         }

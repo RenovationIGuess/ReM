@@ -1,11 +1,11 @@
 import { ExclamationCircleFilled, LoadingOutlined } from '@ant-design/icons'
 import { Button, Form, Input, InputNumber, Space } from 'antd'
 import { RcFile } from 'antd/es/upload'
+import { AxiosError } from 'axios'
 import React, { FC, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify'
 import { useEffectOnce } from 'usehooks-ts'
-import { IItem } from '~/@types'
 import axiosClient from '~/app/axiosClient'
 import { useEventStore } from '~/app/eventStore'
 import { showDeleteConfirm } from '~/components/ConfirmModal'
@@ -55,10 +55,18 @@ export const EditItemForm: FC<EditItemFormProps> = ({ }) => {
             }
             await axiosClient.put(`/items/${item.id}/edit`, editedItem)
             toast.success(`Thông tin vật phẩm mã ${item.id} đã được chỉnh sửa`, {
-                position: toast.POSITION.TOP_RIGHT
+                position: toast.POSITION.TOP_RIGHT,
+                autoClose: 3000
             })
+            setTimeout(() => {
+                window.location.reload()
+            }, 3000)
         } catch (error) {
-            toast.error((error as Error).message, {
+            const axiosError = error as AxiosError;
+            const dataError: { success: boolean, message: string } | unknown = axiosError.response?.data
+            const dataError2 = dataError as { success: boolean, message: string }
+            const messageError = dataError2.message
+            toast.error(messageError ? messageError : (error as Error).message, {
                 position: toast.POSITION.TOP_RIGHT
             })
         } finally {

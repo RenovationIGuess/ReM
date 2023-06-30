@@ -14,10 +14,9 @@ import uploadFile from '~/firebase/uploadFile'
 import { set } from 'immer/dist/internal'
 import { RcFile } from 'antd/es/upload'
 import { ToastContainer, toast } from 'react-toastify'
-import { AxiosResponse } from 'axios'
+import { AxiosError, AxiosResponse } from 'axios'
 import moment from 'moment'
 import Title from 'antd/es/typography/Title'
-import { IDuocNhanThuong, IEvent, IPhanThuongThongKe } from '~/@types'
 
 type UploadFile = RcFile & { preview: string }
 
@@ -57,8 +56,12 @@ const EditEventForm = () => {
                 toast.success('Cập nhật sự kiện thành công', {
                     position: toast.POSITION.TOP_RIGHT
                 })
-            } catch (err) {
-                toast.error((err as Error).message, {
+            } catch (error) {
+                const axiosError = error as AxiosError;
+                const dataError: { success: boolean, message: string } | unknown = axiosError.response?.data
+                const dataError2 = dataError as { success: boolean, message: string }
+                const messageError = dataError2.message
+                toast.error(messageError ? messageError : (error as Error).message, {
                     position: toast.POSITION.TOP_RIGHT
                 })
             } finally {
@@ -113,7 +116,7 @@ const EditEventForm = () => {
                         >
                             <Checkbox
                                 disabled
-                                checked={event?.type ? true : false}
+                                defaultChecked={event?.type ? true : false}
                             >
                                 Có liên quan đến học tập
                             </Checkbox>

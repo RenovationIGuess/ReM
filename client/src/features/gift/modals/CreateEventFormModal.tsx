@@ -6,7 +6,6 @@ import achiveType from "../enums/achieveType";
 import capHocType from "../enums/capHocType";
 import types from "../enums/types";
 import Title from "antd/es/typography/Title";
-import { IEvent } from "~/@types";
 
 interface CreateEventFormModalProps {
     open: boolean;
@@ -143,7 +142,9 @@ const CreateEventFormModal: React.FC<CreateEventFormModalProps> = ({
                                                                             name={[name, 'idItem']}
                                                                             rules={[{ required: true, message: 'Missing item name' }]}
                                                                         >
-                                                                            <Select>
+                                                                            <Select
+                                                                                style={{ width: '200px' }}
+                                                                            >
                                                                                 {itemsList.map((item) => <Select.Option value={item.id} key={item.id} id={item.id}>{item.name}</Select.Option>)}
                                                                             </Select>
                                                                         </Form.Item>
@@ -203,8 +204,10 @@ const CreateEventFormModal: React.FC<CreateEventFormModalProps> = ({
                                                                                 {...restField}
                                                                                 name={[name, 'idItem']}
                                                                                 rules={[{ required: true, message: 'Missing item name' }]}
+                                                                                style={{ width: '200px' }}
                                                                             >
-                                                                                <Select>
+                                                                                <Select
+                                                                                >
                                                                                     {itemsList.map((item) => <Select.Option value={item.id} key={item.id} id={item.id}>{item.name}</Select.Option>)}
                                                                                 </Select>
                                                                             </Form.Item>

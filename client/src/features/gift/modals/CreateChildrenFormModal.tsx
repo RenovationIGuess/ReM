@@ -2,7 +2,6 @@ import { Form, Input, InputNumber, Modal, Radio, Select } from "antd";
 import { useParams } from "react-router-dom";
 import achiveType from "../enums/achieveType";
 import capHocType from "../enums/capHocType";
-import { IDuocNhanThuong, IEvent } from "~/@types";
 
 interface CollectionCreateChidrenProps {
     open: boolean;
