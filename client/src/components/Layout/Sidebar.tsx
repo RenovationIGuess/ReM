@@ -25,9 +25,11 @@ type SideButtonProps = {
 
 const SideButton = ({ icon, activedIcon, text, href }: SideButtonProps) => {
   const navigate = useNavigate()
+  const currentPath = useLocation().pathname
   const isActive =
-    useLocation().pathname.slice(1).split('/').includes(href.slice(1)) ||
-    (useLocation().pathname === '/' && href === '/')
+    currentPath.slice(1).split('/').includes(href.slice(1)) ||
+    (currentPath === '/' && href === '/') ||
+    (currentPath === '/tam-vang/them' && href === '/tam-tru')
 
   return (
     <button

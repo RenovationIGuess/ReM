@@ -14,7 +14,10 @@ class TamVangController extends Controller
     public function index(Request $request): JsonResponse
     {
         try {
-            $TamVangs = TamVang::all();
+            $limit = $request->has('limit') ? $request->input('limit') : 10;
+            $TamVangs = TamVang::with('nhanKhau')
+                ->orderBy('created_at', 'DESC')
+                ->paginate($limit);
 
             if ($TamVangs) {
                 return response()->json([
