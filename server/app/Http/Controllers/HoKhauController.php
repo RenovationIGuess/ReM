@@ -170,7 +170,7 @@ class HoKhauController extends Controller
         }
     }
 
-    public function update($idHoKhau)
+    public function update(Request $request, $idHoKhau)
     {
         try {
             $data = request()->validate([
@@ -181,6 +181,14 @@ class HoKhauController extends Controller
 
             // Lay ra ho khau
             $hoKhau = HoKhau::find($idHoKhau);
+
+            // Cap nhat quan he voi chu ho
+            foreach ($request->nhanKhaus as $payload) {
+                if ($payload['id'] != $hoKhau->idChuHo) {
+                    $nhanKhau = NhanKhau::find($payload['id']);
+                    $nhanKhau->thanhVienHo->update(['quanHeVoiChuHo' => $payload['quanHeVoiChuHo']]);
+                }
+            }
 
             // Lay ra mang cac gia tri hien tai
             $originalData = [
@@ -287,7 +295,7 @@ class HoKhauController extends Controller
                 // Tim cac nhan khau moi
                 $nhanKhauMois = collect($request->get('nhanKhauMois'))->map(
                     function ($nhanKhauMoi) {
-                        return NhanKhau::find($nhanKhauMoi);
+                        return NhanKhau::find($nhanKhauMoi['id']);
                     }
                 );
 
@@ -299,6 +307,13 @@ class HoKhauController extends Controller
                         }
                     )
                 ) {
+                    // Mang luu quan he voi chu ho tu request
+                    // Chuyen ve dang key -> value la id -> quanHeChuHo
+                    $quanHeVoiChuHos = [];
+                    foreach ($request->nhanKhauMois as $nhanKhauMoi) {
+                        $quanHeVoiChuHos[$nhanKhauMoi['id']] = $nhanKhauMoi['quanHeVoiChuHo'];
+                    }
+
                     // Neu input chuan -> Tao ho khau moi dua tren input
                     $hoKhauMoi = HoKhau::create($data);
 
@@ -314,28 +329,24 @@ class HoKhauController extends Controller
 
                     // Gan id ho khau moi cho nhan khau duoc chon
                     $nhanKhauMois->each(
-                        function (NhanKhau $nhanKhauMoi) use ($hoKhauMoi, $changeTo) {
+                        function (NhanKhau $nhanKhauMoi) use ($hoKhauMoi, $changeTo, $quanHeVoiChuHos) {
                             $changeTo = $changeTo . $nhanKhauMoi->hoTen . ',';
-                            $nhanKhauMoi->thanhVienHo()->update(["idHoKhau" => $hoKhauMoi->id]);
+                            $nhanKhauMoi->thanhVienHo()->update([
+                                "idHoKhau" => $hoKhauMoi->id,
+                                "quanHeVoiChuHo" => $quanHeVoiChuHos[$nhanKhauMoi->id],
+                            ]);
                         }
                     );
 
                     // Tao record moi cho dinh chinh
-                    if ($request->user_id) {
-                        DinhChinh::create([
-                            'idHoKhau' => $idHoKhau,
-                            'thongTinThayDoi' => "Tách hộ khẩu",
-                            'thayDoiTu' => substr_replace($changeFrom, "", -1),
-                            'thayDoiThanh' => substr_replace($changeTo, "", -1),
-                            'ngayThayDoi' => Carbon::now()->toDateTimeString(),
-                            'idNguoiThayDoi' => $request->user_id,
-                        ]);
-                    } else {
-                        return response()->json([
-                            'success' => false,
-                            'message' => 'User Authorized!',
-                        ], 401);
-                    }
+                    DinhChinh::create([
+                        'idHoKhau' => $idHoKhau,
+                        'thongTinThayDoi' => "Tách hộ khẩu",
+                        'thayDoiTu' => substr_replace($changeFrom, "", -1),
+                        'thayDoiThanh' => substr_replace($changeTo, "", -1),
+                        'ngayThayDoi' => Carbon::now()->toDateTimeString(),
+                        'idNguoiThayDoi' => auth()->user()->id,
+                    ]);
 
                     return response()->json([
                         'data' => $hoKhauMoi,
