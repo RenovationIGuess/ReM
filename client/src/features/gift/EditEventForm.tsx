@@ -17,6 +17,7 @@ import { ToastContainer, toast } from 'react-toastify'
 import { AxiosError, AxiosResponse } from 'axios'
 import moment from 'moment'
 import Title from 'antd/es/typography/Title'
+import { useEffectOnce } from 'usehooks-ts'
 
 type UploadFile = RcFile & { preview: string }
 
@@ -37,10 +38,10 @@ const EditEventForm = () => {
         state.getItems
     ])
 
-    useEffect(() => {
+    useEffectOnce(() => {
         getEventById(id)
         getItemsList()
-    }, [])
+    })
 
     const onFinish = async (values: IEvent) => {
         if (type) {

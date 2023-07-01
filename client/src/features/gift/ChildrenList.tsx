@@ -12,6 +12,7 @@ import { showDeleteConfirm } from '~/components/ConfirmModal'
 import moment from 'moment'
 import { EventSubHeader } from '~/components/Layout/EventSubHeader'
 import { ToastContainer, toast } from 'react-toastify'
+import { useEffectOnce } from 'usehooks-ts'
 
 
 interface Values {
@@ -47,12 +48,7 @@ export const ChildrenList = () => {
         state.event,
         state.getEventById
     ])
-    const [isDone, setIsDone] = useState(event.isDone ? true : false)
-    useEffect(() => {
-        getEventById(id ? id : '1')
-        //setIsDone(event.isDone ? true : false)
-    }, [isDone])
-    console.log(event, id)
+    const [isDone, setIsDone] = useState(event.isDone)
 
     const onEditEvent = async (values: IEvent) => {
         const inputDate = new Date(values.ngayBatDau);
@@ -99,13 +95,15 @@ export const ChildrenList = () => {
     const handleIsDone = async (event: IEvent) => {
         setIsDone(!isDone);
         try {
-            await axiosClient.patch(`/su-kien/${event.id}/${event.isDone ? 'done-uncheck' : 'done-check'}`)
-            isDone ?
+            await axiosClient.patch(`/su-kien/${event.id}/${isDone ? 'done-uncheck' : 'done-check'}`)
+            !isDone ?
                 toast.success(`Sự kiện đã chuyển sang trạng thái kết thúc`, {
-                    position: toast.POSITION.TOP_RIGHT
+                    position: toast.POSITION.TOP_RIGHT,
+                    autoClose: 5000
                 }) :
                 toast.success(`Sự kiện đã chuyển lại chưa kết thúc`, {
-                    position: toast.POSITION.TOP_RIGHT
+                    position: toast.POSITION.TOP_RIGHT,
+                    autoClose: 5000
                 })
         } catch (err) {
             toast.error((err as Error).message, {
@@ -115,6 +113,19 @@ export const ChildrenList = () => {
 
         }
     }
+
+    const fetchInitChecked = async () => {
+        const response = await axiosClient.get(`/su-kien/${id}`)
+        const initialValue = response.data.isDone;
+        setIsDone(initialValue)
+    }
+    useEffectOnce(() => {
+        getEventById(id ? id : '1')
+        fetchInitChecked()
+        // handleIsDone(event)
+        console.log(event.isDone)
+    })
+    console.log(event, id, isDone)
     return (
         <HomeLayout>
             <div className="mb-2 flex min-h-full flex-col">
@@ -143,7 +154,7 @@ export const ChildrenList = () => {
                             <Button type="primary" ghost color="#40A9FF" icon={<EditOutlined />} onClick={e => navigate(`/su-kien/chinh-sua/${event.id}`)}>
                                 Chỉnh sửa
                             </Button>
-                            <Button disabled={!isDone} type="primary" ghost danger icon={<DeleteOutlined />} onClick={onDelete}>
+                            <Button disabled={isDone} type="primary" ghost danger icon={<DeleteOutlined />} onClick={onDelete}>
                                 Xóa
                             </Button>
                             <Button onClick={() => {
@@ -166,9 +177,10 @@ export const ChildrenList = () => {
                         >
                             {event.isDone ? 'Đã kết thúc' : "Cho sự kiện kết thúc"}
                         </input> */}
-                        <Checkbox checked={isDone ? false : true}
-                            onChange={() => handleIsDone(event)}>
-                            {isDone ? 'Chưa kết thúc. Cho kết thúc' : "Đã kết thúc"}
+                        <Checkbox defaultChecked={event.isDone === 1 ? true : false}
+                            checked={isDone ? true : false}
+                            onChange={(e) => handleIsDone(event)}>
+                            {isDone ? "Đã kết thúc" : 'Chưa kết thúc. Cho kết thúc'}
                         </Checkbox>
                     </div>
                     <ChildrenTable eventId={id} event={event} />

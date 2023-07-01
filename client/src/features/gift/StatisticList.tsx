@@ -7,6 +7,7 @@ import StatisticTable from './StatisticTable'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import { useEventStore } from '~/app/eventStore'
 import { EventSubHeader } from '~/components/Layout/EventSubHeader'
+import { useEffectOnce } from 'usehooks-ts'
 
 export const StatisticList = () => {
     const { id } = useParams()
@@ -17,10 +18,10 @@ export const StatisticList = () => {
         state.statistics,
         state.getStatisticById
     ])
-    useEffect(() => {
+    useEffectOnce(() => {
         getEventById(id ? id : '1')
         getStatisticById(id ? id : '1')
-    }, [])
+    })
     return (
         <HomeLayout>
             <div className="mb-2 flex min-h-full flex-col">
