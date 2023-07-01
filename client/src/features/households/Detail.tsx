@@ -95,6 +95,9 @@ const Detail = () => {
             <Button type="primary" ghost onClick={() => navigate(`/ho-khau/tach/${id}`)}>
               Tách hộ khẩu
             </Button>
+            <Button type="primary" ghost onClick={() => navigate(`/ho-khau/lich-su/${id}`)}>
+              Lịch sử sửa đổi
+            </Button>
           </Space>
         </div>
         {Object.keys(household).length === 0 ? (
