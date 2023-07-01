@@ -30,3 +30,11 @@ export const splitHousehold = async (id: string, data: any) => {
   if (!response) return
   return response
 }
+
+export const getChangeLog = async (id: string, page: Page) => {
+  const response = await axiosClient.get(
+    `/ho-khau/${id}/edit/lich-su?page=${page.page}&limit=${page.offset}`
+  )
+  if (!response) return
+  return response.data
+}
