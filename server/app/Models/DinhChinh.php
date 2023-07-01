@@ -27,6 +27,6 @@ class DinhChinh extends Model
 
     public function nguoiThayDoi()
     {
-        return $this->belongsTo(NguoiThayDoi::class, 'idNguoiThayDoi');
+        return $this->belongsTo(User::class, 'idNguoiThayDoi');
     }
 }

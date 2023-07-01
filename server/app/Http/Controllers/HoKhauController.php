@@ -8,6 +8,7 @@ use App\Models\HoKhau;
 use App\Models\NhanKhau;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -169,71 +170,63 @@ class HoKhauController extends Controller
         }
     }
 
-    public function update(Request $request, $idHoKhau)
+    public function update($idHoKhau)
     {
         try {
             $data = request()->validate([
-                'maHoKhau' => 'string',
                 'idChuHo' => 'numeric',
                 'maKhuVuc' => 'string',
                 'diaChi' => 'string',
-                'ngayLap' => 'date',
-                'ngayChuyenDi' => 'date',
-                'lyDoChuyen' => 'string',
             ]);
 
             // Lay ra ho khau
-            $hoKhau = DB::table('ho_khau')->find($idHoKhau);
+            $hoKhau = HoKhau::find($idHoKhau);
 
             // Lay ra mang cac gia tri hien tai
             $originalData = [
-                'maHoKhau' => $hoKhau->maHoKhau,
                 'idChuHo' => $hoKhau->idChuHo,
                 'maKhuVuc' => $hoKhau->maKhuVuc,
                 'diaChi' => $hoKhau->diaChi,
-                'ngayLap' => $hoKhau->ngayLap,
-                'ngayChuyenDi' => $hoKhau->ngayChuyenDi,
-                'lyDoChuyen' => $hoKhau->lyDoChuyen,
             ];
 
             // Lay ra cac gia tri da thay doi
             $changes = array_diff($data, $originalData);
 
-            // Gia tri thay doi tu
-            $originalValue = '';
-            // Gia tri thay doi thanh
-            $changeValue = '';
-            // Thong tin thay doi
-            $changedFields = '';
+            if ($changes) {
+                // Gia tri thay doi tu
+                $originalValue = '';
+                // Gia tri thay doi thanh
+                $changeValue = '';
+                // Thong tin thay doi
+                $changedFields = '';
 
-            foreach ($changes as $key => $value) {
-                $changedFields = $changedFields . $key . ',';
-                $originalValue = $originalValue . ',' . $key . ': ' . $originalData[$key];
-                $changeValue = $changeValue . ',' . $key . ': ' . $value;
-            }
-            // Luc xu li o front end chi can split(",") la duoc
+                foreach ($changes as $key => $value) {
+                    $changedFields = $changedFields . $key . ';';
+                    $originalValue = $originalValue . ';' . $originalData[$key];
+                    $changeValue = $changeValue . ';' . $value;
+                }
+                // Luc xu li o front end chi can split(",") la duoc
 
-            // Tao record moi cho dinh chinh
-            if ($request->user_id) {
+                // Tao record moi cho dinh chinh
                 DinhChinh::create([
                     'idHoKhau' => $idHoKhau,
                     'thongTinThayDoi' => substr_replace($changedFields, "", -1),
-                    'thayDoiTu' => $originalValue,
-                    'thayDoiThanh' => $changeValue,
+                    'thayDoiTu' => substr($originalValue, 1),
+                    'thayDoiThanh' => substr($changeValue, 1),
                     'ngayThayDoi' => Carbon::now()->toDateTimeString(),
-                    'idNguoiThayDoi' => $request->user_id,
+                    'idNguoiThayDoi' => auth()->user()->id,
                 ]);
-            } else {
+
+                $hoKhau->update($data);
+
                 return response()->json([
-                    'success' => false,
-                    'message' => 'User Authorized!',
-                ], 401);
+                    'data' => $hoKhau,
+                    'success' => true,
+                    'message' => 'Thay đổi thành công!',
+                ], 200);
             }
 
-            $hoKhau->update($data);
-
             return response()->json([
-                'data' => $hoKhau,
                 'success' => true,
                 'message' => 'Thay đổi thành công!',
             ], 200);

@@ -20,7 +20,7 @@ export const createHousehold = async (household: any) => {
 }
 
 export const updateHousehold = async (household: any) => {
-  const response = await axiosClient.put(`/ho-khau/${household.id}/edit`, household)
+  const response = await axiosClient.patch(`/ho-khau/${household.id}/edit`, household)
   if (!response) return
   return response.data
 }
