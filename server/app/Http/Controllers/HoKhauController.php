@@ -183,11 +183,9 @@ class HoKhauController extends Controller
             $hoKhau = HoKhau::find($idHoKhau);
 
             // Cap nhat quan he voi chu ho
-            foreach ($request->nhanKhaus as $payload) {
-                if ($payload['id'] != $hoKhau->idChuHo) {
-                    $nhanKhau = NhanKhau::find($payload['id']);
-                    $nhanKhau->thanhVienHo->update(['quanHeVoiChuHo' => $payload['quanHeVoiChuHo']]);
-                }
+            foreach ($request->nhan_khaus as $payload) {
+                $nhanKhau = NhanKhau::find($payload['id']);
+                $nhanKhau->thanhVienHo->update(['quanHeVoiChuHo' => $payload['quanHeVoiChuHo']]);
             }
 
             // Lay ra mang cac gia tri hien tai
