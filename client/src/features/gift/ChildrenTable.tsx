@@ -37,9 +37,12 @@ const ChildrenTable = (props: { eventId: string | undefined, event: IEvent }) =>
                 try {
                     await axiosClient.delete(`/duoc-nhan-thuong/${duocNhanThuongId}/delete`)
                     toast.success('Xóa bé thành công', {
-                        position: toast.POSITION.TOP_RIGHT
+                        position: toast.POSITION.TOP_RIGHT,
+                        autoClose: 3000
                     })
-                    navigate(`/su-kien/${eventId}`)
+                    setTimeout(() => {
+                        window.location.assign(`/su-kien/${eventId}`)
+                    }, 3000)
                 } catch (e) {
                     const err = e as Error
                     console.log(err.message)

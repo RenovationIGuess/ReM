@@ -79,9 +79,12 @@ export const ChildrenList = () => {
                 try {
                     await axiosClient.delete(`/su-kien/${id}/delete`)
                     toast.success('Xóa sự kiện thành công', {
-                        position: toast.POSITION.TOP_RIGHT
+                        position: toast.POSITION.TOP_RIGHT,
+                        autoClose: 3000
                     })
-                    navigate(`/su-kien/${event.id}`)
+                    setTimeout(() => {
+                        window.location.assign('/su-kien')
+                    }, 3000)
                 } catch (e) {
                     const err = e as Error
                     toast.error(err.message, {
