@@ -29,7 +29,7 @@ class SuKienController extends Controller
                 return response()->json([
                     'data' => $suKiens,
                     'success' => true,
-                    'message' => 'Get all Su Kien(s) successfully',
+                    'message' => 'Lấy danh sách tất cả sự kiện thành công',
                 ], 200);
             }
 
@@ -62,13 +62,13 @@ class SuKienController extends Controller
                 return response()->json([
                     'data' => $suKien,
                     'success' => true,
-                    'message' => 'Get informations about Su Kien successfully',
+                    'message' => 'Lấy thông tin về sự kiện thành công',
                 ], 200);
             }
 
             return response()->json([
                 'success' => false,
-                'message' => 'Su Kien not found',
+                'message' => 'Không tìm thấy sự kiện',
             ], 404);
 
         } catch (Exception $exception) {
@@ -163,7 +163,7 @@ class SuKienController extends Controller
                 if (count($phan_thuongs) != 1) {
                     return response()->json([
                         'success' => false,
-                        'message' => 'Sự kiện loại này được có 1 phần thưởng.'
+                        'message' => 'Sự kiện loại này chỉ được có 1 phần thưởng.'
                     ], 403);
                 }
 
@@ -184,7 +184,7 @@ class SuKienController extends Controller
             return response()->json([
                 'data' => $suKien,
                 'success' => true,
-                'message' => 'Created Su Kien successfully',
+                'message' => 'Tạo sự kiện thành công',
             ], 200);
         } catch (Exception $exception) {
             return response()->json([
@@ -197,8 +197,8 @@ class SuKienController extends Controller
     public function update(Request $request, $idSuKien)
     {
         $rules = [
-            'name' => 'string|required|unique:su_kien',
-            'ngayBatDau' => 'date|required|after:yesterday',
+            'name' => 'string',
+            'ngayBatDau' => 'date',
             'type' => 'numeric|required',
         ];
 
@@ -218,7 +218,7 @@ class SuKienController extends Controller
                 return response()->json(
                     [
                         'success' => false,
-                        'message' => 'Su Kien not found'
+                        'message' => 'Không tìm thấy sự kiện'
                     ],
                     404
                 );
@@ -227,7 +227,7 @@ class SuKienController extends Controller
             if ($suKien->isDone) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Cannot update this SuKien because it is over',
+                    'message' => 'Không thể chỉnh sửa vì sự kiện này đã kết thúc',
                 ], 403);
             }
 
@@ -257,7 +257,7 @@ class SuKienController extends Controller
                 if (count($phan_thuongs) != 1) {
                     return response()->json([
                         'success' => false,
-                        'message' => 'Sự kiện loại này được có 1 phần thưởng.'
+                        'message' => 'Sự kiện loại này chỉ được có 1 phần thưởng.'
                     ], 403);
                 }
                 foreach ($phan_thuongs as $phan_thuong) {
@@ -277,7 +277,7 @@ class SuKienController extends Controller
             return response()->json([
                 'data' => $suKien,
                 'success' => true,
-                'message' => 'Updated Su Kien successfully',
+                'message' => 'Cập nhật thông tin sự kiện thành công',
             ], 200);
         } catch (Exception $exception) {
             return response()->json([
@@ -295,14 +295,14 @@ class SuKienController extends Controller
             if (!$suKien) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Su Kien not found',
+                    'message' => 'Không tìm thấy sự kiện',
                 ], 404);
             }
 
             if ($suKien->isDone) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Cannot delete this Su Kien because it is over',
+                    'message' => 'Không thể xóa vì sự kiện này đã kết thúc',
                 ], 403);
             }
 
@@ -318,7 +318,7 @@ class SuKienController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Deleted Su Kien successfully',
+                'message' => 'Xóa sự kiện thành công',
             ], 200);
         } catch (Exception $exception) {
             return response()->json([
@@ -367,7 +367,7 @@ class SuKienController extends Controller
                 return response()->json([
                     'data' => $hoKhaus,
                     'success' => true,
-                    'message' => 'Thong ke ho Khau for SuKien successfully',
+                    'message' => 'Thống kê hộ khâu cho sự kiện này thành công',
                 ], 200);
             }
 
@@ -433,7 +433,7 @@ class SuKienController extends Controller
                 return response()->json([
                     'data' => $uniqueItems,
                     'success' => true,
-                    'message' => 'Get all of items for SuKien successfully',
+                    'message' => 'Thống kê phần quà cho sự kiện này thành công',
                 ], 200);
             }
 

@@ -19,7 +19,7 @@ class DuocNhanThuongController extends Controller
             return response()->json([
                 'data' => $duocNhanThuongs,
                 'success' => true,
-                'message' => 'Get all DuocNhanThuong successfully',
+                'message' => 'Lấy danh sách tất cả thông tin nhận thưởng thành công',
             ], 200);
         } catch (Exception $exception) {
             return response()->json([
@@ -37,14 +37,14 @@ class DuocNhanThuongController extends Controller
             if (!$duocNhanThuong) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Không tìm thấy danh sách nhận thưởng',
+                    'message' => 'Không tìm thấy thông tin nhận thưởng này',
                 ], 404);
             }
 
             return response()->json([
                 'data' => $duocNhanThuong,
                 'success' => true,
-                'message' => 'Get DuocNhanThuong successfully',
+                'message' => 'Lấy thông tin nhận thưởng thành công',
             ], 200);
         } catch (Exception $exception) {
             return response()->json([
@@ -94,7 +94,7 @@ class DuocNhanThuongController extends Controller
                 return response()->json([
                     'success' => false,
                     'message' => 'Đã có nhân khẩu này trong danh sách được nhận quà',
-                ], 403);
+                ], 400);
             }
 
             $duocNhanThuong = null;
@@ -108,7 +108,7 @@ class DuocNhanThuongController extends Controller
                     return response()->json([
                         'success' => false,
                         'message' => 'Không có phần thưởng nào phù hợp với thành tích học tập và cấp học đấy',
-                    ], 404);
+                    ], 400);
                 }
 
                 $duocNhanThuong = DuocNhanThuong::create([
@@ -136,7 +136,7 @@ class DuocNhanThuongController extends Controller
                 'data' => $duocNhanThuong,
                 'success' => true,
                 'message' => 'Thêm một bé vào danh sách nhận thưởng thành công',
-            ]);
+            ], 200);
 
         } catch (Exception $exception) {
             return response()->json([

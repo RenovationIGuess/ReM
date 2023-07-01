@@ -22,7 +22,7 @@ class ItemController extends Controller
                 return response()->json([
                     'data' => $items,
                     'success' => true,
-                    'message' => 'Get Items successfully',
+                    'message' => 'Lấy dữ liệu phần quà thành công',
                 ], 200);
             }
 
@@ -48,12 +48,12 @@ class ItemController extends Controller
                 return response()->json([
                     'data' => $item,
                     'success' => true,
-                    'message' => 'success',
+                    'message' => 'Lấy dữ liệu phần quà thành công',
                 ], 200);
             }
             return response()->json([
                 'success' => false,
-                'message' => 'Item not found',
+                'message' => 'Không tìm thấy phần qùa',
             ], 404);
         } catch (Exception $exception) {
             return response()->json([
@@ -90,7 +90,7 @@ class ItemController extends Controller
             return response()->json([
                 'data' => $item,
                 'success' => true,
-                'message' => 'Created Item successfully',
+                'message' => 'Tạo phần quà mới thành công',
             ], 200);
         } catch (Exception $exception) {
             return response()->json([
@@ -125,7 +125,7 @@ class ItemController extends Controller
             if (!$item) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Item not found',
+                    'message' => 'Không tìm thấy phần qùa',
                 ], 404);
             }
 
@@ -137,7 +137,7 @@ class ItemController extends Controller
             return response()->json([
                 'data' => $item,
                 'success' => true,
-                'message' => 'Update item successfully'
+                'message' => 'Cập nhật thông tin phần quà thành công'
             ], 200);
 
         } catch (Exception $exception) {
@@ -155,7 +155,7 @@ class ItemController extends Controller
             if (!$item) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Item not found',
+                    'message' => 'Không tìm thấy phần qùa',
                 ], 404);
             }
 
@@ -163,7 +163,7 @@ class ItemController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Deleted item successfully',
+                'message' => 'Xóa phần quà thành công',
             ]);
         } catch (Exception $exception) {
             return response()->json([

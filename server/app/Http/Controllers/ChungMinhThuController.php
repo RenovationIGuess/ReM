@@ -24,7 +24,7 @@ class ChungMinhThuController extends Controller
                 return response()->json([
                     'data' => $chungMinhThus,
                     'success' => true,
-                    'message' => 'success',
+                    'message' => 'Lấy danh sách tất cả chứng minh thư thành công',
                 ], 200);
             }
 
@@ -37,7 +37,7 @@ class ChungMinhThuController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -50,20 +50,20 @@ class ChungMinhThuController extends Controller
                 return response()->json([
                     'data' => $chungMinhThu,
                     'success' => true,
-                    'message' => 'success',
+                    'message' => 'Lấy dữ liệu chứng minh thư thành công',
                 ], 200);
             }
 
             return response()->json([
                 'sucess' => false,
-                'message' => 'Nhan Khau not found',
+                'message' => 'Không tìm thấy nhân khẩu',
             ], 404);
 
         } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -99,13 +99,13 @@ class ChungMinhThuController extends Controller
             return response()->json([
                 'data' => $ChungMinhThu,
                 'success' => true,
-                'message' => 'Created Chung Minh Thu successfully',
+                'message' => 'Thêm chứng minh thư cho nhân khẩu thành công',
             ], 200);
         } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -136,7 +136,7 @@ class ChungMinhThuController extends Controller
             if (!$ChungMinhThu) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Nhan Khau does not have Chung Minh Thu',
+                    'message' => 'Nhân Khẩu này chưa có chứng minh thư',
                 ], 404);
             }
             $ChungMinhThu->soCMT = $request->soCMT;
@@ -147,13 +147,13 @@ class ChungMinhThuController extends Controller
             return response()->json([
                 'data' => $ChungMinhThu,
                 'success' => true,
-                'message' => 'Updated Chung Minh Thu successfully',
+                'message' => 'Cập nhật chứng minh thư thành công',
             ], 200);
         } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
-            ]);
+            ], 500);
         }
     }
 
@@ -164,7 +164,7 @@ class ChungMinhThuController extends Controller
             if (!$chungMinhThu) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Chung Minh Thu not found',
+                    'message' => 'Không tìm thấy chứng minh thư',
                 ], 404);
             }
 
@@ -172,13 +172,13 @@ class ChungMinhThuController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Deleted Chung Minh Thu successfully',
+                'message' => 'Xóa chứng minh thư thành công',
             ], 200);
         } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
-            ]);
+            ], 500);
         }
     }
 }
