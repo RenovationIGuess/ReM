@@ -12,7 +12,7 @@ import dayjs from 'dayjs'
 import { RcFile } from 'antd/es/upload'
 import uploadFile from '~/firebase/uploadFile'
 import { useResidentsStore } from './residentsStore'
-import { householdRelationship } from '~/app/config'
+import { academicLevel, householdRelationship } from '~/app/config'
 
 type UploadFile = RcFile & { preview: string }
 
@@ -280,20 +280,10 @@ const Create = () => {
               disabled={isMoiSinh}
               placeholder="Trình độ học vấn"
               optionFilterProp="children"
-              options={[
-                {
-                  value: 'Cấp 3',
-                  label: 'Cấp 3'
-                },
-                {
-                  value: 'Đai học',
-                  label: 'Đại học'
-                },
-                {
-                  value: 'Cao học',
-                  label: 'Cao học'
-                }
-              ]}
+              options={Object.values(academicLevel).map(each => ({
+                value: each,
+                label: each
+              }))}
             />
           </Form.Item>
 

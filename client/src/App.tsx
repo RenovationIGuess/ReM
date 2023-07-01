@@ -27,6 +27,7 @@ import EditEventForm from './features/gift/EditEventForm'
 import CreateItemForm from './features/gift/CreateItemForm'
 import TamTruCreate from './features/temporary/TamTruCreate'
 import TamVangCreate from './features/temporary/TamVangCreate'
+import Overview from './features/statistical/Overview'
 
 function App() {
   return (
@@ -42,7 +43,7 @@ function App() {
               <Route path=":id" element={<ResidentDetail />} />
               <Route path="chinh-sua/:id" element={<ResidentEdit />} />
             </Route>
-            <Route index element={<Welcome />} />
+            <Route index element={<Overview />} />
 
             <Route path="ho-khau">
               <Route index element={<HouseHoldsList />} />

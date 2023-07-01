@@ -22,3 +22,15 @@ export const householdRelationship: {
   Em: 'Em',
   'Phức tạp': 'Phức tạp'
 }
+
+export const academicLevel: {
+  [key in string]: string
+} = {
+  'Tiểu học': 'Tiểu học',
+  'Trung học cơ sở': 'Trung học cơ sở',
+  'Trung học phổ thông': 'Trung học phổ thông',
+  'Trung cấp': 'Trung cấp',
+  'Cao đẳng': 'Cao đẳng',
+  'Đại học': 'Đại học',
+  'Không xác định': 'Không xác định'
+}

@@ -15,6 +15,7 @@ import { Avatar, Divider } from 'antd'
 import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import Logo from '~/assets/logo.png'
+import ButtonLogout from '../ButtonLogout'
 
 type SideButtonProps = {
   icon: React.ReactNode
@@ -92,7 +93,7 @@ const Sidebar = () => {
       <div className="w-full">
         <Divider className="m-0" />
         <div className="flex w-full items-center justify-between py-3">
-          <div className="flex grow items-center justify-start gap-4">
+          {/* <div className="flex grow items-center justify-start gap-4">
             <Avatar
               className="flex items-center justify-center"
               size={32}
@@ -100,7 +101,9 @@ const Sidebar = () => {
             />
             <p className="font-medium">Admin</p>
           </div>
-          <CaretUpOutlined />
+          <CaretUpOutlined /> */}
+          Đăng xuất
+          <ButtonLogout />
         </div>
       </div>
     </div>
