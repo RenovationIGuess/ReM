@@ -76,8 +76,8 @@ const ChildrenTable = (props: { eventId: string | undefined, event: IEvent }) =>
     }
     useEffect(() => {
         setData(event.duoc_nhan_thuongs)
-    }, [event])
-    console.log(data)
+    }, [event.duoc_nhan_thuongs])
+    // console.log(data)
     const columns: ColumnsType<IDuocNhanThuong> = [
         {
             title: 'Mã nhận thưởng',
