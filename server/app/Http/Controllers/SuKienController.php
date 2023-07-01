@@ -7,6 +7,7 @@ use App\Models\Item;
 use App\Models\HoKhau;
 use App\Models\SuKien;
 use App\Models\PhanThuong;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Http\Request;
 use App\Enums\ThanhTichHocTap;
 use App\Models\DuocNhanThuong;
@@ -240,14 +241,14 @@ class SuKienController extends Controller
                 foreach ($phan_thuongs as $phan_thuong) {
                     $phanThuong = PhanThuong::find($phan_thuong['id']);
                     if ($phanThuong && $phanThuong->idSuKien == $idSuKien) {
-                        $phanThuong->thanhTichHocTap = $phan_thuong['ThanhTichHocTap'];
+                        $phanThuong->thanhTichHocTap = $phan_thuong['thanhTichHocTap'];
                         $phanThuong->capHoc = $phan_thuong['capHoc'];
                         $phanThuong->type = 1;
 
                         $phanThuong->items()->detach();
 
                         foreach ($phan_thuong['items'] as $item) {
-                            $phanThuong->items()->attach($item['idItem'], ['soLuong' => $item['soLuong']]);
+                            $phanThuong->items()->attach($item['pivot']['idItem'], ['soLuong' => $item['pivot']['soLuong']]);
                         }
                         $phanThuong->save();
                     }
@@ -266,7 +267,7 @@ class SuKienController extends Controller
                         $phanThuong->items()->detach();
 
                         foreach ($phan_thuong['items'] as $item) {
-                            $phanThuong->items()->attach($item['idItem'], ['soLuong' => $item['soLuong']]);
+                            $phanThuong->items()->attach($item['pivot']['idItem'], ['soLuong' => $item['pivot']['soLuong']]);
                         }
                     }
                 }
@@ -450,7 +451,8 @@ class SuKienController extends Controller
         }
     }
 
-    public function checkIsDone($idSuKien) {
+    public function checkIsDone($idSuKien)
+    {
         try {
             $suKien = SuKien::find($idSuKien);
 
@@ -477,7 +479,8 @@ class SuKienController extends Controller
         }
     }
 
-    public function uncheckIsDone($idSuKien) {
+    public function uncheckIsDone($idSuKien)
+    {
         try {
             $suKien = SuKien::find($idSuKien);
 

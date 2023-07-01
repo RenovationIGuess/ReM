@@ -44,32 +44,30 @@ const EditEventForm = () => {
     })
 
     const onFinish = async (values: IEvent) => {
-        if (type) {
-            setLoading(true)
-            const inputDate = new Date(values.ngayBatDau);
-            const formattedDate = moment(inputDate).format('YYYY-MM-DD');
-            try {
-                const updatedEvent = {
-                    ...values,
-                    ngayBatDau: formattedDate
-                }
-                await axiosClient.put(`/su-kien/${id}/edit`, updatedEvent)
-                toast.success('Cập nhật sự kiện thành công', {
-                    position: toast.POSITION.TOP_RIGHT
-                })
-            } catch (error) {
-                const axiosError = error as AxiosError;
-                const dataError: { success: boolean, message: string } | unknown = axiosError.response?.data
-                const dataError2 = dataError as { success: boolean, message: string }
-                const messageError = dataError2.message
-                toast.error(messageError ? messageError : (error as Error).message, {
-                    position: toast.POSITION.TOP_RIGHT
-                })
-            } finally {
-                setLoading(false)
+
+        setLoading(true)
+        const inputDate = new Date(values.ngayBatDau);
+        const formattedDate = moment(inputDate).format('YYYY-MM-DD');
+        try {
+            const updatedEvent = {
+                ...values,
+                type: event.type,
+                ngayBatDau: formattedDate
             }
-        } else {
-            alert("Đây là sự kiện không liên quan đến học tập nên không được chỉnh sửa!")
+            await axiosClient.put(`/su-kien/${id}/edit`, updatedEvent)
+            toast.success('Cập nhật sự kiện thành công', {
+                position: toast.POSITION.TOP_RIGHT
+            })
+        } catch (error) {
+            const axiosError = error as AxiosError;
+            const dataError: { success: boolean, message: string } | unknown = axiosError.response?.data
+            const dataError2 = dataError as { success: boolean, message: string }
+            const messageError = dataError2.message
+            toast.error(messageError ? messageError : (error as Error).message, {
+                position: toast.POSITION.TOP_RIGHT
+            })
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -82,6 +80,7 @@ const EditEventForm = () => {
                     layout="vertical"
                     name="form_in_modal"
                     title="Chỉnh sửa sự kiện"
+                    onFinish={onFinish}
                     initialValues={{ modifier: 'public', phan_thuongs: event.phan_thuongs }}
                     className="grid auto-rows-max grid-cols-8"
                 >
@@ -104,7 +103,6 @@ const EditEventForm = () => {
                             rules={[{ required: true, message: 'Hãy chọn ngày bắt đầu của sự kiện', type: 'date' }]}
                         >
                             <DatePicker
-                                picker="date"
                                 onChange={(_, dateString) => setNgayBatDau(new Date(dateString))}
                             />
                         </Form.Item>
@@ -137,6 +135,7 @@ const EditEventForm = () => {
                                                         height: '3px',
                                                     }} />
                                                     <Form.Item key={key}>
+                                                        <Form.Item hidden name={[name, "id"]}><Input /></Form.Item>
                                                         <Form.Item
                                                             {...restField}
                                                             label="Thành tích học tập"
@@ -179,7 +178,7 @@ const EditEventForm = () => {
                                                                         <Space key={key} align="start" className='mb-3'>
                                                                             <Form.Item
                                                                                 {...restField}
-                                                                                name={[name, 'id']}
+                                                                                name={[name, 'pivot', 'idItem']}
                                                                                 rules={[{ required: true, message: 'Missing item name' }]}
                                                                             >
                                                                                 <Select style={{ width: '200px' }}>
@@ -231,13 +230,16 @@ const EditEventForm = () => {
 
                         ) : (
                             <>
-                                {/* <Form.List name="phan_thuongs">
+                                <Form.List name="phan_thuongs">
                                     {(fields, { add, remove }) => (
+
                                         <>
+
                                             <Title level={5}>Thêm các vật phẩm:</Title>
                                             {fields.map(({ key, name, ...restField }) => (
                                                 <>
                                                     <Form.Item key={key}>
+                                                        <Form.Item hidden name={[name, "id"]}><Input /></Form.Item>
                                                         <Form.List name={[name, 'items']}>
                                                             {(items, { add, remove }) => {
                                                                 return (
@@ -247,7 +249,7 @@ const EditEventForm = () => {
                                                                             <Space key={key} align="start" className='me-3'>
                                                                                 <Form.Item
                                                                                     {...restField}
-                                                                                    name={[name, 'id']}
+                                                                                    name={[name, 'pivot', 'idItem']}
                                                                                     rules={[{ required: true, message: 'Missing item name' }]}
                                                                                 >
                                                                                     <Select style={{ width: '200px' }}>
@@ -289,7 +291,7 @@ const EditEventForm = () => {
                                             </Form.Item>
                                         </>
                                     )}
-                                </Form.List> */}
+                                </Form.List>
                             </>
                         )}
                         <Form.Item className="col-span-8 col-start-6 ms-32">
