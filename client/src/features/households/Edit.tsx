@@ -49,6 +49,9 @@ const Edit = () => {
     const { maKhuVuc, diaChi, idChuHo } = values
     let obj = { maKhuVuc, diaChi, idChuHo, nhan_khaus: [] as any }
     household.nhan_khaus.forEach(resident => {
+      if (resident.id === idChuHo) {
+        return
+      }
       obj.nhan_khaus.push({
         id: resident.id,
         quanHeVoiChuHo: values[`quanHe-${resident.id}`]
