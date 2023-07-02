@@ -47,6 +47,7 @@ const Edit = () => {
 
   const onFinish = async (values: any) => {
     // await updateHousehold({ ...householdData, ...values })
+    setIsLoading(true)
     const { maKhuVuc, diaChi, idChuHo } = values
     let obj = { maKhuVuc, diaChi, idChuHo, nhan_khaus: [] as any }
     household.nhan_khaus.forEach(resident => {
@@ -57,17 +58,13 @@ const Edit = () => {
       })
     })
     console.log({ ...householdData, ...obj })
-    setIsLoading(true)
-    try {
-      updateHousehold({ ...householdData, ...obj }).then(() =>
+    updateHousehold({ ...householdData, ...obj })
+      .then(() => {
         toast.success('Cập nhật hộ khẩu thành công', { toastId: 'update-household-success' })
-      )
-      // navigate(`/ho-khau/${id}`)
-    } catch (error) {
-      toast.error('Cập nhật hộ khẩu thất bại')
-    } finally {
-      setIsLoading(false)
-    }
+      })
+      .catch(() => toast.error('Cập nhật hộ khẩu thất bại'))
+      .finally(() => setIsLoading(false))
+    navigate(`/ho-khau/${id}`)
   }
 
   return (

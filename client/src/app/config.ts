@@ -26,11 +26,10 @@ export const householdRelationship: {
 export const academicLevel: {
   [key in string]: string
 } = {
+  'Mầm non': 'Mầm non',
   'Tiểu học': 'Tiểu học',
   'Trung học cơ sở': 'Trung học cơ sở',
   'Trung học phổ thông': 'Trung học phổ thông',
-  'Trung cấp': 'Trung cấp',
-  'Cao đẳng': 'Cao đẳng',
-  'Đại học': 'Đại học',
-  'Không xác định': 'Không xác định'
+  'Lao động': 'Lao Động',
+  'Nghỉ hưu': 'Nghỉ hưu'
 }

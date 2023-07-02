@@ -39,13 +39,6 @@ body {
   color: white;
 }
 
-.ant-pagination-item-link,
-.ant-btn {
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-}
-
 .ant-modal-footer {
   display: flex;
   justify-content: flex-end;

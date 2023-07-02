@@ -7,13 +7,20 @@ import { useHouseholdStore } from '~/app/householdStore'
 const List = () => {
   const navigate = useNavigate()
 
-  const householdsTotal = useHouseholdStore(state => state.householdsTotal)
+  const [householdsTotal, searchHousehold] = useHouseholdStore(state => [
+    state.householdsTotal,
+    state.searchHousehold
+  ])
 
   return (
     <HomeLayout>
       <div className="h-max rounded bg-bgPrimary px-4 py-2 shadow-sm">
         <div className="mb-2 flex items-center justify-between">
-          <Input.Search className="w-[25vw]" placeholder="Tìm kiếm gì đó ..." />
+          <Input.Search
+            className="w-[25vw]"
+            placeholder="Tìm kiếm gì đó ..."
+            onChange={event => searchHousehold(event.target.value)}
+          />
           <Button type="primary" ghost onClick={() => navigate('/ho-khau/them')}>
             Thêm hộ khẩu mới
           </Button>

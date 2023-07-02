@@ -185,7 +185,7 @@ class HoKhauController extends Controller
             // Cap nhat quan he voi chu ho
             foreach ($request->nhan_khaus as $payload) {
                 $nhanKhau = NhanKhau::find($payload['id']);
-                $nhanKhau->thanhVienHo->update(['quanHeVoiChuHo' => $payload['quanHeVoiChuHo']]);
+                $nhanKhau->thanhVienHo()->update(['quanHeVoiChuHo' => $payload['quanHeVoiChuHo']]);
             }
 
             // Lay ra mang cac gia tri hien tai
@@ -406,7 +406,7 @@ class HoKhauController extends Controller
 
         $hoKhau = HoKhau::whereHas('isChuHo', function ($query) use ($tenChuHo) {
             $query->where('hoTen', 'like', '%' . $tenChuHo . '%');
-        })->get();
+        })->with("nhanKhaus")->get();
 
         if ($hoKhau) {
             return response()->json([

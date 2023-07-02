@@ -73,7 +73,7 @@ function ChangeLog() {
     <HomeLayout>
       <div className="w-full rounded-lg bg-bgPrimary px-4 py-2 shadow-md">
         <SubHeader title="Lịch sử sửa đổi" type="create" />
-        {Object.keys(household).length === 0 || Object.keys(changeLog).length === 0 ? (
+        {Object.keys(household).length === 0 ? (
           <div className="flex w-full items-center justify-center">
             <LoadingOutlined className="text-4xl text-primary" />
           </div>

@@ -72,7 +72,7 @@ const HouseholdsTable = () => {
   return (
     <Table
       rowKey={record => record.id}
-      dataSource={households}
+      dataSource={households ?? []}
       columns={columns}
       scroll={{ y: 450 }}
       pagination={{
