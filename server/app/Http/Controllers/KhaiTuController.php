@@ -14,22 +14,44 @@ class KhaiTuController extends Controller
     public function index(Request $request): JsonResponse
     {
         try {
-            $TamTrus = KhaiTu::with('nguoiChet', 'nguoiKhaiTu')
-                ->where('maGiayTamTru', 'like', $request->maGiayTamTru . '%')
-                ->orderBy('id', 'ASC');
+            $khaiTus = KhaiTu::with('nguoiKhaiTu', 'nguoiChet')
+                ->orderBy('id', 'ASC')
+                ->get();
 
-            if ($TamTrus) {
+            return response()->json([
+                'data' => $khaiTus,
+                'success' => true,
+                'message' => 'success',
+            ], 200);
+
+        } catch (Exception $exception) {
+            return response()->json([
+                'success' => false,
+                'message' => $exception->getMessage(),
+            ]);
+        }
+    }
+
+    public function show($idKhaitu): JsonResponse
+    {
+        try {
+            $khaiTu = KhaiTu::find($idKhaitu);
+            
+            if (!$khaiTu) {
                 return response()->json([
-                    'data' => $TamTrus,
-                    'success' => true,
-                    'message' => 'success',
+                    'success' => false,
+                    'message' => 'Không tìm thấy thông tin khai tử',
                 ], 200);
             }
 
+            $khaiTu->nguoiChet;
+            $khaiTu->nguoiKhaiTu;
+
             return response()->json([
-                'success' => false,
-                'message' => 'No data',
-            ], 404);
+                'data' => $khaiTu,
+                'success' => true,
+                'message' => 'success',
+            ], 200);
 
         } catch (Exception $exception) {
             return response()->json([

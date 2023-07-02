@@ -71,6 +71,7 @@ Route::group(['prefix' => 'nhan-khau'], function ($router) {
 
 Route::group(['prefix' => 'khai-tu'], function ($router) {
     Route::get('/', [KhaiTuController::class, 'index']);
+    Route::get('/{idKhaiTu}', [KhaiTuController::class, 'show']);
     Route::delete('/{idKhaiTu}/delete', [KhaiTuController::class, 'destroy']);
 });
 

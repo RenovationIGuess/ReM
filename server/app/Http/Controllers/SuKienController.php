@@ -23,7 +23,7 @@ class SuKienController extends Controller
             $limit = $request->has('limit') ? $request->input('limit') : 10;
             $suKiens = SuKien::with('phanThuongs')
                 ->where('name', 'like', '%' . $request->name . '%')
-                ->orderBy('id', 'ASC')
+                ->orderBy('created_at', 'DESC')
                 ->paginate($limit);
 
             if ($suKiens) {
