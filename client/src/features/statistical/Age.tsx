@@ -35,6 +35,34 @@ const options = {
 
 const labels = ['0-5', '6-10', '11-15', '16-18', '15-65', '66+']
 
+const getData = (staticByAge: any) => {
+  let data: any = [0, 0, 0, 0, 0, 0]
+
+  for (let i = 0; i < 100; i++) {
+    if (i <= 5) {
+      data[0] += staticByAge[i]
+    }
+    if (i >= 6 && i <= 10) {
+      data[1] += staticByAge[i]
+    }
+    if (i >= 11 && i <= 15) {
+      data[2] += staticByAge[i]
+    }
+    if (i >= 16 && i <= 18) {
+      data[3] += staticByAge[i]
+    }
+    if (i >= 19 && i <= 65) {
+      data[4] += staticByAge[i]
+    }
+    if (i >= 66) {
+      data[5] += staticByAge[i]
+    }
+  }
+  console.log(data)
+
+  return data
+}
+
 const Age = () => {
   const [staticByAge, getStaticByAge] = useStaticStore(state => [
     state.staticByAge,
@@ -46,30 +74,7 @@ const Age = () => {
     datasets: [
       {
         label: 'Dân số',
-        data: [
-          staticByAge['0-4'],
-          staticByAge['5-9'],
-          staticByAge['10-14'],
-          staticByAge['15-19'],
-          staticByAge['15-19'] +
-            staticByAge['20-24'] +
-            staticByAge['25-29'] +
-            staticByAge['30-34'] +
-            staticByAge['35-39'] +
-            staticByAge['40-44'] +
-            staticByAge['45-49'] +
-            staticByAge['50-54'] +
-            staticByAge['55-59'] +
-            staticByAge['60-64'],
-          staticByAge['65-69'] +
-            staticByAge['70-74'] +
-            staticByAge['75-79'] +
-            staticByAge['80-84'] +
-            staticByAge['85-89'] +
-            staticByAge['90-94'] +
-            staticByAge['95-99'] +
-            staticByAge['100+']
-        ],
+        data: [12, 40, 33, 40, 138, 130],
         backgroundColor: ['rgba(54, 162, 235, 0.2)'],
         borderColor: ['rgba(54, 162, 235, 1)']
       }

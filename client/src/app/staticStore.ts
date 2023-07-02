@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { staticByAge, staticByGender } from '~/lib/static'
 
 interface IStaticStore {
-  staticByAge: StaticByAgeType
+  staticByAge: any
   staticByGender: StaticByGenderType
   staticByTempResident: StaticByTempResidentType
   getStaticByAge: () => void
@@ -11,7 +11,7 @@ interface IStaticStore {
 }
 
 export const useStaticStore = create<IStaticStore>((set, get) => ({
-  staticByAge: {} as StaticByAgeType,
+  staticByAge: {},
   staticByGender: {} as StaticByGenderType,
   staticByTempResident: {} as StaticByTempResidentType,
   getStaticByAge: async () => {
@@ -20,7 +20,7 @@ export const useStaticStore = create<IStaticStore>((set, get) => ({
   },
   getStaticByGender: async () => {
     const data = await staticByGender()
-    set({ staticByGender: { namGioi: data.namGioi.length, nuGioi: data.nuGioi.length } })
+    set({ staticByGender: { namGioi: data.namGioi, nuGioi: data.nuGioi } })
   },
   getStaticByTempResident: async () => {}
 }))

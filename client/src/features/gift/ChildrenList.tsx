@@ -92,30 +92,29 @@ export const ChildrenList = () => {
   }
 
   const handleIsDone = async (event: IEvent) => {
-    setIsDone(!isDone);
+    setIsDone(!isDone)
     try {
       await axiosClient.patch(`/su-kien/${event.id}/${isDone ? 'done-uncheck' : 'done-check'}`)
-      !isDone ?
-        toast.success(`Sự kiện đã chuyển sang trạng thái kết thúc`, {
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 5000
-        }) :
-        toast.success(`Sự kiện đã chuyển lại chưa kết thúc`, {
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 5000
-        })
+      !isDone
+        ? toast.success(`Sự kiện đã chuyển sang trạng thái kết thúc`, {
+            position: toast.POSITION.TOP_RIGHT,
+            autoClose: 5000
+          })
+        : toast.success(`Sự kiện đã chuyển lại chưa kết thúc`, {
+            position: toast.POSITION.TOP_RIGHT,
+            autoClose: 5000
+          })
     } catch (err) {
       toast.error((err as Error).message, {
         position: toast.POSITION.TOP_RIGHT
       })
     } finally {
-
     }
   }
 
   const fetchInitChecked = async () => {
     const response = await axiosClient.get(`/su-kien/${id}`)
-    const initialValue = response.data.isDone;
+    const initialValue = response.data.isDone
     setIsDone(initialValue)
   }
   useEffectOnce(() => {
@@ -130,11 +129,10 @@ export const ChildrenList = () => {
       <div className="mb-2 flex min-h-full flex-col">
         <div className="flex items-center justify-between">
           <div className="flex items-center justify-between">
-            <ArrowLeftOutlined className='me-4 mb-2' onClick={() => navigate(-1)} />
+            <ArrowLeftOutlined className="mb-2 me-4" onClick={() => navigate(-1)} />
             <Select
               mode="multiple"
               style={{ width: '500px' }}
-              value={searchQuery}
               placeholder="Tìm kiếm bé"
               onChange={handleSelectChange}
               onSearch={handleSearch}
@@ -150,25 +148,44 @@ export const ChildrenList = () => {
           </div>
           <span>
             <Space>
-              <Button type="primary" ghost color="#40A9FF" icon={<EditOutlined />} onClick={e => navigate(`/su-kien/chinh-sua/${event.id}`)}>
+              <Button
+                type="primary"
+                ghost
+                color="#40A9FF"
+                icon={<EditOutlined />}
+                onClick={e => navigate(`/su-kien/chinh-sua/${event.id}`)}
+              >
                 Chỉnh sửa
               </Button>
-              <Button disabled={isDone} type="primary" ghost danger icon={<DeleteOutlined />} onClick={onDelete}>
+              <Button
+                disabled={isDone}
+                type="primary"
+                ghost
+                danger
+                icon={<DeleteOutlined />}
+                onClick={onDelete}
+              >
                 Xóa
               </Button>
-              <Button onClick={() => {
-                navigate(`/su-kien/duoc-nhan-thuong/create/${event.id}`)
-              }}>Thêm bé mới</Button>
+              <Button
+                onClick={() => {
+                  navigate(`/su-kien/duoc-nhan-thuong/create/${event.id}`)
+                }}
+              >
+                Thêm bé mới
+              </Button>
             </Space>
           </span>
         </div>
-        <TabList defaultActiveKey='1' eventId={id} />
+        <TabList defaultActiveKey="1" eventId={id} />
         <div className="mt-2 h-full grow rounded-lg bg-bgPrimary px-4 py-2 shadow-md">
           <div className="flex w-full items-center justify-between">
             <p className="text-2x1 font-medium">Loại sự kiện: {`${event.type}`}</p>
             <p className="text-2x1 font-medium">{`${event.name}`} - Danh sách các bé nhận quà</p>
             <p className="text-2x1 font-medium"> Ngày bắt đầu: {`${event.ngayBatDau}`}</p>
-            <p className="text-2x1 font-medium">Tổng số bé: {`${event.duoc_nhan_thuongs.length}`}</p>
+            <p className="text-2x1 font-medium">
+              Tổng số bé: {`${event.duoc_nhan_thuongs.length}`}
+            </p>
             {/* <input
                             type="checkbox"
                             checked={event.isDone ? true : false}

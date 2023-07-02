@@ -12,12 +12,7 @@ import { useEffectOnce } from 'usehooks-ts'
 const ItemList = () => {
   const [page, setPage] = useState<Page>({ page: 1, offset: 8 })
   const { data: giftsData } = useGetItemsByPageQuery(page)
-  const [items, getItems] = useEventStore(state => [state.items, state.getItems])
   const navigate = useNavigate()
-
-  useEffect(() => {
-    getItems(page)
-  }, [page])
 
   return (
     <HomeLayout>
@@ -30,7 +25,7 @@ const ItemList = () => {
         </div>
         <TabListEvent defaultActiveKey="2" />
         <div className="grid grid-cols-4 gap-4">
-          {items?.map(item => (
+          {giftsData?.data.data?.map(item => (
             <Item key={item.id} item={item} />
           ))}
         </div>
