@@ -22,7 +22,6 @@ const FieldChangeMap: Map<string, string> = new Map([
 
 function ChangeLog() {
   const { id } = useParams()
-  const navigate = useNavigate()
 
   const [household, changeLog, total, getHouseholdById, getChangeLog] = useHouseholdStore(state => [
     state.household,
@@ -113,19 +112,9 @@ function ChangeLog() {
                     let changeLog: ChangeType[] = obj.thongTinThayDoi.map(
                       (change: string, index: number) => {
                         return {
-                          truongThayDoi: (FieldChangeMap.get(change) as string) ?? 'Tách hộ khẩu',
-                          thayDoiTu:
-                            change === 'idChuHo'
-                              ? household.nhan_khaus.find(
-                                  resident => resident.id === parseInt(obj.thayDoiTu[index])
-                                )?.hoTen
-                              : obj.thayDoiTu[index],
-                          thayDoiThanh:
-                            change === 'idChuHo'
-                              ? household.nhan_khaus.find(
-                                  resident => resident.id === parseInt(obj.thayDoiThanh[index])
-                                )?.hoTen
-                              : obj.thayDoiThanh[index]
+                          truongThayDoi: FieldChangeMap.get(change) ?? 'Tách hộ khẩu',
+                          thayDoiTu: obj.thayDoiTu[index],
+                          thayDoiThanh: obj.thayDoiThanh[index]
                         }
                       }
                     )

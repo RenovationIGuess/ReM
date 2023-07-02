@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import HomeLayout from '~/components/Layout/HomeLayout'
 import { Pagination, Input, Button } from 'antd'
 import { useNavigate } from 'react-router-dom'
@@ -10,14 +10,14 @@ import { useGetItemsByPageQuery } from './api/items.slice'
 import { useEffectOnce } from 'usehooks-ts'
 
 const ItemList = () => {
-  const [page, setPage] = useState<Page>({ page: 1, offset: 10 })
+  const [page, setPage] = useState<Page>({ page: 1, offset: 8 })
   const { data: giftsData } = useGetItemsByPageQuery(page)
   const [items, getItems] = useEventStore(state => [state.items, state.getItems])
   const navigate = useNavigate()
 
-  useEffectOnce(() => {
-    getItems()
-  })
+  useEffect(() => {
+    getItems(page)
+  }, [page])
 
   return (
     <HomeLayout>

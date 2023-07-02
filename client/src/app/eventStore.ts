@@ -20,7 +20,7 @@ interface IEventStore {
   getEventByPage: (page: Page) => void
   getEventById: (id: string | undefined) => void
   getGiftsEventByEventId: (id: string | undefined) => void
-  getItems: () => void
+  getItems: (page: Page) => void
   getItemById: (id: string | undefined) => void
   getStatisticById: (id: string | undefined) => void
   getChildrenById: (id: string | undefined) => void
@@ -106,8 +106,8 @@ export const useEventStore = create<IEventStore>(set => ({
     const data = await getGiftsEventByEventId(id)
     set({ gifts: data })
   },
-  getItems: async () => {
-    const data = await getItems()
+  getItems: async (page: Page) => {
+    const data = await getItems(page)
     set({ items: data })
   },
   getStatisticById: async (id: string | undefined) => {
