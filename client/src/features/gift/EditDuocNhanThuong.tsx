@@ -40,37 +40,33 @@ const EditDuocNhanThuong = () => {
   }, [])
   const type = event.type
   const onFinish = async (values: IDuocNhanThuong) => {
-    if (type) {
-      setLoading(true)
-      try {
-        let imageUrl: string | undefined = undefined
-        if (image) imageUrl = await uploadFile(image)
-        const { tenTruong, tenLop, thanhTichHocTap, capHoc, anhGiayKhen } = values
-        const editedChildren = {
-          ...children,
-          tenTruong,
-          tenLop,
-          thanhTichHocTap,
-          capHoc,
-          anhGiayKhen: imageUrl
-        }
-        await axiosClient.put(`/duoc-nhan-thuong/${children.id}/edit`, editedChildren)
-        toast.success(`Thông tin mã được nhận thưởng ${children.id} đã được chỉnh sửa`, {
-          position: toast.POSITION.TOP_RIGHT
-        })
-      } catch (error) {
-        const axiosError = error as AxiosError
-        const dataError: { success: boolean; message: string } | unknown = axiosError.response?.data
-        const dataError2 = dataError as { success: boolean; message: string }
-        const messageError = dataError2.message
-        toast.error(messageError ? messageError : (error as Error).message, {
-          position: toast.POSITION.TOP_RIGHT
-        })
-      } finally {
-        setLoading(false)
+    setLoading(true)
+    try {
+      let imageUrl: string | undefined = undefined
+      if (image) imageUrl = await uploadFile(image)
+      const { tenTruong, tenLop, thanhTichHocTap, capHoc, anhGiayKhen } = values
+      const editedChildren = {
+        ...children,
+        tenTruong,
+        tenLop,
+        thanhTichHocTap,
+        capHoc,
+        anhGiayKhen: imageUrl
       }
-    } else {
-      alert('Đây là sự kiện không liên quan đến học tập nên không được chỉnh sửa!')
+      await axiosClient.put(`/duoc-nhan-thuong/${children.id}/edit`, editedChildren)
+      toast.success(`Thông tin mã được nhận thưởng ${children.id} đã được chỉnh sửa`, {
+        position: toast.POSITION.TOP_RIGHT
+      })
+    } catch (error) {
+      const axiosError = error as AxiosError
+      const dataError: { success: boolean; message: string } | unknown = axiosError.response?.data
+      const dataError2 = dataError as { success: boolean; message: string }
+      const messageError = dataError2.message
+      toast.error(messageError ? messageError : (error as Error).message, {
+        position: toast.POSITION.TOP_RIGHT
+      })
+    } finally {
+      setLoading(false)
     }
   }
 
