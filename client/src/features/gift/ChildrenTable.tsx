@@ -65,19 +65,19 @@ const ChildrenTable = (props: { eventId: string | undefined; event: IEvent }) =>
       )
       record.hasRewarded
         ? toast.success(
-            `Bé có mã được nhận thưởng ${record.id} đã chuyển sang trạng thái chưa nhận`,
-            {
-              position: toast.POSITION.TOP_RIGHT,
-              toastId: 'end-success'
-            }
-          )
+          `Bé có mã được nhận thưởng ${record.id} đã chuyển sang trạng thái chưa nhận`,
+          {
+            position: toast.POSITION.TOP_RIGHT,
+            toastId: 'end-success'
+          }
+        )
         : toast.success(
-            `Bé có mã được nhận thưởng ${record.id} đã chuyển sang trạng thái đã nhận`,
-            {
-              position: toast.POSITION.TOP_RIGHT,
-              toastId: 'end-success'
-            }
-          )
+          `Bé có mã được nhận thưởng ${record.id} đã chuyển sang trạng thái đã nhận`,
+          {
+            position: toast.POSITION.TOP_RIGHT,
+            toastId: 'end-success'
+          }
+        )
     } catch (err) {
       toast.error((err as Error).message, {
         position: toast.POSITION.TOP_RIGHT,
@@ -125,7 +125,7 @@ const ChildrenTable = (props: { eventId: string | undefined; event: IEvent }) =>
       key: 'school'
     },
     {
-      title: 'Lop',
+      title: 'Lớp',
       dataIndex: 'tenLop',
       key: 'clazz'
     },
@@ -176,12 +176,12 @@ const ChildrenTable = (props: { eventId: string | undefined; event: IEvent }) =>
               event.type
                 ? navigate(`/duoc-nhan-thuong/chinh-sua/${record.id}`)
                 : toast.error(
-                    'Đây là sự kiện không liên quan đến học tập nên không thể chỉnh sửa.',
-                    {
-                      position: toast.POSITION.TOP_RIGHT,
-                      toastId: 'edit-error'
-                    }
-                  )
+                  'Đây là sự kiện không liên quan đến học tập nên không thể chỉnh sửa.',
+                  {
+                    position: toast.POSITION.TOP_RIGHT,
+                    toastId: 'edit-error'
+                  }
+                )
             }}
             className="cursor-pointer text-primary"
           />
