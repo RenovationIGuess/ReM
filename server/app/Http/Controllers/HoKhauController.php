@@ -198,6 +198,13 @@ class HoKhauController extends Controller
             // Lay ra cac gia tri da thay doi
             $changes = array_diff($data, $originalData);
 
+            // Neu trong co thay doi ve chu ho
+            if (in_array("idChuHo", $changes)) {
+                $idChuHoMoi = $changes['idChuHo'];
+                $changes["idChuHo"] = NhanKhau::find($idChuHoMoi)->hoTen;
+                $originalData["idChuHo"] = NhanKhau::find($hoKhau->idChuHo)->hoTen; 
+            }
+
             if ($changes) {
                 // Gia tri thay doi tu
                 $originalValue = '';
@@ -305,15 +312,15 @@ class HoKhauController extends Controller
                         }
                     )
                 ) {
+                    // Lay ra chu ho khau moi tu bang nhan khau
+                    $chuHoKhauMoi = NhanKhau::find($request->idChuHo);
+
                     // Mang luu quan he voi chu ho tu request
                     // Chuyen ve dang key -> value la id -> quanHeChuHo
                     $quanHeVoiChuHos = [];
                     foreach ($request->nhanKhauMois as $nhanKhauMoi) {
                         $quanHeVoiChuHos[$nhanKhauMoi['id']] = $nhanKhauMoi['quanHeVoiChuHo'];
                     }
-
-                    // Neu input chuan -> Tao ho khau moi dua tren input
-                    $hoKhauMoi = HoKhau::create($data);
 
                     // Gia tri thay doi tu
                     $changeFrom = '';
@@ -323,18 +330,27 @@ class HoKhauController extends Controller
                     // Setup gia tri thay doi tu
                     foreach ($nhanKhauCu as $nhanKhau) {
                         $changeFrom = $changeFrom . $nhanKhau->hoTen . ',';
+                        // Kiem tra xem co phai thanh vien chuyen di khong
+                        // Khong -> add vao thay doi thanh
+                        if (!$this->checkOldMember($nhanKhauMois, $nhanKhau->id) && !($nhanKhau->id == $chuHoKhauMoi->id)) {
+                            $changeTo = $changeTo . $nhanKhau->hoTen . ',';
+                        }
                     }
 
+                    // Neu input chuan -> Tao ho khau moi dua tren input
+                    $hoKhauMoi = HoKhau::create($data);
+
                     // Gan id ho khau moi cho nhan khau duoc chon
-                    $nhanKhauMois->each(
-                        function (NhanKhau $nhanKhauMoi) use ($hoKhauMoi, $changeTo, $quanHeVoiChuHos) {
-                            $changeTo = $changeTo . $nhanKhauMoi->hoTen . ',';
-                            $nhanKhauMoi->thanhVienHo()->update([
-                                "idHoKhau" => $hoKhauMoi->id,
-                                "quanHeVoiChuHo" => $quanHeVoiChuHos[$nhanKhauMoi->id],
-                            ]);
-                        }
-                    );
+                    foreach ($nhanKhauMois as $nhanKhauMoi) {
+                        $nhanKhauMoi->thanhVienHo()->update([
+                            "idHoKhau" => $hoKhauMoi->id,
+                            "quanHeVoiChuHo" => $quanHeVoiChuHos[$nhanKhauMoi->id],
+                        ]);
+                    }
+                    $chuHoKhauMoi->thanhVienHo()->update([
+                        "idHoKhau" => $hoKhauMoi->id,
+                        "quanHeVoiChuHo" => null,
+                    ]);
 
                     // Tao record moi cho dinh chinh
                     DinhChinh::create([
@@ -420,5 +436,15 @@ class HoKhauController extends Controller
             'success' => false,
             'message' => 'No data',
         ], 404);
+    }
+
+    // Tim xem nhan khau cu nay co trong dsach nhan khau moi khong
+    // true => k add | false => add
+    private function checkOldMember($nhanKhauMois, $idNhanKhauCu)
+    {
+        foreach ($nhanKhauMois as $nhanKhauMoi) {
+            if ($nhanKhauMoi->id == $idNhanKhauCu) return true;
+        }
+        return false;
     }
 }
