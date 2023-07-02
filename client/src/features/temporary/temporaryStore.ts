@@ -6,9 +6,11 @@ interface ITemporaryStore {
   tamvangs: TamVangs
   totalTamtrus: number
   totalTamvangs: number
-  currentPage: number
+  currentTamTruPage: number
+  currentTamVangPage: number
   pageSize: number
-  setCurrentPage: (page: Page) => void
+  setCurrentTamTruPage: (page: Page) => void
+  setCurrentTamVangPage: (page: Page) => void
   getTamTrus: (page?: Page) => void
   getTamVangs: (page?: Page) => void
 }
@@ -22,24 +24,38 @@ export const useTemporaryStore = create<ITemporaryStore>((set, get) => ({
 
   totalTamvangs: 0,
 
-  currentPage: 1,
+  currentTamTruPage: 1,
+
+  currentTamVangPage: 1,
 
   pageSize: 10,
 
-  setCurrentPage: async ({ page, offset }) => {
+  setCurrentTamTruPage: async ({ page, offset }) => {
     const response = await getTamTrusByPage({ page, offset })
 
     if (!response) return
     set({
-      currentPage: page,
+      currentTamTruPage: page,
       pageSize: offset,
       tamtrus: response.data,
       totalTamtrus: response.total
     })
   },
 
+  setCurrentTamVangPage: async ({ page, offset }) => {
+    const response = await getTamVangsByPage({ page, offset })
+
+    if (!response) return
+    set({
+      currentTamVangPage: page,
+      pageSize: offset,
+      tamvangs: response.data,
+      totalTamvangs: response.total
+    })
+  },
+
   getTamTrus: async page => {
-    let currentPage = get().currentPage
+    let currentPage = get().currentTamTruPage
     let offset = get().pageSize
     if (page) {
       currentPage = page.page
@@ -50,11 +66,16 @@ export const useTemporaryStore = create<ITemporaryStore>((set, get) => ({
 
     if (!response) return
 
-    set({ tamtrus: response.data, totalTamtrus: response.total, currentPage, pageSize: offset })
+    set({
+      tamtrus: response.data,
+      totalTamtrus: response.total,
+      currentTamTruPage: currentPage,
+      pageSize: offset
+    })
   },
 
   getTamVangs: async page => {
-    let currentPage = get().currentPage
+    let currentPage = get().currentTamTruPage
     let offset = get().pageSize
     if (page) {
       currentPage = page.page
@@ -65,6 +86,11 @@ export const useTemporaryStore = create<ITemporaryStore>((set, get) => ({
 
     if (!response) return
 
-    set({ tamvangs: response.data, totalTamvangs: response.total, currentPage, pageSize: offset })
+    set({
+      tamvangs: response.data,
+      totalTamvangs: response.total,
+      currentTamTruPage: currentPage,
+      pageSize: offset
+    })
   }
 }))

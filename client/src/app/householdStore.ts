@@ -4,6 +4,7 @@ import {
   getChangeLog,
   getHouseholdById,
   getHouseholdByPage,
+  splitHousehold,
   updateHousehold
 } from '~/lib/household'
 import { searchHouseholdLeader } from '~/lib/residents'
@@ -22,6 +23,7 @@ interface IHouseholdStore {
   updateHousehold: (household: any) => Promise<void>
   getChangeLog: (id: string, page: Page) => void
   searchHousehold: (searchValue: string) => void
+  splitHousehold: (id: string, data: any) => any
 }
 
 export const useHouseholdStore = create<IHouseholdStore>((set, get) => ({
@@ -63,5 +65,11 @@ export const useHouseholdStore = create<IHouseholdStore>((set, get) => ({
     if (!data) return
 
     set({ households: data })
+  },
+  splitHousehold: async (id: string, data: any) => {
+    const response = await splitHousehold(id, data)
+    const newData = await getHouseholdByPage(get().currentPage)
+    set({ households: newData.data, householdsTotal: newData.total })
+    return response
   }
 }))

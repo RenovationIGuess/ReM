@@ -7,6 +7,8 @@ import { ApiOutlined, EditOutlined, LoadingOutlined, UserOutlined } from '@ant-d
 import { Avatar, Button, Tag } from 'antd'
 import Death from './Death'
 import { gender } from '~/app/config'
+import TamTruCreate from '../temporary/TamTruCreate'
+import TamVangCreate from '../temporary/TamVangCreate'
 
 type ResidentInfoItemProps = {
   label: string
@@ -68,8 +70,10 @@ const Detail = () => {
               </Button>
             )
           }
-          deleteBtn={resident.ghiChu ? <></> : <Death currnetResident={resident} />}
+          deleteBtn={resident.ghiChu ? <></> : <Death currentResident={resident} />}
           onEdit={() => navigate(`/nhan-khau/chinh-sua/${id}`)}
+          tamTruBtn={<TamTruCreate currentResident={resident} />}
+          tamVangBtn={<TamVangCreate currentResident={resident} />}
         />
 
         {Object.keys(resident).length === 0 ? (

@@ -90,9 +90,10 @@ function SplitHousehold() {
 
   const [isLoading, setIsLoading] = useState(false)
 
-  const [household, getHouseholdById] = useHouseholdStore(state => [
+  const [household, getHouseholdById, splitHousehold] = useHouseholdStore(state => [
     state.household,
-    state.getHouseholdById
+    state.getHouseholdById,
+    state.splitHousehold
   ])
 
   const [residents, setResidents] = useState<IResident[]>([])
@@ -105,8 +106,10 @@ function SplitHousehold() {
   const onFinish = async (values: any) => {
     setIsLoading(true)
     const { lyDoChuyen, maHoKhau, maKhuVuc, diaChi } = values
+    let isError = false
+    let response: any
     try {
-      splitHousehold(id as string, {
+      response = splitHousehold(id as string, {
         idChuHo: newHousehold.idChuHo,
         maHoKhau,
         maKhuVuc,
@@ -126,17 +129,17 @@ function SplitHousehold() {
         toastId: 'split-household-successfully',
         icon: '👏'
       })
-      // form.resetFields()
-      // getHouseholdById(id as string)
-      // getHouseholdByPage()
     } catch (error) {
       console.log('Tách hộ khẩu lỗi rồi bé ơi :(', error)
+      isError = true
       toast.error('Tách hộ khẩu lỗi rồi bé ơi :(', {
         toastId: 'split-household-failed',
         icon: '😢'
       })
+    } finally {
+      setIsLoading(false)
+      // if (!isError) navigate(`/ho-khau/${response.id}`)
     }
-    setIsLoading(false)
   }
 
   return (

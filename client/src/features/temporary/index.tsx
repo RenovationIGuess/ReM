@@ -28,11 +28,6 @@ const index = () => {
       <div className="h-max rounded bg-bgPrimary px-4 py-2 shadow-sm">
         <div className="flex items-center justify-between">
           <p className="text-lg font-semibold">Tạm trú - Tạm vắng</p>
-          <Space>
-            <TamTruCreate />
-
-            <TamVangCreate />
-          </Space>
         </div>
         <Tabs defaultActiveKey="1" items={items} />
       </div>

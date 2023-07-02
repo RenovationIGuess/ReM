@@ -3,8 +3,14 @@ import { Button, DatePicker, Form, Input, Modal, Space } from 'antd'
 import { showDeleteConfirm } from '~/components/ConfirmModal'
 import { ExclamationCircleFilled, LoadingOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
+import { createTamTru } from '~/lib/temporary'
+import { toast } from 'react-toastify'
 
-const TamTruCreate = () => {
+type PropType = {
+  currentResident: IResident
+}
+
+const TamTruCreate = ({ currentResident }: PropType) => {
   const navigate = useNavigate()
   const [form] = Form.useForm()
 
@@ -12,7 +18,26 @@ const TamTruCreate = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const onFinish = (values: any) => {
-    console.log('==> create tam tru', values)
+    let isError = false
+    setIsLoading(true)
+    createTamTru(currentResident.id, {
+      ...values,
+      tuNgay: values.tuNgay.format('YYYY-MM-DD'),
+      denNgay: values.denNgay.format('YYYY-MM-DD')
+    })
+      .then(() => {
+        toast.success('Đăng ký tạm trú thành công')
+        // form.resetFields()
+      })
+      .catch(err => {
+        toast.error('Đăng ký tạm trú thất bại')
+        isError = true
+        console.log(err)
+      })
+      .finally(() => {
+        setIsLoading(false)
+        if (!isError) setIsOpen(false)
+      })
   }
 
   return (
@@ -46,7 +71,7 @@ const TamTruCreate = () => {
           <Form.Item
             label="Số điện thoại đăng ký"
             name="soDienThoaiDangKy"
-            rules={[{ required: true, message: 'Số điẹn thoại không được để trống' }]}
+            rules={[{ required: true, message: 'Số điện thoại không được để trống' }]}
           >
             <Input placeholder="Nhập số điện thoại đăng ký" />
           </Form.Item>
@@ -54,7 +79,7 @@ const TamTruCreate = () => {
           <Form.Item
             label="Từ ngày"
             name="tuNgay"
-            rules={[{ required: true, message: 'Từ ngày không được để trống' }]}
+            rules={[{ required: true, message: 'Ngày bắt đầu không được để trống' }]}
           >
             <DatePicker className="w-full" placeholder="Từ ngày" format={'YYYY-MM-DD'} />
           </Form.Item>
@@ -62,7 +87,7 @@ const TamTruCreate = () => {
           <Form.Item
             label="Đến ngày"
             name="denNgay"
-            rules={[{ required: true, message: 'Đến ngày không được để trống' }]}
+            rules={[{ required: true, message: 'Ngày kết thúc không được để trống' }]}
           >
             <DatePicker className="w-full" placeholder="Đến ngày" format={'YYYY-MM-DD'} />
           </Form.Item>
@@ -83,7 +108,8 @@ const TamTruCreate = () => {
                     title: 'Bạn có chắc chắn muốn hủy quá trình ?',
                     icon: <ExclamationCircleFilled />,
                     onOk() {
-                      navigate(-1)
+                      setIsOpen(false)
+                      form.resetFields()
                     }
                   })
                 }

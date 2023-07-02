@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table } from 'antd'
+import { Empty, Table } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { useNavigate } from 'react-router-dom'
 import { useTemporaryStore } from './temporaryStore'
@@ -9,8 +9,8 @@ const TamVangsTable = () => {
   const [tamvangs, total, currentPage, setCurrentPage] = useTemporaryStore(state => [
     state.tamvangs,
     state.totalTamvangs,
-    state.currentPage,
-    state.setCurrentPage
+    state.currentTamTruPage,
+    state.setCurrentTamVangPage
   ])
 
   const columns: ColumnsType<ITamVang> = [
@@ -61,7 +61,7 @@ const TamVangsTable = () => {
     }
   ]
 
-  if (!tamvangs) return <></>
+  if (!tamvangs) return <Empty />
 
   return (
     <Table

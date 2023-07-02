@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Table } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { useNavigate } from 'react-router-dom'
@@ -9,8 +9,8 @@ const TamTrusTable = () => {
   const [tamtrus, total, currentPage, setCurrentPage] = useTemporaryStore(state => [
     state.tamtrus,
     state.totalTamtrus,
-    state.currentPage,
-    state.setCurrentPage
+    state.currentTamTruPage,
+    state.setCurrentTamTruPage
   ])
 
   const columns: ColumnsType<ITamTru> = [

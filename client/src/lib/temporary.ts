@@ -31,3 +31,17 @@ export const getTamVangsByPage = async ({ page, offset }: Page) => {
 
   return { data: residents, total: response.data.total }
 }
+
+export const createTamVang = async (id: string, tamTru: any) => {
+  const response = await axiosClient.post(`/nhan-khau/${id}/tam-vang/create`, tamTru)
+  if (!response) return
+
+  return response.data
+}
+
+export const createTamTru = async (id: string, tamTru: any) => {
+  const response = await axiosClient.post(`/nhan-khau/${id}/tam-tru/create`, tamTru)
+  if (!response) return
+
+  return response.data
+}

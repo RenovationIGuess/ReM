@@ -7,10 +7,10 @@ import { khaiTuResident } from '~/lib/residents'
 import { toast } from 'react-toastify'
 
 type PropsType = {
-  currnetResident: IResident
+  currentResident: IResident
 }
 
-const Death = ({ currnetResident }: PropsType) => {
+const Death = ({ currentResident }: PropsType) => {
   const [form] = Form.useForm()
 
   const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -27,7 +27,7 @@ const Death = ({ currnetResident }: PropsType) => {
 
   const onFinish = async (values: any) => {
     try {
-      await khaiTuResident(currnetResident.id, {
+      await khaiTuResident(currentResident.id, {
         ...values,
         ngayChet: values.ngayChet.format('YYYY-MM-DD'),
         idNguoiTao: currentUser.id
@@ -74,7 +74,7 @@ const Death = ({ currnetResident }: PropsType) => {
               showSearch
               placeholder="Nhập họ tên người khai tử"
               options={Array.from(searchResult)
-                .filter(resident => resident.id !== currnetResident.id && !resident.ghiChu)
+                .filter(resident => resident.id !== currentResident.id && !resident.ghiChu)
                 .map(resident => ({
                   label: resident.hoTen,
                   value: resident.id

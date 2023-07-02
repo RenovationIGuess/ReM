@@ -28,7 +28,7 @@ export const updateHousehold = async (household: any) => {
 export const splitHousehold = async (id: string, data: any) => {
   const response = await axiosClient.post(`/ho-khau/${id}/edit/tach-ho-khau`, data)
   if (!response) return
-  return response
+  return response.data
 }
 
 export const getChangeLog = async (id: string, page: Page) => {

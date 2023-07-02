@@ -3,8 +3,14 @@ import { Button, DatePicker, Form, Input, Modal, Space } from 'antd'
 import { showDeleteConfirm } from '~/components/ConfirmModal'
 import { ExclamationCircleFilled, LoadingOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
+import { createTamVang } from '~/lib/temporary'
+import { toast } from 'react-toastify'
 
-const TamVangCreate = () => {
+type PropType = {
+  currentResident: IResident
+}
+
+const TamVangCreate = ({ currentResident }: PropType) => {
   const navigate = useNavigate()
   const [form] = Form.useForm()
 
@@ -12,7 +18,26 @@ const TamVangCreate = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const onFinish = (values: any) => {
-    console.log('==> create tam tru', values)
+    setIsLoading(true)
+    let isError = false
+    createTamVang(currentResident.id, {
+      ...values,
+      tuNgay: values.tuNgay.format('YYYY-MM-DD'),
+      denNgay: values.denNgay.format('YYYY-MM-DD')
+    })
+      .then(() => {
+        toast.success('Đăng ký tạm vắng thành công')
+        form.resetFields()
+      })
+      .catch(err => {
+        toast.error('Đăng ký tạm vắng thất bại')
+        isError = true
+        console.log(err)
+      })
+      .finally(() => {
+        setIsLoading(false)
+        if (!isError) setIsOpen(false)
+      })
   }
 
   return (
@@ -30,7 +55,7 @@ const TamVangCreate = () => {
       >
         <Form
           form={form}
-          name="dangKyTamTru"
+          name="dangKyTamVang"
           autoComplete="off"
           onFinish={onFinish}
           labelCol={{ span: 8 }}
@@ -83,7 +108,8 @@ const TamVangCreate = () => {
                     title: 'Bạn có chắc chắn muốn hủy quá trình ?',
                     icon: <ExclamationCircleFilled />,
                     onOk() {
-                      navigate(-1)
+                      form.resetFields()
+                      setIsOpen(false)
                     }
                   })
                 }

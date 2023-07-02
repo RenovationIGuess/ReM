@@ -8,11 +8,22 @@ type PropsType = {
   type: 'create' | 'detail'
   editBtn?: React.ReactNode
   deleteBtn?: React.ReactNode
+  tamTruBtn?: React.ReactNode
+  tamVangBtn?: React.ReactNode
   onEdit?: () => void
   onDelete?: () => void
 }
 
-const SubHeader = ({ title, type, editBtn, deleteBtn, onEdit, onDelete }: PropsType) => {
+const SubHeader = ({
+  title,
+  type,
+  tamTruBtn,
+  tamVangBtn,
+  editBtn,
+  deleteBtn,
+  onEdit,
+  onDelete
+}: PropsType) => {
   const navigate = useNavigate()
 
   return (
@@ -41,6 +52,9 @@ const SubHeader = ({ title, type, editBtn, deleteBtn, onEdit, onDelete }: PropsT
                 Xóa
               </Button>
             )}
+
+            {tamTruBtn ?? <></>}
+            {tamVangBtn ?? <></>}
           </Space>
         )}
       </>

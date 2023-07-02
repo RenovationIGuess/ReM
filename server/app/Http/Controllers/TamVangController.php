@@ -111,7 +111,7 @@ class TamVangController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
-            ]);
+            ], 400);
         }
     }
 
@@ -123,7 +123,7 @@ class TamVangController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage(),
-            ]);
+            ], 400);
         }
     }
 

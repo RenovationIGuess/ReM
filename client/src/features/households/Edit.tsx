@@ -61,6 +61,7 @@ const Edit = () => {
     updateHousehold({ ...householdData, ...obj })
       .then(() => {
         toast.success('Cập nhật hộ khẩu thành công', { toastId: 'update-household-success' })
+        getHouseholdById(id as string)
       })
       .catch(() => toast.error('Cập nhật hộ khẩu thất bại'))
       .finally(() => setIsLoading(false))

@@ -44,10 +44,18 @@ function ChangeLog() {
       title: 'Thay đổi từ',
       dataIndex: 'thayDoiTu',
       key: 'thayDoiTu',
-      render: text => (
-        <p className="rounded-md p-1" style={{ backgroundColor: 'rgb(254 202 202)' }}>
-          {text}
-        </p>
+      render: (text, record) => (
+        <div className="rounded-md p-1" style={{ backgroundColor: 'rgb(254 202 202)' }}>
+          {record.truongThayDoi === 'Tách hộ khẩu' ? (
+            <>
+              {record.thayDoiTu.split(',').map((item, index) => (
+                <li key={index}>{item}</li>
+              ))}
+            </>
+          ) : (
+            text
+          )}
+        </div>
       ),
       width: '39%'
     },
@@ -55,10 +63,18 @@ function ChangeLog() {
       title: 'Thay đổi thành',
       dataIndex: 'thayDoiThanh',
       key: 'thayDoiThanh',
-      render: text => (
-        <p className="rounded-md p-1" style={{ backgroundColor: 'rgb(187 247 208)' }}>
-          {text}
-        </p>
+      render: (text, record) => (
+        <div className="rounded-md p-1" style={{ backgroundColor: 'rgb(187 247 208)' }}>
+          {record.truongThayDoi === 'Tách hộ khẩu' ? (
+            <>
+              {record.thayDoiThanh.split(',').map((item, index) => (
+                <li key={index}>{item}</li>
+              ))}
+            </>
+          ) : (
+            text
+          )}
+        </div>
       ),
       width: '39%'
     }
@@ -89,31 +105,30 @@ function ChangeLog() {
                 <>
                   {changeLog.map((item, index) => {
                     let obj: any = {
-                      ...item,
                       thongTinThayDoi: item.thongTinThayDoi.split(';'),
                       thayDoiTu: item.thayDoiTu.split(';'),
                       thayDoiThanh: item.thayDoiThanh.split(';')
                     }
 
-                    let changeLog: ChangeType[] = []
-
-                    obj.thongTinThayDoi.forEach((itemT: string, indexT: number) => {
-                      changeLog.push({
-                        truongThayDoi: FieldChangeMap.get(itemT) as string,
-                        thayDoiTu:
-                          itemT === 'idChuHo'
-                            ? household.nhan_khaus.find(
-                                resident => resident.id === parseInt(obj.thayDoiTu[indexT])
-                              )?.hoTen
-                            : obj.thayDoiTu[indexT],
-                        thayDoiThanh:
-                          itemT === 'idChuHo'
-                            ? household.nhan_khaus.find(
-                                resident => resident.id === parseInt(obj.thayDoiThanh[indexT])
-                              )?.hoTen
-                            : obj.thayDoiThanh[indexT]
-                      })
-                    })
+                    let changeLog: ChangeType[] = obj.thongTinThayDoi.map(
+                      (change: string, index: number) => {
+                        return {
+                          truongThayDoi: (FieldChangeMap.get(change) as string) ?? 'Tách hộ khẩu',
+                          thayDoiTu:
+                            change === 'idChuHo'
+                              ? household.nhan_khaus.find(
+                                  resident => resident.id === parseInt(obj.thayDoiTu[index])
+                                )?.hoTen
+                              : obj.thayDoiTu[index],
+                          thayDoiThanh:
+                            change === 'idChuHo'
+                              ? household.nhan_khaus.find(
+                                  resident => resident.id === parseInt(obj.thayDoiThanh[index])
+                                )?.hoTen
+                              : obj.thayDoiThanh[index]
+                        }
+                      }
+                    )
 
                     return (
                       <div key={index} className="mb-2">
