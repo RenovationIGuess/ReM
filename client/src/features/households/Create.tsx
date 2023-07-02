@@ -49,7 +49,7 @@ const Create = () => {
         let quanHe = form.getFieldValue(`quanHe-${resident}`)
         data.nhanKhaus.push({ id: resident, quanHeVoiChuHo: quanHe })
       })
-      await createHousehold({
+      createHousehold({
         ...data
       })
       setNewHousehold({ nhan_khaus: [] as IResident[] } as IHousehold)
@@ -57,7 +57,6 @@ const Create = () => {
         toastId: 'create-household-successfully',
         icon: '👏'
       })
-      console.log(data)
     } catch (error) {
       console.log('Them ho khau loi r be oi :_(', error)
       toast.error('Thêm hộ khẩu lỗi rồiiiiii', {

@@ -90,7 +90,6 @@ export const GiftList = () => {
   }, [])
   // const { data: giftsData } = useGetGiftsByPageQuery(page)
   const onCreate = (values: any) => {
-    console.log('Received values of form: ', values)
     setOpenCreateGift(false)
   }
   return (
@@ -119,7 +118,6 @@ export const GiftList = () => {
           {/* <GiftTable /> */}
           <div className="grid grid-cols-4">
             {gifts.map(gift => {
-              console.log(gift.id, gift.name)
               return (
                 <GiftCard
                   giftId={gift.id}

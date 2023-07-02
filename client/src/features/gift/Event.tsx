@@ -14,9 +14,11 @@ const Event = (props: any) => {
         height={450}
         className="rounded-t-md object-contain"
         alt="example"
-        src={type ?
-          "https://img.freepik.com/premium-photo/cute-young-woman-reading-book-anime-style-background_176697-4132.jpg?w=740" :
-          "https://stockdep.net/files/images/42832247.jpg"}
+        src={
+          type
+            ? 'https://img.freepik.com/premium-photo/cute-young-woman-reading-book-anime-style-background_176697-4132.jpg?w=740'
+            : 'https://stockdep.net/files/images/42832247.jpg'
+        }
       />
       <p className="w-full truncate py-4 text-center text-xl font-medium">{title}</p>
     </button>

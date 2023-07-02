@@ -37,7 +37,6 @@ const EventList = () => {
   }
 
   const onCreate = async (values: any) => {
-    console.log('Received values of form:', values)
     const inputDate = new Date(values.ngayBatDau)
     const formattedDate = moment(inputDate).format('YYYY-MM-DD')
     try {

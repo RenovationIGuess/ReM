@@ -286,7 +286,6 @@ function SplitHousehold() {
                         resident => resident.id === selectedRow[0]
                       ) as IResident
                     })
-                    console.log(newHousehold)
                   },
                   selectedRowKeys: [newHousehold?.idChuHo]
                 }}

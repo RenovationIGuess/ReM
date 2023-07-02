@@ -74,6 +74,7 @@ const Overview = () => {
         <ChartWrapper className="col-span-2" title="Nhân khẩu: " chart={<Population />} />
         <ChartWrapper className="col-span-2" title="Độ tuổi: " chart={<Age />} />
         <ChartWrapper title="Giới tính: " chart={<Gender />} />
+        <ChartWrapper title="Trình độ học vấn: " chart={<Level />} />
       </div>
     </HomeLayout>
   )

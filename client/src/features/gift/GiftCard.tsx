@@ -25,7 +25,10 @@ export const GiftCard = (props: any) => {
         cover={
           <img
             alt="example"
-            src={image_url ?? 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg?20200913095930'}
+            src={
+              image_url ??
+              'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg?20200913095930'
+            }
             style={imgStyle}
           />
         }
@@ -36,9 +39,13 @@ export const GiftCard = (props: any) => {
           title={`Số lượng đã phát: ${quantity}`}
           className="align-center items-center justify-center"
         />
-        <Meta title={new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(
-          cost ?? 0
-        )} className="align-center items-center justify-center" />
+        <Meta
+          title={`Tổng tiền: ${new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND'
+          }).format(cost ?? 0)}`}
+          className="align-center items-center justify-center"
+        />
       </Card>
     </div>
   )

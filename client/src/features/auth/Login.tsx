@@ -33,7 +33,7 @@ const Login = () => {
   return (
     <DefaultLayout>
       <div className="bg-slate-600 w-[25vw] rounded-md p-4">
-        <h6 className="text-center text-3xl font-bold">Đăng nhập</h6>
+        <h6 className="text-center text-3xl font-bold">Tổ dân phố số 7</h6>
         <Form
           form={form}
           name="login"

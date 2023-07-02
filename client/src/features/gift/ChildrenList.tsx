@@ -56,14 +56,15 @@ export const ChildrenList = () => {
       }
       await axiosClient.put(`/su-kien/${id}/edit`, updatedEvent)
       toast.success('Cập nhật sự kiện thành công', {
-        position: toast.POSITION.TOP_RIGHT
+        position: toast.POSITION.TOP_RIGHT,
+        toastId: 'edit-success'
       })
     } catch (err) {
       toast.error((err as Error).message, {
-        position: toast.POSITION.TOP_RIGHT
+        position: toast.POSITION.TOP_RIGHT,
+        toastId: 'edit-error'
       })
     }
-    console.log('Received values of form: ', values)
     setOpenEditEvent(false)
   }
 
@@ -76,7 +77,8 @@ export const ChildrenList = () => {
           await axiosClient.delete(`/su-kien/${id}/delete`)
           toast.success('Xóa sự kiện thành công', {
             position: toast.POSITION.TOP_RIGHT,
-            autoClose: 3000
+            autoClose: 3000,
+            toastId: 'delete-success'
           })
           setTimeout(() => {
             window.location.assign('/su-kien')
@@ -84,7 +86,8 @@ export const ChildrenList = () => {
         } catch (e) {
           const err = e as Error
           toast.error(err.message, {
-            position: toast.POSITION.TOP_RIGHT
+            position: toast.POSITION.TOP_RIGHT,
+            toastId: 'delete-error'
           })
         }
       }
@@ -98,11 +101,13 @@ export const ChildrenList = () => {
       !isDone
         ? toast.success(`Sự kiện đã chuyển sang trạng thái kết thúc`, {
             position: toast.POSITION.TOP_RIGHT,
-            autoClose: 5000
+            autoClose: 5000,
+            toastId: 'end-success'
           })
         : toast.success(`Sự kiện đã chuyển lại chưa kết thúc`, {
             position: toast.POSITION.TOP_RIGHT,
-            autoClose: 5000
+            autoClose: 5000,
+            toastId: 'done-success'
           })
     } catch (err) {
       toast.error((err as Error).message, {
@@ -121,9 +126,7 @@ export const ChildrenList = () => {
     getEventById(id ? id : '1')
     fetchInitChecked()
     // handleIsDone(event)
-    console.log(event.isDone)
   })
-  console.log(event, id, isDone)
   return (
     <HomeLayout>
       <div className="mb-2 flex min-h-full flex-col">

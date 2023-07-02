@@ -32,7 +32,7 @@ const TamTruCreate = ({ currentResident }: PropType) => {
       .catch(err => {
         toast.error('Đăng ký tạm trú thất bại')
         isError = true
-        console.log(err)
+        console.log('Đăng ký tạm trú thất bại', err.message)
       })
       .finally(() => {
         setIsLoading(false)

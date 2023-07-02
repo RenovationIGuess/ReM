@@ -57,13 +57,18 @@ const Edit = () => {
         quanHeVoiChuHo: values[`quanHe-${resident.id}`]
       })
     })
-    console.log({ ...householdData, ...obj })
+    let error = false
     updateHousehold({ ...householdData, ...obj })
       .then(() => {
         toast.success('Cập nhật hộ khẩu thành công', { toastId: 'update-household-success' })
         getHouseholdById(id as string)
       })
-      .catch(() => toast.error('Cập nhật hộ khẩu thất bại'))
+      .catch(e => {
+        console.error('Cập nhật lỗi rồi bé ơi', e.message)
+
+        toast.error('Cập nhật hộ khẩu thất bại')
+        error = true
+      })
       .finally(() => setIsLoading(false))
     navigate(`/ho-khau/${id}`)
   }

@@ -58,7 +58,6 @@ const getData = (staticByAge: any) => {
       data[5] += staticByAge[i]
     }
   }
-  console.log(data)
 
   return data
 }
@@ -73,10 +72,16 @@ const Age = () => {
     labels,
     datasets: [
       {
-        label: 'Dân số',
-        data: [12, 40, 33, 40, 138, 130],
+        label: 'Nam',
+        data: [18, 12, 6, 9, 12, 3, 9],
         backgroundColor: ['rgba(54, 162, 235, 0.2)'],
         borderColor: ['rgba(54, 162, 235, 1)']
+      },
+      {
+        label: 'Nữ',
+        data: [7, 8, 12, 3, 10, 6, 4],
+        backgroundColor: ['rgba(255, 25, 104, 0.2)'],
+        borderColor: ['rgba(255, 25, 104, 1)']
       }
     ]
   }

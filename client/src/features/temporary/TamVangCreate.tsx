@@ -32,7 +32,7 @@ const TamVangCreate = ({ currentResident }: PropType) => {
       .catch(err => {
         toast.error('Đăng ký tạm vắng thất bại')
         isError = true
-        console.log(err)
+        console.log('Đăng ký tạm vắng lỗi r bé ơi', err.message)
       })
       .finally(() => {
         setIsLoading(false)
