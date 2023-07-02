@@ -8,6 +8,7 @@ use App\Enums\GioiTinh;
 use App\Models\TamVang;
 use App\Models\NhanKhau;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\NhanKhauController;
@@ -16,39 +17,45 @@ class ThongKeController extends Controller
 {
     public function thongKeTheoDoTuoi()
     {
-        $divisions = [
-            '0-4' => range(0, 4),
-            '5-9' => range(5, 9),
-            '10-14' => range(10, 14),
-            '15-19' => range(15, 19),
-            '20-24' => range(20, 24),
-            '25-29' => range(25, 29),
-            '30-34' => range(30, 34),
-            '35-39' => range(35, 39),
-            '40-44' => range(40, 44),
-            '45-49' => range(45, 49),
-            '50-54' => range(50, 54),
-            '55-59' => range(55, 59),
-            '60-64' => range(60, 64),
-            '65-69' => range(65, 69),
-            '70-74' => range(70, 74),
-            '75-79' => range(75, 79),
-            '80-84' => range(80, 84),
-            '85-89' => range(85, 89),
-            '90-94' => range(90, 94),
-            '95-99' => range(95, 99),
-            '100+' => range(100, 200),
-        ];
 
-        foreach ($divisions as $key => $value) {
-            $statisticsByAge[$key] = NhanKhauController::getInAgeRange($value[0], end($value))->count();
+        $nhanKhaus = NhanKhau::all()->groupBy('age')->all();
+
+        foreach ($nhanKhaus as $age => $nhanKhauArray)
+        {
+            $nhanKhaus[$age] = $nhanKhauArray->count();
         }
 
         return response()->json([
-            'data' => $statisticsByAge,
+            'data' => $nhanKhaus,
             'message' => 'success',
             'success' => true,
         ]);
+    }
+
+    public function thongKeThapDanSo()
+    {
+        try {
+            $nhanKhaus = NhanKhau::all()->groupBy(['gioiTinh','age'])->all();
+
+            foreach ($nhanKhaus as $gioiTinh => $mergeGioiTinh)
+            {
+                foreach ($mergeGioiTinh as $age => $merged)
+                {
+                    $mergeGioiTinh[$age] = $merged->count();
+                }
+            }
+
+            return response()->json([
+                'data' => $nhanKhaus,
+                'success' => true,
+                'message' => 'success',
+            ], 200);
+        } catch (Exception $exception) {
+            return response()->json([
+                'message' => $exception->getMessage(),
+                'success' => false,
+            ]);
+        }
     }
 
     public function thongKeTheoGioiTinh()
@@ -60,7 +67,10 @@ class ThongKeController extends Controller
                 ->get();
 
             return response()->json([
-                'data' => ['namGioi' => $males, 'nuGioi' => $females],
+                'data' => [
+                    'namGioi' => $males->count(),
+                    'nuGioi' => $females->count(),
+                ],
                 'success' => true,
                 'message' => 'success',
             ], 200);
@@ -105,6 +115,36 @@ class ThongKeController extends Controller
         }
     }
 
+    public function thongKeKhoangThoiGian() {
+        try {
+            $nhanKhaus = NhanKhau::all();
+
+            $nhanKhaus->map(function (NhanKhau $nhanKhau) {
+                $nhanKhau['thoiGianTao'] = Carbon::parse($nhanKhau->created_at)->age + 1;
+                return $nhanKhau;
+            });
+
+            $mergedNhanKhaus = collect($nhanKhaus)->groupBy('thoiGianTao')->all();
+
+            foreach ($mergedNhanKhaus as $year => $mergedNhanKhauArray)
+            {
+                $mergedNhanKhaus[$year] = $mergedNhanKhauArray->count();
+            }
+
+            return response()->json([
+                'data' => $mergedNhanKhaus,
+                'success' => true,
+                'message' => 'success',
+            ], 200);
+
+        } catch(Exception $exception) {
+            return response()->json([
+                'success' => false,
+                'message' => $exception->getMessage(),
+            ], 500);
+        }
+    }
+
     public function thongKeTamVangTamTru(Request $request)
     {
         $rules = [
@@ -139,7 +179,7 @@ class ThongKeController extends Controller
                 ->get();
 
             return response()->json([
-                'data' => ['tamVangs' => $tamVangs, 'tamTrus' => $tamTrus],
+                'data' => ['tamVangs' => $tamVangs->count(), 'tamTrus' => $tamTrus->count()],
                 'success' => true,
                 'message' => 'success',
             ], 200);

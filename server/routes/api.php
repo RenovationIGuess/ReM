@@ -89,6 +89,8 @@ Route::group(['prefix' => 'thong-ke'], function ($router) {
     Route::get('/nhan-khau/age-range', [ThongKeController::class, 'thongKeTheoTuoi']);
     Route::get('/nhan-khau/gioi-tinh', [ThongKeController::class, 'thongKeTheoGioiTinh']);
     Route::get('/nhan-khau/tam-tru-tam-vang', [ThongKeController::class, 'thongKeTamVangTamTru']);
+    Route::get('/nhan-khau/created-at', [ThongKeController::class, 'thongKeKhoangThoiGian']);
+    Route::get('/nhan-khau/thap-dan-so', [ThongKeController::class, 'thongKeThapDanSo']);
 });
 
 Route::group(['prefix' => 'su-kien'], function ($router) {

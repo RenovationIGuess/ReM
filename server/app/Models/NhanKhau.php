@@ -16,6 +16,8 @@ class NhanKhau extends Model
 {
     use HasFactory;
 
+    protected $dateFormat = 'Y-m-d H:i:s';
+
     protected $table = 'nhan_khau';
     protected $attributes = [];
 
