@@ -205,20 +205,22 @@ class DatabaseSeeder extends Seeder
             foreach ($nhanKhaus as $nhanKhau) {
                 $thanhTichHocTap = array_rand([0, 1, 2, 3]);
                 $age = $nhanKhau->age;
-                $capHoc = null;
-                switch(true){
-                    case ($age < 6):
-                        $capHoc = CapHoc::MAU_GIAO;
-                        break;
-                    case ($age >= 6 && $age <= 10):
-                        $capHoc = CapHoc::CAP_1;
-                        break;
-                    case ($age >= 11 && $age <= 15):
-                        $capHoc = CapHoc::CAP_2;
-                        break;
-                    case ($age >- 16 && $age <= 18):
-                        $capHoc = CapHoc::CAP_3;
-                        break;
+                $capHoc = 0;
+                if ($suKien->type == 1) {
+                    switch(true){
+                        case ($age < 6):
+                            $capHoc = CapHoc::MAU_GIAO;
+                            break;
+                        case ($age >= 6 && $age <= 10):
+                            $capHoc = CapHoc::CAP_1;
+                            break;
+                        case ($age >= 11 && $age <= 15):
+                            $capHoc = CapHoc::CAP_2;
+                            break;
+                        case ($age >- 16 && $age <= 18):
+                            $capHoc = CapHoc::CAP_3;
+                            break;
+                    }
                 }
                 $phanThuongRoot = null;
                 foreach ($suKien->phanThuongs as $phanThuong) {

@@ -14,9 +14,15 @@ class ItemController extends Controller
         try {
             $limit = $request->has('limit') ? $request->input('limit') : 10;
 
-            $items = Item::where('name', 'like', '%' . $request->name . '%')
-                ->orderBy('id', 'ASC')
-                ->paginate($limit);
+            $items = $request->has('limit') ? 
+                Item::where('name', 'like', '%' . $request->name . '%')
+                    ->orderBy('id', 'ASC')
+                    ->paginate($limit) :
+                Item::all();
+
+            // $items = Item::where('name', 'like', '%' . $request->name . '%')
+            //     ->orderBy('id', 'ASC')
+            //     ->paginate($limit);
 
             if ($items) {
                 return response()->json([
