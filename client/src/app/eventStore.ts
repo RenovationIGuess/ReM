@@ -8,6 +8,7 @@ import {
   getStatisticById,
   getItemById
 } from '~/lib/event'
+import { searchResident } from '~/lib/residents'
 
 interface IEventStore {
   events: IEvent[]
@@ -23,7 +24,7 @@ interface IEventStore {
   getItems: (page: Page) => void
   getItemById: (id: string | undefined) => void
   getStatisticById: (id: string | undefined) => void
-  getChildrenById: (id: string | undefined) => void
+  getChildrenById: (id: string | undefined) => void,
 }
 
 export const useEventStore = create<IEventStore>(set => ({

@@ -103,7 +103,7 @@ const EventList = () => {
         <TabListEvent defaultActiveKey="1" />
         <div className="grid grid-cols-4 gap-6">
           {eventsData?.data.data.map((event: IEvent) => (
-            <Event key={event.id} eventId={event.id} title={event.name} />
+            <Event type={event.type} key={event.id} eventId={event.id} title={event.name} />
           ))}
         </div>
         <Pagination

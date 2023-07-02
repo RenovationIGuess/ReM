@@ -135,6 +135,7 @@ declare type IPhanThuong = {
   unit_price: number
   totalQuantity: number
   totalCost: number
+  image_url: string
 }
 
 declare type IThongKeSuKien = {

@@ -127,6 +127,7 @@ export const GiftList = () => {
                   price={gift.unit_price}
                   quantity={gift.totalQuantity}
                   cost={gift.totalCost}
+                  image_url={gift.image_url}
                 />
               )
             })}

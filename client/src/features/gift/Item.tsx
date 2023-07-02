@@ -38,7 +38,7 @@ const Item = ({ item }: PropType) => {
 
   return (
     <div className="relative rounded-md bg-bgPrimary shadow-sm transition-shadow hover:shadow-md">
-      <button onClick={() => navigate(`/su-kien/${item.id}`)}>
+      <button>
         <img
           className="rounded-t-md object-contain"
           alt="example"
