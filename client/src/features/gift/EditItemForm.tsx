@@ -14,9 +14,9 @@ import SubHeader from '~/components/SubHeader'
 import UploadImage from '~/components/UploadImage'
 import uploadFile from '~/firebase/uploadFile'
 
-interface EditItemFormProps {}
+interface EditItemFormProps { }
 type UploadFile = RcFile & { preview: string }
-export const EditItemForm: FC<EditItemFormProps> = ({}) => {
+export const EditItemForm: FC<EditItemFormProps> = ({ }) => {
   const { id } = useParams()
 
   const navigate = useNavigate()
@@ -98,7 +98,7 @@ export const EditItemForm: FC<EditItemFormProps> = ({}) => {
             >
               <InputNumber addonAfter="$" />
             </Form.Item>
-            <Form.Item name="anhGiayKhen" label="Ảnh giấy khen">
+            <Form.Item name="anhGiayKhen" label="Ảnh vật phẩm">
               <UploadImage image={image} setImage={setImage} />
             </Form.Item>
             <Form.Item className="col-span-8 col-start-6 ms-32">
