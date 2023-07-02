@@ -16,6 +16,8 @@ import { set } from 'immer/dist/internal'
 import { RcFile } from 'antd/es/upload'
 import { toast, ToastContainer } from 'react-toastify'
 import { AxiosError, AxiosResponse } from 'axios'
+import { searchResident } from '~/lib/residents'
+import { useResidentsStore } from '../residents/residentsStore'
 type UploadFile = RcFile & { preview: string }
 
 const CreateDuocNhanThuong = () => {
@@ -26,11 +28,26 @@ const CreateDuocNhanThuong = () => {
     const [form] = Form.useForm()
     const [image, setImage] = useState<UploadFile | null>(null)
     const [loading, setLoading] = useState(false)
+    const [childrenName, setChildrenName] = useState('')
 
     const [event, getEventById] = useEventStore(state => [
         state.event,
         state.getEventById
     ])
+
+    const [searchResult, searchResident] = useResidentsStore(state => [
+        state.searchResult,
+        state.searchResident
+    ])
+
+    const fetchNameChange = (input: string) => {
+        setChildrenName(input)
+        searchResident(input)
+    }
+
+    const handleChangeChildreName = (name: string) => {
+        setChildrenName(name)
+    }
 
     useEffect(() => {
         console.log(id)
@@ -51,10 +68,13 @@ const CreateDuocNhanThuong = () => {
                 tenTruong: values.tenTruong,
                 tenLop: values.tenLop
             })
-            toast.success(`Thêm bé thành công`, {
-                position: toast.POSITION.TOP_RIGHT
+            toast.success("Thêm bé thành công", {
+                position: toast.POSITION.TOP_RIGHT,
+                autoClose: 3000
             })
-            navigate(`/su-kien/${event.id}`)
+            setTimeout(() => {
+                navigate(`/su-kien/${event.id}`)
+            }, 3000)
         } catch (error) {
             const axiosError = error as AxiosError;
             const dataError: { success: boolean, message: string } | unknown = axiosError.response?.data
@@ -102,9 +122,26 @@ const CreateDuocNhanThuong = () => {
                             name="idNhanKhau"
                             label="Mã nhân khẩu"
                             labelCol={{ span: 8 }}
-                            rules={[{ required: true, message: 'Hãy nhập mã nhân khẩu của bé là một số', type: 'number' }]}
+                            rules={[{ required: true }]}
                         >
-                            <InputNumber />
+                            {/* <InputNumber /> */}
+                            <Select
+                                //mode="multiple"
+                                style={{ width: '500px' }}
+                                value={childrenName}
+                                placeholder="Tìm kiếm bé"
+                                onChange={handleChangeChildreName}
+                                onSearch={fetchNameChange}
+                                filterOption={false}
+                                notFoundContent={null}
+                                showSearch
+                            >
+                                {searchResult.map(obj => (
+                                    <Select.Option key={obj.maNhanKhau} value={obj.id}>
+                                        {obj.hoTen} - {obj.maNhanKhau}
+                                    </Select.Option>
+                                ))}
+                            </Select>
                         </Form.Item>
 
                         {type ? (

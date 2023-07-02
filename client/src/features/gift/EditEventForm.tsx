@@ -27,6 +27,7 @@ const EditEventForm = () => {
     const navigate = useNavigate()
     const [name, setName] = useState<string | undefined>('')
     const [ngayBatDau, setNgayBatDau] = useState<Date>(new Date())
+    const [page, setPage] = useState<Page>({ page: 1, offset: 8 })
     const [type, setType] = useState<number | undefined>(0)
     const [initPhanThuong, setInitPhanThuong] = useState<IPhanThuongThongKe[]>()
     const [loading, setLoading] = useState(false)
@@ -42,13 +43,13 @@ const EditEventForm = () => {
         const dateFormat = 'YYYY-MM-DD';
         const data = {
             ...response.data,
-            ngayBatDau: dayjs(new Date(response.data.ngayBatDau))
+            ngayBatDau: dayjs(response.data.ngayBatDau)
         }
-        console.log(response.data)
+        console.log(moment(new Date(response.data.ngayBatDau), dateFormat))
         setEvent(data)
     }
     useEffect(() => {
-        getItemsList()
+        getItemsList(page)
         fetchEvent()
     }, [])
     useEffect(() => {
@@ -115,13 +116,14 @@ const EditEventForm = () => {
                         </Form.Item>
                         <Form.Item
                             name="ngayBatDau"
+                            //valuePropName={'ngayBatDau'}
                             // initialValue={moment(event?.ngayBatDau.toString() as string)}
                             label="Ngày bắt đầu"
                             labelCol={{ span: 8 }}
                             rules={[{ required: true, message: 'Hãy chọn ngày bắt đầu của sự kiện' }]}
                         >
                             <DatePicker
-                                // defaultValue={dayjs(event?.ngayBatDau)}
+                                format={'YYYY-MM-DD'}
                                 picker="date"
                             />
                         </Form.Item>

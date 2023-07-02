@@ -37,7 +37,9 @@ export const StatisticList = () => {
                     <div className="flex w-full items-center justify-between">
                         <p className="text-2x2 font-medium">{`${event.name}`} - Thống kê theo hộ khẩu</p>
                         <p className="text-2x1 font-medium">Tổng số hộ: {`${statistics.length}`}</p>
-                        <p className="text-2x1 font-medium">Tổng tiền: {`${event.total_cost}`}</p>
+                        <p className="text-2x1 font-medium">Tổng tiền: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(
+                            event.total_cost ?? 0
+                        )} </p>
                     </div>
                     <StatisticTable event={event} statistics={statistics} />
                 </div>

@@ -15,7 +15,7 @@ const imgStyle: React.CSSProperties = {
 
 export const GiftCard = (props: any) => {
   const navigate = useNavigate()
-  const { giftId, giftName, price, quantity, cost } = props
+  const { giftId, giftName, price, quantity, cost, image_url } = props
   return (
     <div>
       <Card
@@ -25,7 +25,7 @@ export const GiftCard = (props: any) => {
         cover={
           <img
             alt="example"
-            src="https://media.istockphoto.com/id/628925698/vector/pile-of-hardcover-books.jpg?s=612x612&w=0&k=20&c=UskxzCZAQ4LXrgMhgW3M8Q5jdtWFPZ8WxwosF6h6euI="
+            src={image_url ?? 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg?20200913095930'}
             style={imgStyle}
           />
         }
@@ -36,7 +36,9 @@ export const GiftCard = (props: any) => {
           title={`Số lượng đã phát: ${quantity}`}
           className="align-center items-center justify-center"
         />
-        <Meta title={`Tổng tiền: ${cost}`} className="align-center items-center justify-center" />
+        <Meta title={new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(
+          cost ?? 0
+        )} className="align-center items-center justify-center" />
       </Card>
     </div>
   )
