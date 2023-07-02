@@ -23,8 +23,9 @@ const CreateEventFormModal: React.FC<CreateEventFormModalProps> = ({
         state.items,
         state.getItems
     ])
+    const [page, setPage] = useState<Page>({ page: 1, offset: 100 })
     useEffect(() => {
-        getItemsList()
+        getItemsList(page)
     }, [])
     return (
         <Modal
