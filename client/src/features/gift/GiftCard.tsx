@@ -36,7 +36,7 @@ export const GiftCard = (props: any) => {
         <Meta title={giftName} className="items-center justify-center" />
         <Meta title={`Đơn giá: ${price}`} className="align-center items-center justify-center" />
         <Meta
-          title={`Số lượng đã phát: ${quantity}`}
+          title={`Số lượng cần phát: ${quantity}`}
           className="align-center items-center justify-center"
         />
         <Meta

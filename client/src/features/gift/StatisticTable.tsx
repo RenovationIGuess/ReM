@@ -41,10 +41,12 @@ const StatisticTable = (props: any) => {
         <ul>
           {record.duocNhanThuongs?.map(child => (
             <li>
-              {`${child.nhan_khau.hoTen}: `}
-              {child.phan_thuong.items.map(item => (
-                <h5>{`${item.name}: ${child.phan_thuong.count}`}</h5>
-              ))}
+              <div className='py-1'>
+                {`${child.nhan_khau.hoTen}: `}
+                {child.phan_thuong.items.map(item => (
+                  <h5>{`${item.name}: ${item.pivot.soLuong}`}</h5>
+                ))}
+                </div>
             </li>
           ))}
         </ul>

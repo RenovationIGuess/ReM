@@ -86,7 +86,7 @@ class DatabaseSeeder extends Seeder
         DB::table('items')->insert([
             'name' => 'Sữa chua Vinamilk nha đam 100g',
             'unit_price' => 7000,
-            'image_url' => 'https://banhkeogiare.com/wp-content/uploads/2019/10/4.jpg',
+            'image_url' => 'https://cooponline.vn/wp-content/uploads/2020/06/S%E1%BB%AFa-chua-%C4%83n-Vinamilk-nha-%C4%91am-l%E1%BB%91c-4x100g.jpg',
         ]);
         DB::table('items')->insert([
             'name' => 'Sữa chua nha đam hũ 100g Dalatmilk',
@@ -161,37 +161,37 @@ class DatabaseSeeder extends Seeder
             } else if ($phanThuong->type == 1) {
                 if ($phanThuong->thanhTichHocTap == ThanhTichHocTap::GIOI && $phanThuong->capHoc == CapHoc::CAP_1) {
                     PhanThuongDetail::create([
-                        'idItem' => 4,
+                        'idItem' => 8,
                         'idPhanThuong' => $phanThuong->id,
                         'soLuong' => 10,
                     ]);
                 } else if ($phanThuong->thanhTichHocTap == ThanhTichHocTap::TIEN_TIEN && $phanThuong->capHoc == CapHoc::CAP_1) {
                     PhanThuongDetail::create([
-                        'idItem' => 4,
+                        'idItem' => 8,
                         'idPhanThuong' => $phanThuong->id,
                         'soLuong' => 7,
                     ]);
                 } else if ($phanThuong->thanhTichHocTap == ThanhTichHocTap::OTHER && $phanThuong->capHoc == CapHoc::CAP_1) {
                     PhanThuongDetail::create([
-                        'idItem' => 4,
+                        'idItem' => 8,
                         'idPhanThuong' => $phanThuong->id,
                         'soLuong' => 5,
                     ]);
                 } else if ($phanThuong->thanhTichHocTap == ThanhTichHocTap::OTHER && ($phanThuong->capHoc == CapHoc::CAP_2 || $phanThuong->capHoc == CapHoc::CAP_3)) {
                     PhanThuongDetail::create([
-                        'idItem' => 5,
+                        'idItem' => 10,
                         'idPhanThuong' => $phanThuong->id,
                         'soLuong' => 5,
                     ]);
                 } else if ($phanThuong->thanhTichHocTap == ThanhTichHocTap::TIEN_TIEN && ($phanThuong->capHoc == CapHoc::CAP_2 || $phanThuong->capHoc == CapHoc::CAP_3)) {
                     PhanThuongDetail::create([
-                        'idItem' => 5,
+                        'idItem' => 10,
                         'idPhanThuong' => $phanThuong->id,
                         'soLuong' => 7,
                     ]);
                 } else if ($phanThuong->thanhTichHocTap == ThanhTichHocTap::GIOI && ($phanThuong->capHoc == CapHoc::CAP_2 || $phanThuong->capHoc == CapHoc::CAP_3)) {
                     PhanThuongDetail::create([
-                        'idItem' => 5,
+                        'idItem' => 9,
                         'idPhanThuong' => $phanThuong->id,
                         'soLuong' => 10,
                     ]);
