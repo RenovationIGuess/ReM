@@ -1,87 +1,82 @@
-# Quản lý dân cư
+<p align="center">
+  <img width="25%" src="./client/src/assets/rem.png" /><!--
+  -->
+  <img width="50%" src="./client/src/assets/logo.png" />
+</p>
 
-## Yêu cầu hệ thống
+<p align="center">
+  <a href="https://reactjs.org/"><img src="https://img.shields.io/badge/React-18.2.0-blue.svg?style=flat-square" alt="react" title="React" /></a><!--
+  --><a href="https://ant.design/"><img src="https://img.shields.io/badge/Ant%20Design-5.5.2-blue.svg?style=flat-square" alt="Antd" title="antd" /></a><!--
+  --><a href="https://laravel.com/"><img src="https://img.shields.io/badge/Laravel-10.x-orange.svg?style=flat-square" alt="laravel" title="Laravel" /></a>
+</p>
+
+## What is ReM ?
+
+A resident management web application for HUST Software Engineering Courses
+
+<p>
+  <img src="./client/src/assets/app-preview.png" />
+</p>
+
+## Table of Contents
+
+- [System requirements](#system-requirements)
+- [Setup and Configuration](#setup-and-configuration)
+- [Usage](#usage)
+- [License](#license)
+
+## System requirements
 
 - Docker >= 20.10
 - Docker compose plugin
 
-## Các tính năng
+## Setup and Configuration
 
-- Client: `http://project.localhost:3000`
-- Server: `http://project.localhost:3000/api/`
-- Phpmyadmin: `http://phpmyadmin.localhost:3000`
-- Traefik: `http://traefik.localhost:3000`
+To get a local copy of the project up and running, follow these steps:
 
-## Hướng dẫn sử dụng
+1. Start docker container:
 
-Sau khi clone project về chạy câu lệnh:
-
-```sh
+```bash
 make devup
 ```
 
-Câu lệnh sẽ tạo file `.env` ở thư mục root bao gồm các biến môi trường về domain và database có thể custom chúng bằng cách chỉnh sửa file này
+This will create a `.env` file in the root directory. You can configure environment variables in this file according to your needs.
 
-Cài đặt các dependencies:
+2. Install dependencies:
 
-```sh
+```bash
 make devinstall
 ```
 
-Câu lệnh để migrate database:
+3. Migrate and seed dummy data
 
-```sh
+```bash
 make devmigrate
-```
-
-Câu lệnh để seed fake data:
-
-```sh
 make devfresh
 ```
 
-`server` sẽ được khởi chạy ở chế độ `--detached` có thể truy cập theo đường dẫn `http://project.localhost:3000/api/`
-<br>
-<br>
+## Usage
 
-Khởi chạy dự án:
+To start the application locally, use the following command:
 
 ```sh
+make devup
 make devrun
 ```
 
-Có thể truy cập giao diện người dùng `client` theo đường dẫn `http://project.localhost:3000`
-<br>
-<br>
-Có thể truy cập `phpmyadmin` để xem dữ liệu trong database theo đường dẫn: `http://phpmyadmin.localhost:3000` với credential mặc định của DB là:
+The application will be accessible at:
 
-```
-DB_USERNAME=root
-DB_PASSWORD=admin
-```
+- Client: [http://project.localhost:3000](http://project.localhost:3000)
+- Server: [http://project.localhost:3000/api/](http://project.localhost:3000/api/)
+- Phpmyadmin: [http://phpmyadmin.localhost:3000](http://phpmyadmin.localhost:3000)
+- Traefik: [http://traefik.localhost:3000](http://traefik.localhost:3000)
 
-Tắt ứng dụng:
+Stop application:
 
 ```sh
 make devdown
 ```
 
-Xóa tất cả docker images, container:
+## License
 
-```sh
-make devclean
-```
-
-## Lỗi có thể gặp
-
-Lỗi: `Docker is not running.` hoặc `Cannot connect to the Docker daemon at unix:///home/<you>/.docker/desktop/docker.sock.` chạy câu lệnh sau đây ở thư mục gốc:
-
-```sh
-export DOCKER_HOST=unix:///var/run/docker.sock
-```
-
-Lỗi: `The stream or file "/storage/logs/laravel.log" could not be opened` chạy câu lệnh sau đây ở thư mục `server`:
-
-```sh
-sudo chmod -R ugo+rw storage
-```
+This project is licensed under the [MIT License](LICENSE).
