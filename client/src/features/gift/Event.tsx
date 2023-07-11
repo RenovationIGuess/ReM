@@ -10,9 +10,9 @@ const Event = (props: any) => {
       onClick={() => navigate(`/su-kien/${eventId}`)}
     >
       <img
-        width={300}
-        height={450}
-        className="rounded-t-md object-contain"
+        // width={300}
+        // height={450}
+        className="aspect-square w-full rounded-t-md object-cover"
         alt="example"
         src={
           type

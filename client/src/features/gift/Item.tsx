@@ -38,9 +38,16 @@ const Item = ({ item }: PropType) => {
 
   return (
     <div className="relative rounded-md bg-bgPrimary shadow-sm transition-shadow hover:shadow-md">
+      <Space className="flex items-center justify-end gap-3 pr-4 pt-2">
+        <EditOutlined
+          className="text-xl text-primary"
+          onClick={e => navigate(`/items/chinh-sua/${item.id}`)}
+        />
+        <DeleteOutlined className="text-xl text-danger" onClick={e => onDelete(item.id)} />
+      </Space>
       <button>
         <img
-          className="rounded-t-md object-contain"
+          className="aspect-square w-full rounded-t-md object-contain"
           alt="example"
           src={
             item.image_url ??
@@ -56,13 +63,6 @@ const Item = ({ item }: PropType) => {
           </p>
         </div>
       </button>
-      <Space className="absolute right-2 top-2 gap-3">
-        <EditOutlined
-          className="text-xl text-primary"
-          onClick={e => navigate(`/items/chinh-sua/${item.id}`)}
-        />
-        <DeleteOutlined className="text-xl text-danger" onClick={e => onDelete(item.id)} />
-      </Space>
     </div>
   )
 }

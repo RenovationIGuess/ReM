@@ -125,14 +125,14 @@ function SplitHousehold() {
         lyDoChuyen
       })
       setNewHousehold({} as IHousehold)
-      toast.success('Tách được rồi bé ơi', {
+      toast.success('Tách hộ khẩu thành công', {
         toastId: 'split-household-successfully',
         icon: '👏'
       })
     } catch (error) {
       console.log('Tách hộ khẩu lỗi rồi bé ơi :(', error)
       isError = true
-      toast.error('Tách hộ khẩu lỗi rồi bé ơi :(', {
+      toast.error('Tách hộ khẩu thất bại :(', {
         toastId: 'split-household-failed',
         icon: '😢'
       })

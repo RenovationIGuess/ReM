@@ -15,6 +15,7 @@ import { Avatar, Divider } from 'antd'
 import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import Logo from '~/assets/logo.png'
+import Rem from '~/assets/rem.png'
 import ButtonLogout from '../ButtonLogout'
 
 type SideButtonProps = {
@@ -30,7 +31,8 @@ const SideButton = ({ icon, activedIcon, text, href }: SideButtonProps) => {
   const isActive =
     currentPath.slice(1).split('/').includes(href.slice(1)) ||
     (currentPath === '/' && href === '/') ||
-    (currentPath === '/tam-vang/them' && href === '/tam-tru')
+    (currentPath === '/tam-vang/them' && href === '/tam-tru') ||
+    (currentPath === '/items' && href === '/su-kien')
 
   return (
     <button
@@ -50,7 +52,10 @@ const SideButton = ({ icon, activedIcon, text, href }: SideButtonProps) => {
 const Sidebar = () => {
   return (
     <div className="flex h-full min-w-[13rem] max-w-[13rem] flex-col items-center justify-start gap-8 px-3 pt-8">
-      <img className="w-3/5" src={Logo} alt="app logo" />
+      <div className="ml-[-8px] flex items-start justify-center gap-2">
+        <img className="left-0 top-0 w-9" src={Rem} alt="rem-img" />
+        <img className="w-3/5" src={Logo} alt="app logo" />
+      </div>
       <div className="flex w-full grow flex-col items-center justify-start gap-1">
         <SideButton
           icon={<MacCommandOutlined />}
@@ -83,12 +88,12 @@ const Sidebar = () => {
           href="/su-kien"
         />
         <Divider className="m-0" />
-        <SideButton
+        {/* <SideButton
           icon={<InfoCircleOutlined />}
           activedIcon={<InfoCircleFilled />}
           text="Thông tin"
           href="/thong-tin"
-        />
+        /> */}
       </div>
       <div className="w-full">
         <Divider className="m-0" />

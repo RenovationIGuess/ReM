@@ -20,7 +20,7 @@ class HoKhauController extends Controller
             $limit = $request->has('limit') ? $request->input('limit') : 10;
             $hoKhaus = HoKhau::with('nhanKhaus')
                 ->where('maHoKhau', 'like', $request->maHoKhau . '%')
-                ->orderBy('id', 'ASC')
+                ->orderBy('updated_at', 'DESC')
                 ->paginate($limit);
 
             if ($hoKhaus) {
@@ -202,7 +202,7 @@ class HoKhauController extends Controller
             if (in_array("idChuHo", $changes)) {
                 $idChuHoMoi = $changes['idChuHo'];
                 $changes["idChuHo"] = NhanKhau::find($idChuHoMoi)->hoTen;
-                $originalData["idChuHo"] = NhanKhau::find($hoKhau->idChuHo)->hoTen; 
+                $originalData["idChuHo"] = NhanKhau::find($hoKhau->idChuHo)->hoTen;
             }
 
             if ($changes) {
